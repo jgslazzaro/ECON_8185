@@ -1,0 +1,661 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[11pt]{article}
+
+    
+    
+    \usepackage[T1]{fontenc}
+    % Nicer default font (+ math font) than Computer Modern for most use cases
+    \usepackage{mathpazo}
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % We will generate all images so they have a width \maxwidth. This means
+    % that they will get their normal width if they fit onto the page, but
+    % are scaled down if they would overflow the margins.
+    \makeatletter
+    \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+    \else\Gin@nat@width\fi}
+    \makeatother
+    \let\Oldincludegraphics\includegraphics
+    % Set max figure width to be 80% of text width, for now hardcoded.
+    \renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=.8\maxwidth]{#1}}
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionLabelFormat{nolabel}{}
+    \captionsetup{labelformat=nolabel}
+
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    
+
+    
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{HW 1 - Joao Lazzaro}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{question-1}{%
+\subsection{Question 1}\label{question-1}}
+
+    Dividing equations 1 - 4 by \(z(s^t)^{-\frac{1}{1-\alpha}}\). Note that
+\(\theta(s^t)(1-n(s^t)) = v(s^t)n(s^t)\). we get:
+
+    \begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
+\tightlist
+\item
+  \[ e^{\frac{\bar{s}}{1-\alpha}} = \beta \sum_{s^{t+1}|s^t} \pi(s_{t+1}|s^t) \frac{\tilde{c}(s^t)}{\tilde{c}(s^{t+1})}\left[ \alpha e^{s_{t+1}} \left(\frac{\tilde{k}(s^{t+1})}{n(s^{t+1})-\theta(s^{t+1})(1-n(s^{t+1}))}\right)^{\alpha-1} +1-\delta \right]   \]
+\end{enumerate}
+
+    2)\[ (1-\alpha) e^{s_t} \left( \frac{\tilde{k}(s^{t+1})}{n(s^{t+1})-\theta(s^{t+1})(1-n(s^{t+1}))} \right)^\alpha = \beta \mu (\theta(s^t)) \sum_{s^{t+1}|s^t} \pi(s_{t+1}|s^t) \frac{\tilde{c}(s^t)}{\tilde{c}(s^{t+1})} \left( (1-\alpha) e^{s_{t+1}} \left( \frac{\tilde{k}(s^{t+1})}{n(s^{t+1})-\theta(s^{t+1})(1-n(s^{t+1}))} \right)^\alpha \left(1+ \frac{1-x}{\mu(\theta(s^{t+1}))}\right) - \tilde{w}(s^{t+1})\right)\]
+
+    \begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  \[(1-\tau)\tilde{w}(s^{t+1}) = (1-\phi) \gamma \tilde{c}(s^{t+1}) + \phi(1-\tau)(1-\alpha) e^{s_{t+1}}  \left( \frac{\tilde{k}(s^{t+1})}{n(s^{t+1})-\theta(s^{t+1})(1-n(s^{t+1}))} \right)^\alpha \left(1+\theta(s^{t+1})\right) \]
+\end{enumerate}
+
+    \begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  \[ \tilde{k}(s^{t+1}) = e^{ - \frac{\bar{s}_{t+1}}{1-\alpha}} \left(e^{s_t} \tilde{k}(s^t)^\alpha \left(n(s^t) - \theta(s^t) (1-n(s^t))\right) ^{1-\alpha} +(1-\delta) \tilde{k} (s^t) - \tilde{c}(s^t) \right)\]
+\end{enumerate}
+
+\[ n(s^{t+1}) =(1-x) n(s^t) +f(\theta(s^t))(1-n(s^t)) \]
+
+    Eliminate \(\tilde{w}(s^{t+1})\) between 2) and 3) above:
+
+    \begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  \[ (1-\alpha) e^{s_t} \left( \frac{\tilde{k}(s^{t+1})}{n(s^{t+1})-\theta(s^{t+1})(1-n(s^{t+1}))} \right)^\alpha = \beta \mu (\theta(s^t)) \sum_{s^{t+1}|s^t} \pi(s_{t+1}|s^t) \frac{\tilde{c}(s^t)}{\tilde{c}(s^{t+1})}\left( - \frac{(1-\phi) \gamma \tilde{c}(s^{t+1}}{1-\tau} + (1-\alpha) e^{s_{t+1}}  \left( \frac{\tilde{k}(s^{t+1})}{n(s^{t+1})-\theta(s^{t+1})(1-n(s^{t+1}))} \right)^\alpha \left( \frac{1-x}{\mu(\theta(s^{t+1}))} +1-\phi -\phi\theta(s^{t+1})\right)\right) \]
+\end{enumerate}
+
+    For notational simplicity, denote: \(\tilde{c}(k,n,s_t):=C\) and
+\(\tilde{\theta}(k,n,s):=\Theta\). Note, that \(s_{t+1}\),
+\(n(s^{t+1})\) and \(\tilde{k}(s^{t+1})\) also depend on \((k,n,s_t)\).
+Substituting 4) into 5) and 1), we get a system with two nonlinear
+functional equations that define \(C\) and \(\Theta\).
+
+    Eq 6) \$ e\^{}\{\frac{\bar{s}}{1-\alpha}\} =
+\beta\sum\emph{\{s\textsuperscript{\{t+1\}\textbar{}s}t\}
+\pi(s}\{t+1\}\textbar{}s\^{}t)
+\frac{\tilde{c}(s^t)}{\tilde{c}(s^{t+1})}\left[ \alpha e^{s_{t+1}} \left(\frac{e^{ - \frac{\bar{s}_{t+1}}{1-\alpha}} \left(e^{s_t} \tilde{k}(s^t)^\alpha \left(n(s^t) - \theta(s^t) (1-n(s^t))\right) ^{1-\alpha} +(1-\delta) \tilde{k} (s^t) - \tilde{c}(s^t) \right)}{(1-x) n(s^t) +f(\theta(s^t))(1-n(s^t))-\theta(s^{t+1})(1-(1-x) n(s^t) +f(\theta(s^t))(1-n(s^t)))}\right)^{\alpha-1} +1-\delta \right]   \$
+
+    Eq 7)
+
+\$ (1-\alpha) e\^{}\{s\_t\} \left(
+\frac{e^{ - \frac{\bar{s}_{t+1}}{1-\alpha}} \left(e^{s_t} \tilde{k}(s^t)^\alpha \left(n(s^t) - \theta(s^t) (1-n(s^t))\right) ^{1-\alpha} +(1-\delta) \tilde{k} (s^t) - \tilde{c}(s^t) \right)}{(1-x) n(s^t) +f(\theta(s^t))(1-n(s^t)))-\theta(s^{t+1})(1-(1-x) n(s^t) +f(\theta(s^t))(1-n(s^t)))}
+\right)\^{}\alpha = \beta \mu (\theta(s\^{}t))
+\sum\emph{\{s\textsuperscript{\{t+1\}\textbar{}s}t\}
+\pi(s}\{t+1\}\textbar{}s\^{}t)
+\frac{\tilde{c}(s^t)}{\tilde{c}(s^{t+1})}\left( -
+\frac{(1-\phi) \gamma \tilde{c}(s^{t+1}}{1-\tau} + (1-\alpha)
+e\^{}\{s\_\{t+1\}\} \left(
+\frac{e^{ - \frac{\bar{s}_{t+1}}{1-\alpha}} \left(e^{s_t} \tilde{k}(s^t)^\alpha \left(n(s^t) - \theta(s^t) (1-n(s^t))\right) ^{1-\alpha} +(1-\delta) \tilde{k} (s^t) - \tilde{c}(s^t) \right)}{n(s^{t+1})-\theta(s^{t+1})(1-(1-x) n(s^t) +f(\theta(s^t))(1-n(s^t)))}
+\right)\^{}\alpha \left( \frac{1-x}{\mu(\theta(s^{t+1}))}
++1-\phi -\phi\theta(s\^{}\{t+1\})\right)\right) \$
+
+    \hypertarget{question-2}{%
+\subsection{Question 2}\label{question-2}}
+
+    Let's first define some parameters:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}20}]:} \PY{c}{\PYZsh{}Parameters}
+         \PY{n}{β} \PY{o}{=} \PY{l+m+mf}{0.996}              \PY{c}{\PYZsh{}Discount Rate}
+         \PY{n}{sbar} \PY{o}{=} \PY{l+m+mf}{0.0012}          \PY{c}{\PYZsh{}Mean productivity growth}
+         \PY{n}{τ} \PY{o}{=} \PY{l+m+mf}{0.4}                \PY{c}{\PYZsh{}Tax Rate}
+         \PY{n}{x} \PY{o}{=} \PY{l+m+mf}{0.034}              \PY{c}{\PYZsh{}Employment exit Probability}
+         \PY{n}{f}\PY{p}{(}\PY{n}{θ}\PY{p}{)} \PY{o}{=} \PY{l+m+mf}{2.32}\PY{o}{.*}\PY{n}{θ}\PY{o}{.\PYZca{}}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}  \PY{c}{\PYZsh{}Matching Function}
+         \PY{n+nb}{φ} \PY{o}{=} \PY{l+m+mf}{0.5}                \PY{c}{\PYZsh{}Worker\PYZsq{}s bargaining power}
+         \PY{n+nb}{γ} \PY{o}{=} \PY{l+m+mf}{0.471}              \PY{c}{\PYZsh{}Disutility of Work}
+         \PY{n}{α} \PY{o}{=} \PY{l+m+mf}{0.33}               \PY{c}{\PYZsh{}Capital Share}
+         \PY{n}{δ} \PY{o}{=} \PY{l+m+mf}{0.0028}             \PY{c}{\PYZsh{}Depreciation}
+         \PY{n}{ρ} \PY{o}{=} \PY{l+m+mf}{0.98}               \PY{c}{\PYZsh{}Autocorrelation of productivity}
+         \PY{n}{ζ} \PY{o}{=} \PY{l+m+mf}{0.005}              \PY{c}{\PYZsh{}Standard Deviation of productivity}
+         \PY{n}{μ}\PY{p}{(}\PY{n}{θ}\PY{p}{)} \PY{o}{=} \PY{n}{f}\PY{p}{(}\PY{n}{θ}\PY{p}{)}\PY{o}{/}\PY{n}{θ}          \PY{c}{\PYZsh{}Hiring rate per Vacancy}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}20}]:} μ (generic function with 1 method)
+\end{Verbatim}
+            
+    First we need to find the non stochastic Steady State values when
+\(s =\bar{s}\) :
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}32}]:} \PY{k}{using} \PY{n}{NLsolve}
+         
+         \PY{c}{\PYZsh{}Create a function to find the SS }
+         
+         
+         \PY{c}{\PYZsh{} U is a vector with (Θ,C,k,n)}
+         \PY{k}{function} \PY{n}{SS!}\PY{p}{(}\PY{n}{eq}\PY{p}{,} \PY{n}{U}\PY{p}{)}
+             \PY{n}{Θ} \PY{o}{=} \PY{n}{U}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+             \PY{n}{C} \PY{o}{=} \PY{n}{U}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}
+             \PY{n}{k} \PY{o}{=} \PY{n}{U}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}
+             \PY{n}{n} \PY{o}{=} \PY{n}{U}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{]}
+             \PY{n}{z}\PY{p}{(}\PY{n}{s}\PY{p}{)} \PY{o}{=} \PY{n}{exp}\PY{p}{(}\PY{n}{s}\PY{p}{)}  
+             \PY{c}{\PYZsh{}Capital law of Motion}
+             \PY{n}{eq}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{n}{k}\PY{o}{*}\PY{n}{z}\PY{p}{(}\PY{n}{sbar}\PY{p}{)}\PY{o}{\PYZca{}}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{α}\PY{p}{)}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{p}{(}\PY{n}{z}\PY{p}{(}\PY{n}{sbar}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{n}{k}\PY{p}{)}\PY{o}{\PYZca{}}\PY{n}{α} \PY{o}{*} \PY{p}{(}\PY{n}{n}\PY{o}{\PYZhy{}}\PY{n}{Θ}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{n}\PY{p}{)}\PY{p}{)}\PY{o}{\PYZca{}}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{α}\PY{p}{)} \PY{o}{+} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{δ}\PY{p}{)}\PY{o}{*}\PY{n}{k} \PY{o}{\PYZhy{}} \PY{n}{C}\PY{p}{)} 
+             \PY{c}{\PYZsh{}Employment law of motion}
+             \PY{n}{eq}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]} \PY{o}{=} \PY{n}{n} \PY{o}{\PYZhy{}} \PY{p}{(}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{)}\PY{o}{*}\PY{n}{n}\PY{o}{+}\PY{n}{f}\PY{p}{(}\PY{n}{Θ}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{n}\PY{p}{)}\PY{p}{)}
+             \PY{c}{\PYZsh{}Equation 5}
+             \PY{n}{eq}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{α}\PY{p}{)}\PY{o}{*}\PY{n}{z}\PY{p}{(}\PY{n}{sbar}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{n}{k}\PY{o}{/}\PY{p}{(}\PY{n}{n}\PY{o}{\PYZhy{}}\PY{n}{Θ}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{n}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{o}{\PYZca{}}\PY{n}{α} \PY{o}{+}
+             \PY{o}{\PYZhy{}} \PY{n}{β} \PY{o}{*}\PY{n}{μ}\PY{p}{(}\PY{n}{Θ}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n+nb}{φ}\PY{p}{)}\PY{o}{*}\PY{n+nb}{γ}\PY{o}{*}\PY{n}{C}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{τ}\PY{p}{)}\PY{p}{)}\PY{o}{+} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{α}\PY{p}{)}\PY{o}{*}\PY{n}{z}\PY{p}{(}\PY{n}{sbar}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{n}{k}\PY{o}{/}\PY{p}{(}\PY{n}{n}\PY{o}{\PYZhy{}}\PY{n}{Θ}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{n}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{o}{\PYZca{}}\PY{n}{α} \PY{o}{*}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{)}\PY{o}{/}\PY{n}{μ}\PY{p}{(}\PY{n}{Θ}\PY{p}{)} \PY{o}{+}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n+nb}{φ}\PY{o}{\PYZhy{}}\PY{n+nb}{φ}\PY{o}{*}\PY{n}{Θ}\PY{p}{)} \PY{p}{)}
+             \PY{c}{\PYZsh{}Equation 1}
+             \PY{n}{eq}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{]} \PY{o}{=} \PY{n}{z}\PY{p}{(}\PY{n}{sbar}\PY{p}{)}\PY{o}{\PYZca{}}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{α}\PY{p}{)}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{p}{(}\PY{n}{β} \PY{o}{*} \PY{p}{(}\PY{n}{α}\PY{o}{*}\PY{n}{z}\PY{p}{(}\PY{n}{sbar}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{n}{k}\PY{o}{/}\PY{p}{(}\PY{n}{n}\PY{o}{\PYZhy{}}\PY{n}{Θ}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{n}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{o}{\PYZca{}}\PY{p}{(}\PY{n}{α}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{+}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{δ}\PY{p}{)}\PY{p}{)} 
+         \PY{k}{end}
+         
+         \PY{c}{\PYZsh{}Newton, nonlinear Solver}
+         \PY{n}{S} \PY{o}{=} \PY{n}{nlsolve}\PY{p}{(}\PY{n}{SS!}\PY{p}{,} \PY{p}{[}\PY{l+m+mf}{0.07}\PY{p}{,}\PY{l+m+mf}{4.7}\PY{p}{,}\PY{l+m+mi}{218}\PY{p}{,}\PY{l+m+mf}{0.95}\PY{p}{]}\PY{p}{,}\PY{n}{ftol} \PY{o}{=} \PY{o}{:}\PY{l+m+mf}{1.0e\PYZhy{}9}\PY{p}{,} \PY{n}{method} \PY{o}{=} \PY{o}{:}\PY{n}{trust\PYZus{}region} \PY{p}{,} \PY{n}{autoscale} \PY{o}{=} \PY{k+kc}{true}\PY{p}{)}
+         \PY{n}{Θss}\PY{p}{,}\PY{n}{Css}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{nss} \PY{o}{=} \PY{n}{S}\PY{o}{.}\PY{n}{zero}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}32}]:} 4-element Array\{Float64,1\}:
+            0.07739526792654346
+            4.704103324611833  
+          218.63098567340194   
+            0.9499576197303483 
+\end{Verbatim}
+            
+    I got steady state values similar to Shimer's findings, as you may see
+above. From now on, we drop the tilde, and all variables, except \(n\)
+should be interpreted as tilde variables. Now we proceed by guessing the
+functional form of of the log linear approximation of \(\theta(s,n,k)\)
+and \(C(s,n,k)\):
+\[log \theta = log \bar{\theta} +\theta_s s+\theta_n(log n - log\bar{n})+\theta_k(log k- log\bar{k})\]
+\[log c = log \bar{c} +c_s s+c_n(log n - log\bar{n})+c_k(log k- log\bar{k})\]
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}33}]:} \PY{c}{\PYZsh{}Consumption function:}
+         
+         \PY{k}{function} \PY{n}{C}\PY{p}{(}\PY{n}{s}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{n}{k}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Css}\PY{p}{,}\PY{n}{Cn}\PY{p}{,}\PY{n}{Cs}\PY{p}{,}\PY{n}{Ck}\PY{p}{)}
+             \PY{n}{C}\PY{o}{=}\PY{n}{exp}\PY{p}{(}\PY{n}{log}\PY{p}{(}\PY{n}{Css}\PY{p}{)}\PY{o}{+}\PY{n}{Cs}\PY{o}{*}\PY{n}{s}\PY{o}{+} \PY{n}{Cn}\PY{o}{*}\PY{p}{(}\PY{n}{log}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n}{log}\PY{p}{(}\PY{n}{nss}\PY{p}{)}\PY{p}{)}\PY{o}{+}\PY{n}{Ck}\PY{o}{*}\PY{p}{(}\PY{n}{log}\PY{p}{(}\PY{n}{k}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n}{log}\PY{p}{(}\PY{n}{kss}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+             \PY{k}{return} \PY{n}{C}
+         \PY{k}{end}
+         \PY{c}{\PYZsh{} Θ Function}
+         \PY{k}{function} \PY{n}{Θ}\PY{p}{(}\PY{n}{s}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{n}{k}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Θss}\PY{p}{,}\PY{n}{Θn}\PY{p}{,}\PY{n}{Θs}\PY{p}{,}\PY{n}{Θk}\PY{p}{)}
+             \PY{n}{Θ}\PY{o}{=}\PY{n}{exp}\PY{p}{(}\PY{n}{log}\PY{p}{(}\PY{n}{Θss}\PY{p}{)}\PY{o}{+}\PY{n}{Θs}\PY{o}{*}\PY{n}{s}\PY{o}{+} \PY{n}{Θn}\PY{o}{*}\PY{p}{(}\PY{n}{log}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n}{log}\PY{p}{(}\PY{n}{nss}\PY{p}{)}\PY{p}{)}\PY{o}{+}\PY{n}{Θk}\PY{o}{*}\PY{p}{(}\PY{n}{log}\PY{p}{(}\PY{n}{k}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n}{log}\PY{p}{(}\PY{n}{kss}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+             \PY{k}{return} \PY{n}{Θ}
+         \PY{k}{end}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}33}]:} Θ (generic function with 1 method)
+\end{Verbatim}
+            
+    Now Shimer tells me that to find the parameters above, we need to plug
+the functional guesses and then take derivatives of the two nonlinears
+equations above, with respect to \((s,n,k)\). Then, setting these
+derivatives equal \(0\), we have 6 unknowns:
+\((c_s,c_k,c_n,\theta_s,\theta_k,\theta_n)\) and also 6 equations. I
+don't understand why this method should work. I get similar coefficients
+as shimer except for \((\theta_s,c_s)\). I need to figure out what is
+wrong with my code.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}34}]:} \PY{k}{using} \PY{n}{ForwardDiff}
+         \PY{c}{\PYZsh{}SHimer\PYZsq{}s method to find a Log\PYZhy{}Linear approximation. Let T(k,n,s)=0 be the equilibrium equations}
+         \PY{c}{\PYZsh{}Then, plugging:}
+         \PY{c}{\PYZsh{} ln(θ)\PYZhy{}ln(θss) = θs(s\PYZhy{}bars)+θk(ln(k)\PYZhy{}ln(kss))+θn(ln(n)\PYZhy{}ln(nss))}
+         \PY{c}{\PYZsh{} ln(c)\PYZhy{}ln(css) = cs(s\PYZhy{}bars)+ck(ln(k)\PYZhy{}ln(kss))+cn(ln(n)\PYZhy{}ln(nss))}
+         \PY{c}{\PYZsh{}Into T and setting its derivatives to zero, we should get a system of equations that}
+         \PY{c}{\PYZsh{}determines the coefficients.}
+         \PY{c}{\PYZsh{}vector is a vector with [s,n,k,sbar,nss,kss,Css,Θss,Cn,Cs,Ck,Θn,Θs,Θk]}
+         
+         \PY{k}{function} \PY{n}{shimerT1}\PY{p}{(}\PY{n}{vector}\PY{o}{::}\PY{k+kt}{Vector}\PY{p}{)}
+             \PY{n}{s}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{n}{k}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Css}\PY{p}{,}\PY{n}{Θss}\PY{p}{,}\PY{n}{Cn}\PY{p}{,}\PY{n}{Cs}\PY{p}{,}\PY{n}{Ck}\PY{p}{,}\PY{n}{Θn}\PY{p}{,}\PY{n}{Θs}\PY{p}{,}\PY{n}{Θk} \PY{o}{=} \PY{n}{vector}
+             \PY{n}{c}\PY{o}{=}\PY{n}{C}\PY{p}{(}\PY{n}{s}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{n}{k}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Css}\PY{p}{,}\PY{n}{Cn}\PY{p}{,}\PY{n}{Cs}\PY{p}{,}\PY{n}{Ck}\PY{p}{)}
+             \PY{n}{θ}\PY{o}{=}\PY{n}{Θ}\PY{p}{(}\PY{n}{s}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{n}{k}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Θss}\PY{p}{,}\PY{n}{Θn}\PY{p}{,}\PY{n}{Θs}\PY{p}{,}\PY{n}{Θk}\PY{p}{)}
+             \PY{n}{s1} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{ρ}\PY{p}{)}\PY{o}{*}\PY{n}{sbar} \PY{o}{+}\PY{n}{ρ}\PY{o}{*}\PY{n}{s}
+             \PY{n}{k1} \PY{o}{=} \PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{sbar}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{α}\PY{p}{)}\PY{p}{)} \PY{o}{*} \PY{p}{(}\PY{n}{exp}\PY{p}{(}\PY{n}{sbar}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{n}{k}\PY{p}{)}\PY{o}{\PYZca{}}\PY{n}{α} \PY{o}{*} \PY{p}{(}\PY{n}{n}\PY{o}{\PYZhy{}}\PY{n}{θ}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{n}\PY{p}{)}\PY{p}{)}\PY{o}{\PYZca{}}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{α}\PY{p}{)} \PY{o}{+} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{δ}\PY{p}{)}\PY{o}{*}\PY{n}{k} \PY{o}{\PYZhy{}} \PY{n}{c}\PY{p}{)}
+             \PY{n}{n1} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{)}\PY{o}{*}\PY{n}{n}\PY{o}{+}\PY{n}{f}\PY{p}{(}\PY{n}{θ}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{n}\PY{p}{)}
+             \PY{n}{c1}\PY{o}{=}\PY{n}{C}\PY{p}{(}\PY{n}{s1}\PY{p}{,}\PY{n}{n1}\PY{p}{,}\PY{n}{k1}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Css}\PY{p}{,}\PY{n}{Cn}\PY{p}{,}\PY{n}{Cs}\PY{p}{,}\PY{n}{Ck}\PY{p}{)}
+             \PY{n}{θ1} \PY{o}{=} \PY{n}{Θ}\PY{p}{(}\PY{n}{s1}\PY{p}{,}\PY{n}{n1}\PY{p}{,}\PY{n}{k1}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Θss}\PY{p}{,}\PY{n}{Θn}\PY{p}{,}\PY{n}{Θs}\PY{p}{,}\PY{n}{Θk}\PY{p}{)}
+         
+             \PY{n}{eq} \PY{o}{=} \PY{n}{β}\PY{o}{*} \PY{n}{c}\PY{o}{/}\PY{n}{c1} \PY{o}{*}\PY{p}{(}\PY{n}{α} \PY{o}{*} \PY{n}{exp}\PY{p}{(}\PY{n}{s1}\PY{p}{)} \PY{o}{*}\PY{p}{(}\PY{n}{k1}\PY{o}{/}\PY{p}{(}\PY{n}{n1}\PY{o}{\PYZhy{}}\PY{n}{θ1}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{n1}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{o}{\PYZca{}}\PY{p}{(}\PY{n}{α}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{+}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{δ}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{exp}\PY{p}{(}\PY{n}{sbar}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{α}\PY{p}{)}\PY{p}{)}
+         
+             \PY{k}{return} \PY{n}{eq}
+         \PY{k}{end}
+         
+         
+         \PY{k}{function} \PY{n}{shimerT2}\PY{p}{(}\PY{n}{vector}\PY{o}{::}\PY{k+kt}{Vector}\PY{p}{)}
+             \PY{n}{s}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{n}{k}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Css}\PY{p}{,}\PY{n}{Θss}\PY{p}{,}\PY{n}{Cn}\PY{p}{,}\PY{n}{Cs}\PY{p}{,}\PY{n}{Ck}\PY{p}{,}\PY{n}{Θn}\PY{p}{,}\PY{n}{Θs}\PY{p}{,}\PY{n}{Θk} \PY{o}{=} \PY{n}{vector}
+             \PY{n}{c}\PY{o}{=}\PY{n}{C}\PY{p}{(}\PY{n}{s}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{n}{k}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Css}\PY{p}{,}\PY{n}{Cn}\PY{p}{,}\PY{n}{Cs}\PY{p}{,}\PY{n}{Ck}\PY{p}{)}
+             \PY{n}{θ}\PY{o}{=}\PY{n}{Θ}\PY{p}{(}\PY{n}{s}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{n}{k}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Θss}\PY{p}{,}\PY{n}{Θn}\PY{p}{,}\PY{n}{Θs}\PY{p}{,}\PY{n}{Θk}\PY{p}{)}
+             \PY{n}{s1} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{ρ}\PY{p}{)}\PY{o}{*}\PY{n}{sbar} \PY{o}{+}\PY{n}{ρ}\PY{o}{*}\PY{n}{s}
+             \PY{n}{k1} \PY{o}{=} \PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{sbar}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{α}\PY{p}{)}\PY{p}{)} \PY{o}{*} \PY{p}{(}\PY{n}{exp}\PY{p}{(}\PY{n}{sbar}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{n}{k}\PY{p}{)}\PY{o}{\PYZca{}}\PY{n}{α} \PY{o}{*} \PY{p}{(}\PY{n}{n}\PY{o}{\PYZhy{}}\PY{n}{θ}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{n}\PY{p}{)}\PY{p}{)}\PY{o}{\PYZca{}}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{α}\PY{p}{)} \PY{o}{+} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{δ}\PY{p}{)}\PY{o}{*}\PY{n}{k} \PY{o}{\PYZhy{}} \PY{n}{c}\PY{p}{)}
+             \PY{n}{n1} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{)}\PY{o}{*}\PY{n}{n}\PY{o}{+}\PY{n}{f}\PY{p}{(}\PY{n}{θ}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{n}\PY{p}{)}
+             \PY{n}{c1}\PY{o}{=}\PY{n}{C}\PY{p}{(}\PY{n}{s1}\PY{p}{,}\PY{n}{n1}\PY{p}{,}\PY{n}{k1}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Css}\PY{p}{,}\PY{n}{Cn}\PY{p}{,}\PY{n}{Cs}\PY{p}{,}\PY{n}{Ck}\PY{p}{)}
+             \PY{n}{θ1} \PY{o}{=} \PY{n}{Θ}\PY{p}{(}\PY{n}{s1}\PY{p}{,}\PY{n}{n1}\PY{p}{,}\PY{n}{k1}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Θss}\PY{p}{,}\PY{n}{Θn}\PY{p}{,}\PY{n}{Θs}\PY{p}{,}\PY{n}{Θk}\PY{p}{)}
+         
+         
+             \PY{n}{eq} \PY{o}{=} \PY{o}{\PYZhy{}}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{α}\PY{p}{)}\PY{o}{*}\PY{n}{exp}\PY{p}{(}\PY{n}{s}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{n}{k}\PY{o}{/}\PY{p}{(}\PY{n}{n}\PY{o}{\PYZhy{}}\PY{n}{θ}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{n}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{o}{\PYZca{}}\PY{n}{α} \PY{o}{+} \PY{n}{β}\PY{o}{*} \PY{n}{μ}\PY{p}{(}\PY{n}{θ}\PY{p}{)} \PY{o}{*} \PY{p}{(}\PY{n}{c}\PY{o}{/}\PY{n}{c1}\PY{p}{)} \PY{o}{*}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n+nb}{φ}\PY{p}{)}\PY{o}{*}\PY{n+nb}{γ}\PY{o}{*}\PY{n}{c1}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{τ}\PY{p}{)} \PY{o}{+} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{α}\PY{p}{)} \PY{o}{*}\PY{n}{exp}\PY{p}{(}\PY{n}{s1}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{n}{k1}\PY{o}{/}\PY{p}{(}\PY{n}{n1}\PY{o}{\PYZhy{}}\PY{n}{θ1}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{n1}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{o}{\PYZca{}}\PY{n}{α} \PY{o}{*}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{)}\PY{o}{/}\PY{n}{μ}\PY{p}{(}\PY{n}{θ1}\PY{p}{)}\PY{o}{+}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n+nb}{φ}\PY{o}{\PYZhy{}}\PY{n+nb}{φ}\PY{o}{*}\PY{n}{θ1}\PY{p}{)}\PY{p}{)}
+         
+             \PY{k}{return} \PY{n}{eq}
+         \PY{k}{end}
+         
+         \PY{c}{\PYZsh{}coefs is a vector of unknown coefficients}
+         \PY{k}{function} \PY{n}{loglin!}\PY{p}{(}\PY{n}{T}\PY{p}{,}\PY{n}{coefs}\PY{o}{::}\PY{k+kt}{Vector}\PY{p}{)}
+             \PY{n}{Cn}\PY{p}{,}\PY{n}{Cs}\PY{p}{,}\PY{n}{Ck}\PY{p}{,}\PY{n}{Θn}\PY{p}{,}\PY{n}{Θs}\PY{p}{,}\PY{n}{Θk} \PY{o}{=} \PY{n}{coefs}
+         
+             \PY{n}{T}\PY{p}{[}\PY{l+m+mi}{1}\PY{o}{:}\PY{l+m+mi}{3}\PY{p}{]}\PY{o}{=}\PY{n}{ForwardDiff}\PY{o}{.}\PY{n}{gradient}\PY{p}{(}\PY{n}{shimerT1}\PY{p}{,}\PY{p}{[}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Css}\PY{p}{,}\PY{n}{Θss}\PY{p}{,}\PY{n}{Cn}\PY{p}{,}\PY{n}{Cs}\PY{p}{,}\PY{n}{Ck}\PY{p}{,}\PY{n}{Θn}\PY{p}{,}\PY{n}{Θs}\PY{p}{,}\PY{n}{Θk}\PY{p}{]}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{1}\PY{o}{:}\PY{l+m+mi}{3}\PY{p}{]}
+             \PY{n}{T}\PY{p}{[}\PY{l+m+mi}{4}\PY{o}{:}\PY{l+m+mi}{6}\PY{p}{]}\PY{o}{=}\PY{n}{ForwardDiff}\PY{o}{.}\PY{n}{gradient}\PY{p}{(}\PY{n}{shimerT2}\PY{p}{,}\PY{p}{[}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Css}\PY{p}{,}\PY{n}{Θss}\PY{p}{,}\PY{n}{Cn}\PY{p}{,}\PY{n}{Cs}\PY{p}{,}\PY{n}{Ck}\PY{p}{,}\PY{n}{Θn}\PY{p}{,}\PY{n}{Θs}\PY{p}{,}\PY{n}{Θk}\PY{p}{]}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{1}\PY{o}{:}\PY{l+m+mi}{3}\PY{p}{]}
+         \PY{k}{end}
+         
+             \PY{n}{coefs} \PY{o}{=} \PY{n}{nlsolve}\PY{p}{(}\PY{n}{loglin!}\PY{p}{,} \PY{p}{[}\PY{l+m+mf}{0.929703}\PY{p}{,} \PY{l+m+mf}{0.014}\PY{p}{,} \PY{l+m+mf}{0.776461}\PY{p}{,} \PY{l+m+mf}{0.754842}\PY{p}{,} \PY{l+m+mf}{7.38}\PY{p}{,} \PY{l+m+mf}{0.962334}\PY{p}{]}\PY{p}{,}\PY{n}{ftol} \PY{o}{=} \PY{o}{:}\PY{l+m+mf}{1.0e\PYZhy{}9}\PY{p}{,} \PY{n}{method} \PY{o}{=} \PY{o}{:}\PY{n}{trust\PYZus{}region} \PY{p}{,} \PY{n}{autoscale} \PY{o}{=} \PY{k+kc}{true}\PY{p}{)}
+             
+         \PY{n}{Cn}\PY{p}{,}\PY{n}{Cs}\PY{p}{,}\PY{n}{Ck}\PY{p}{,}\PY{n}{Θn}\PY{p}{,}\PY{n}{Θs}\PY{p}{,}\PY{n}{Θk} \PY{o}{=} \PY{n}{coefs}\PY{o}{.}\PY{n}{zero}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}34}]:} 6-element Array\{Float64,1\}:
+           0.013640347116060922
+          -0.21532606069765203 
+           0.6032792810084978  
+          -0.45853628590613943 
+          12.019240520251278   
+          -2.766481799283393   
+\end{Verbatim}
+            
+    I'll plug Shimer's values for these coefficients since I can't find
+them:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}35}]:} \PY{c}{\PYZsh{}Since I got these coefficients wrong, I will brutforce the correct values:}
+         
+             \PY{n}{Θs}\PY{o}{=}\PY{l+m+mf}{7.387}
+             \PY{n}{Cs}\PY{o}{=}\PY{l+m+mf}{0.250}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}35}]:} 0.25
+\end{Verbatim}
+            
+    To find the log linearized equations for \(n_{t+1}\) and \(k_{t+1}\), I
+follow Judd's method. If we know a solution \(f(x_{ss},y_{ss})=0\) then:
+\(lnx-lnx_ss=-\frac{y_ss f_y(x_ss,y_ss)}{x_ss f_x(x_ss,y_ss)}(lny-lny_ss)\)
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}36}]:} \PY{k}{function} \PY{n}{findK}\PY{p}{(}\PY{n}{vector}\PY{o}{::}\PY{k+kt}{Vector}\PY{p}{)}
+                 \PY{n}{k1}\PY{p}{,}\PY{n}{s}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{n}{k}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Css}\PY{p}{,}\PY{n}{Θss}\PY{p}{,}\PY{n}{Cn}\PY{p}{,}\PY{n}{Cs}\PY{p}{,}\PY{n}{Ck}\PY{p}{,}\PY{n}{Θn}\PY{p}{,}\PY{n}{Θs}\PY{p}{,}\PY{n}{Θk} \PY{o}{=} \PY{n}{vector}
+                 \PY{n}{c}\PY{o}{=}\PY{n}{C}\PY{p}{(}\PY{n}{s}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{n}{k}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Css}\PY{p}{,}\PY{n}{Cn}\PY{p}{,}\PY{n}{Cs}\PY{p}{,}\PY{n}{Ck}\PY{p}{)}
+                 \PY{n}{θ}\PY{o}{=}\PY{n}{Θ}\PY{p}{(}\PY{n}{s}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{n}{k}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Θss}\PY{p}{,}\PY{n}{Θn}\PY{p}{,}\PY{n}{Θs}\PY{p}{,}\PY{n}{Θk}\PY{p}{)}
+                 \PY{n}{s1} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{ρ}\PY{p}{)}\PY{o}{*}\PY{n}{sbar} \PY{o}{+}\PY{n}{ρ}\PY{o}{*}\PY{n}{s}
+                 \PY{n}{eq} \PY{o}{=} \PY{n}{k1} \PY{o}{\PYZhy{}} \PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{sbar}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{α}\PY{p}{)}\PY{p}{)} \PY{o}{*} \PY{p}{(}\PY{n}{exp}\PY{p}{(}\PY{n}{sbar}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{n}{k}\PY{p}{)}\PY{o}{\PYZca{}}\PY{n}{α} \PY{o}{*} \PY{p}{(}\PY{n}{n}\PY{o}{\PYZhy{}}\PY{n}{θ}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{n}\PY{p}{)}\PY{p}{)}\PY{o}{\PYZca{}}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{α}\PY{p}{)} \PY{o}{+} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{δ}\PY{p}{)}\PY{o}{*}\PY{n}{k} \PY{o}{\PYZhy{}} \PY{n}{c}\PY{p}{)}
+                 \PY{k}{return} \PY{n}{eq}
+             \PY{k}{end}
+         
+             \PY{n}{T}\PY{o}{=}\PY{n}{ForwardDiff}\PY{o}{.}\PY{n}{gradient}\PY{p}{(}\PY{n}{findK}\PY{p}{,}\PY{p}{[}\PY{n}{kss}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Css}\PY{p}{,}\PY{n}{Θss}\PY{p}{,}\PY{n}{Cn}\PY{p}{,}\PY{n}{Cs}\PY{p}{,}\PY{n}{Ck}\PY{p}{,}\PY{n}{Θn}\PY{p}{,}\PY{n}{Θs}\PY{p}{,}\PY{n}{Θk}\PY{p}{]}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{1}\PY{o}{:}\PY{l+m+mi}{4}\PY{p}{]}
+         
+         \PY{n}{kn}\PY{p}{,} \PY{n}{kk}\PY{p}{,}\PY{n}{ks}\PY{o}{=} \PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{nss}\PY{o}{*}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{o}{/}\PY{p}{(}\PY{n}{kss}\PY{o}{*}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{n}{kss}\PY{o}{*}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{]}\PY{o}{/}\PY{p}{(}\PY{n}{kss}\PY{o}{*}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{n}{log}\PY{p}{(}\PY{n}{sbar}\PY{p}{)}\PY{o}{*}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{o}{/}\PY{p}{(}\PY{n}{kss}\PY{o}{*}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{]}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}36}]:} 3-element Array\{Float64,1\}:
+          0.018642403534302705
+          0.9912544506558437  
+          0.03970553513160285 
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}37}]:} \PY{k}{function} \PY{n}{findn}\PY{p}{(}\PY{n}{vector}\PY{o}{::}\PY{k+kt}{Vector}\PY{p}{)}
+             \PY{n}{n1}\PY{p}{,}\PY{n}{s}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{n}{k}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Css}\PY{p}{,}\PY{n}{Θss}\PY{p}{,}\PY{n}{Cn}\PY{p}{,}\PY{n}{Cs}\PY{p}{,}\PY{n}{Ck}\PY{p}{,}\PY{n}{Θn}\PY{p}{,}\PY{n}{Θs}\PY{p}{,}\PY{n}{Θk} \PY{o}{=} \PY{n}{vector}
+             \PY{n}{c}\PY{o}{=}\PY{n}{C}\PY{p}{(}\PY{n}{s}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{n}{k}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Css}\PY{p}{,}\PY{n}{Cn}\PY{p}{,}\PY{n}{Cs}\PY{p}{,}\PY{n}{Ck}\PY{p}{)}
+             \PY{n}{θ}\PY{o}{=}\PY{n}{Θ}\PY{p}{(}\PY{n}{s}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{n}{k}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Θss}\PY{p}{,}\PY{n}{Θn}\PY{p}{,}\PY{n}{Θs}\PY{p}{,}\PY{n}{Θk}\PY{p}{)}
+             \PY{n}{s1} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{ρ}\PY{p}{)}\PY{o}{*}\PY{n}{sbar} \PY{o}{+}\PY{n}{ρ}\PY{o}{*}\PY{n}{s}
+             \PY{n}{eq} \PY{o}{=} \PY{n}{n1} \PY{o}{\PYZhy{}}\PY{p}{(} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{)}\PY{o}{*}\PY{n}{n}\PY{o}{+}\PY{n}{f}\PY{p}{(}\PY{n}{θ}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{n}\PY{p}{)}\PY{p}{)}
+             \PY{k}{return} \PY{n}{eq}
+         \PY{k}{end}
+         
+         \PY{n}{T}\PY{o}{=}\PY{n}{ForwardDiff}\PY{o}{.}\PY{n}{gradient}\PY{p}{(}\PY{n}{findn}\PY{p}{,}\PY{p}{[}\PY{n}{nss}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{sbar}\PY{p}{,}\PY{n}{nss}\PY{p}{,}\PY{n}{kss}\PY{p}{,}\PY{n}{Css}\PY{p}{,}\PY{n}{Θss}\PY{p}{,}\PY{n}{Cn}\PY{p}{,}\PY{n}{Cs}\PY{p}{,}\PY{n}{Ck}\PY{p}{,}\PY{n}{Θn}\PY{p}{,}\PY{n}{Θs}\PY{p}{,}\PY{n}{Θk}\PY{p}{]}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{1}\PY{o}{:}\PY{l+m+mi}{4}\PY{p}{]}
+         
+         
+         \PY{n}{nn}\PY{p}{,}\PY{n}{nk}\PY{p}{,}\PY{n}{ns}\PY{o}{=} \PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{nss}\PY{o}{*}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{o}{/}\PY{p}{(}\PY{n}{nss}\PY{o}{*}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{n}{kss}\PY{o}{*}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{]}\PY{o}{/}\PY{p}{(}\PY{n}{nss}\PY{o}{*}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{n}{log}\PY{p}{(}\PY{n}{sbar}\PY{p}{)}\PY{o}{*}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{o}{/}\PY{p}{(}\PY{n}{nss}\PY{o}{*}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{]}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}37}]:} 3-element Array\{Float64,1\}:
+           0.30987914287112583
+          -0.04723910042086331
+          -0.8483248667408199 
+\end{Verbatim}
+            
+    Once again, the coefficients are fairly close except for the
+coefficients multplying \(s\). I am missing something here. Perhaps some
+transformation in \(s\) would fix this. \#let's override these
+parameters:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}38}]:} \PY{n}{ns} \PY{o}{=} \PY{l+m+mf}{0.126}
+         \PY{n}{ks}\PY{o}{=}\PY{l+m+mf}{0.02}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}38}]:} 0.02
+\end{Verbatim}
+            
+    Let
+\(A=\begin{bmatrix}  \rho & 0 & 0 \\  ns & nn & nk \\  ks & kn & kk \end{bmatrix}\)
+, \(D= \begin{bmatrix}  \zeta \\  0 \\  0 \end{bmatrix}\) and
+\(m= \begin{bmatrix}  s\\  log(n)-log(n_{ss})\\  log(k)-log(k_{ss})  \end{bmatrix}\).
+Then, \(m_{t+1} = Am_t +Dv_{t+1}\)
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}58}]:} \PY{k}{using} \PY{n}{LinearAlgebra}
+         \PY{n}{D}\PY{o}{=} \PY{p}{[}\PY{n}{ζ}\PY{p}{;} \PY{l+m+mi}{0}\PY{p}{;} \PY{l+m+mi}{0}\PY{p}{]}
+         \PY{n}{A}\PY{o}{=}\PY{p}{[}\PY{n}{ρ} \PY{l+m+mi}{0} \PY{l+m+mi}{0}\PY{p}{;}
+         \PY{n}{ns} \PY{n}{nn} \PY{n}{nk}\PY{p}{;}
+         \PY{n}{ks} \PY{n}{kn} \PY{n}{kk}\PY{p}{]}
+         
+         \PY{n}{eigvals}\PY{p}{(}\PY{n}{A}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}58}]:} 3-element Array\{Float64,1\}:
+          0.9899595296586317
+          0.3111740638683378
+          0.98              
+\end{Verbatim}
+            
+    Note that the system is stable. If I had used only the values that I
+found for the coefficients multiplying \(s\), A would have the very same
+Eigenvalues!
+
+    The unconditional variance and covariance of the state variables is
+given by: \(\Sigma = A\Sigma A' +DD'\)
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}134}]:} \PY{n}{Σ} \PY{o}{=} \PY{n}{ones}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+          \PY{n}{d}\PY{o}{=}\PY{l+m+mi}{10}
+          \PY{k}{while} \PY{n}{d}\PY{o}{\PYZgt{}}\PY{l+m+mi}{10}\PY{o}{\PYZca{}}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{15}\PY{p}{)}
+              \PY{k+kd}{global} \PY{n}{sigma}\PY{p}{,} \PY{n}{d}
+              \PY{n}{Σ1} \PY{o}{=} \PY{n}{A}\PY{o}{*}\PY{n}{Σ}\PY{o}{*}\PY{n}{A}\PY{o}{\PYZsq{}} \PY{o}{+} \PY{n}{D}\PY{o}{*}\PY{n}{D}\PY{o}{\PYZsq{}}
+              \PY{n}{d} \PY{o}{=} \PY{n}{maximum}\PY{p}{(}\PY{n}{abs}\PY{o}{.}\PY{p}{(}\PY{n}{Σ}\PY{o}{\PYZhy{}}\PY{n}{Σ1}\PY{p}{)}\PY{p}{)}
+              \PY{n}{Σ}\PY{o}{=}\PY{n}{Σ1}
+          \PY{k}{end}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}136}]:} \PY{n}{Σ}\PY{o}{*}\PY{n}{ζ}\PY{o}{\PYZca{}}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}136}]:} 3×3 Array\{Float64,2\}:
+           25.2525   3.19069   19.364   
+            3.19069  0.561207   0.499067
+           19.364    0.499067  45.8756  
+\end{Verbatim}
+            
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}
