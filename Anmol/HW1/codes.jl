@@ -256,6 +256,7 @@ end
     devcy[t] = cys*devs[t]+cyn*devn[t]+cyk*devk[t]
     devΘ[t] =   Θs*devs[t]+Θn*devn[t]+Θk*devk[t]
 end
+<<<<<<< HEAD
 
 
 plot(
@@ -263,9 +264,72 @@ plot(
     plot(devY.+devs,legend = false,ylabel="Output y"),
     plot(devC.+devs,legend = false,ylabel="Consumption c"),
     plot(devk.+devs,legend = false,ylabel="Capital k"),
+=======
+
+plot(
+    plot(devs,legend = false,ylabel="Productivity Growth s"),
+    plot(devY,legend = false,ylabel="Output y"),
+    plot((devC),legend = false,ylabel="Consumption c"),
+    plot(devk,legend = false,ylabel="Capital k"),
+>>>>>>> Anmol-HW1-IRFs
     plot(devn,legend = false,ylabel="Employment n"),
     plot(devΘ,legend = false,ylabel="Recruiting/Employment"),
     plot(devτ,legend = false,ylabel="Labor Wedge"),
     plot(devwny,legend = false,ylabel="Labor Share"),
     plot(devcy,legend = false,ylabel="C/Y"),
 )
+<<<<<<< HEAD
+=======
+
+
+#Working with Data
+
+using CSV
+using Dierckx #Interpolation package, I did not understand the package Interpolations
+using Dates
+#Loading Data
+Kdata = CSV.read("RKNANPUSA666NRUG.csv")
+Ndata = CSV.read("labor.csv")
+Ydata = CSV.read("GDPC1.csv")
+
+#Renaming Columns
+rename!(Kdata,  [:RKNANPUSA666NRUG => :CapitalStock])
+rename!(Ndata,  [Symbol("hours/population") => :Labor])
+rename!(Ydata,  [:GDPC1 => :GDP])
+
+#Same starting and ending year
+Ndata = Ndata[Kdata[:DATE][1].<=Ndata[:DATE].<=Kdata[:DATE][end],:]
+Ydata = Ydata[Kdata[:DATE][1].<=Ydata[:DATE].<=Kdata[:DATE][end],:]
+
+#DATA will be a DataFrame containing all variables we buiild it from Ndata since it is monthly
+DATA = copy(Ndata)
+#We will use logs only
+DATA[:Labor] = log.(DATA[:Labor])
+DATA[:GDP] = log.(Ydata[:GDP]./DATA[:Population])
+
+#Now, we need to interpolate Kdata from anual to quarterly
+
+interpK = Spline1D(Dates.value.(Kdata[:DATE]), Kdata[:CapitalStock])
+#Interpolate and get the logs (percapita):
+DATA[:CapitalStock] = log.(interpK(Dates.value.(Ndata[:DATE]))./DATA[:Population])
+
+#Now, we have our dataset. We need to use the HP filter to remove trends
+using QuantEcon
+
+DATA[:Labor_dev],DATA[:Labor_trend] = hp_filter(DATA[:Labor],1600)
+DATA[:GDP_dev],DATA[:GDP_trend] = hp_filter(DATA[:GDP],1600)
+DATA[:CapitalStock_dev],DATA[:CapitalStock_trend] = hp_filter(DATA[:CapitalStock],1600)
+
+#To get the log deviations of the TFP shock and trend:
+
+DATA[:TFPdev] = (DATA[:GDP_dev] - yn*DATA[:Labor_dev]-yk*DATA[:CapitalStock_dev])./ys
+DATA[:TFPtrend] = (DATA[:GDP_trend] - yn*DATA[:Labor_trend]-yk*DATA[:CapitalStock_trend])./ys
+DATA[:TFP] = DATA[:TFPtrend]+DATA[:TFPdev]
+
+#Plots!
+plot(
+    plot([DATA[:TFP],DATA[:TFPtrend]],legend = :bottomright, label = ["TFP","TREND"]),
+    plot([DATA[:TFPdev]],legend = :bottomright, label = ["TFP log deviations"])
+
+)
+>>>>>>> Anmol-HW1-IRFs
