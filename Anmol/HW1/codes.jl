@@ -67,10 +67,10 @@ end
 # ln(c)-ln(css) = cs(s-bars)+ck(ln(k)-ln(kss))+cn(ln(n)-ln(nss))
 #Into T and setting its derivatives to zero, we should get a system of equations that
 #determines the coefficients.
-#vector is a vector with [s,n,k,sbar,nss,kss,Css,Θss,Cn,Cs,Ck,Θn,Θs,Θk]
+#vector is a vector with [s,n,k,Cn,Cs,Ck,Θn,Θs,Θk]
 
 function shimerT1(vector::Vector)
-    s,n,k,sbar,nss,kss,Css,Θss,Cn,Cs,Ck,Θn,Θs,Θk = vector
+    s,n,k,Cn,Cs,Ck,Θn,Θs,Θk = vector
     c=C(s,n,k,sbar,nss,kss,Css,Cn,Cs,Ck)
     θ=Θ(s,n,k,sbar,nss,kss,Θss,Θn,Θs,Θk)
     s1 = Sdeterministic(s,ρ,sbar)
@@ -86,7 +86,7 @@ end
 
 
 function shimerT2(vector::Vector)
-    s,n,k,sbar,nss,kss,Css,Θss,Cn,Cs,Ck,Θn,Θs,Θk = vector
+    s,n,k,Cn,Cs,Ck,Θn,Θs,Θk = vector
     c=C(s,n,k,sbar,nss,kss,Css,Cn,Cs,Ck)
     θ=Θ(s,n,k,sbar,nss,kss,Θss,Θn,Θs,Θk)
     s1 = Sdeterministic(s,ρ,sbar)
@@ -105,75 +105,96 @@ end
 function loglin!(T,coefs::Vector)
     Cn,Cs,Ck,Θn,Θs,Θk = coefs
 
-    T[1:3]=ForwardDiff.gradient(shimerT1,[sbar,nss,kss,sbar,nss,kss,Css,Θss,Cn,Cs,Ck,Θn,Θs,Θk])[1:3]
-    T[4:6]=ForwardDiff.gradient(shimerT2,[sbar,nss,kss,sbar,nss,kss,Css,Θss,Cn,Cs,Ck,Θn,Θs,Θk])[1:3]
+    T[1:3]=ForwardDiff.gradient(shimerT1,[sbar,nss,kss,Cn,Cs,Ck,Θn,Θs,Θk])[1:3]
+    T[4:6]=ForwardDiff.gradient(shimerT2,[sbar,nss,kss,Cn,Cs,Ck,Θn,Θs,Θk])[1:3]
 end
 
 coefs = nlsolve(loglin!, [0.929703, 0.014, 0.776461, 0.754842, 7.38, 0.962334],ftol = :1.0e-9, method = :trust_region , autoscale = true)
 
 Cn,Cs,Ck,Θn,Θs,Θk = coefs.zero
-
+C(s,n,k) = C(s,n,k,sbar,nss,kss,Css,Cn,Cs,Ck)
+Θ(s,n,k) = Θ(s,n,k,sbar,nss,kss,Θss,Θn,Θs,Θk)
 
     function findK(vector::Vector)
-        k1,s,n,k,sbar,nss,kss,Css,Θss,Cn,Cs,Ck,Θn,Θs,Θk = vector
-        c=C(s,n,k,sbar,nss,kss,Css,Cn,Cs,Ck)
-        θ=Θ(s,n,k,sbar,nss,kss,Θss,Θn,Θs,Θk)
+        k1,s,n,k = vector
+        c=C(s,n,k)
+        θ=Θ(s,n,k)
         s1 = (1-ρ)*sbar +ρ*s
         eq = k1 - exp(-s1/(1-α)) * ((k)^α * (n-θ*(1-n))^(1-α) + (1-δ)*k - c)
         return eq
     end
 
-T=ForwardDiff.gradient(findK,[kss,sbar,nss,kss,sbar,nss,kss,Css,Θss,Cn,Cs,Ck,Θn,Θs,Θk])[1:4]
-
+T=ForwardDiff.gradient(findK,[kss,sbar,nss,kss])
 kn, kk,ks= [-nss*T[3]/(kss*T[1]), -kss*T[4]/(kss*T[1]),-exp(sbar)*T[2]/(kss*T[1])]
 
+k1(s,n,k) = exp(log(kss)+ks*(s-sbar)+ kn*(log(n)-log(nss))+kk*(log(k)-log(kss)))
 
 function findn(vector::Vector)
-    n1,s,n,k,sbar,nss,kss,Css,Θss,Cn,Cs,Ck,Θn,Θs,Θk = vector
-    θ=Θ(s,n,k,sbar,nss,kss,Θss,Θn,Θs,Θk)
-
+    n1,s,n,k = vector
+    θ=Θ(s,n,k)
     eq = n1 -( (1-x)*n+f(θ)*(1-n))
     return eq
 end
 
-T=ForwardDiff.gradient(findn,[nss,sbar,nss,kss,sbar,nss,kss,Css,Θss,Cn,Cs,Ck,Θn,Θs,Θk])[1:4]
+T=ForwardDiff.gradient(findn,[nss,sbar,nss,kss])
 nn,nk,ns= [-nss*T[3]/(nss*T[1]),-kss*T[4]/(nss*T[1]),-exp(sbar)*T[2]/(nss*T[1])]
+n1(s,n,k) = exp(log(nss)+ks*(s-sbar)+ nn*(log(n)-log(nss))+nk*(log(k)-log(kss)))
+#the other variables for the correlation Matrix
+function Y(vector::Vector)
+    y,s,n,k = vector
+    θ=Θ(s,n,k)
+    eq = -y + k^α *exp(s)*(n-θ*(1-n))^(1-α)
+    return eq
+end
 
+yss = Y([0,sbar,nss,kss])
+T=ForwardDiff.gradient(Y,[yss,sbar,nss,kss])
+yn,yk,ys= [-nss*T[3]/(yss*T[1]),-kss*T[4]/(yss*T[1]),-(sbar)*T[2]/(yss*T[1])]
+y(s,n,k)=exp(log(yss)+ys*(s-sbar)+ yn*(log(n)-log(nss))+yk*(log(k)-log(kss)))
 
-D= [ζ; 0; 0]
+function CY(vector::Vector)
+    cy, s,n,k = vector
+    eq = -cy + C(s,n,k)/y(s,n,k)
+    return eq
+end
+cyss = CY([0,sbar,nss,kss])
+T=ForwardDiff.gradient(CY,[cyss,sbar,nss,kss])
+cyn,cyk,cys= [-nss*T[3]/(cyss*T[1]),-kss*T[4]/(cyss*T[1]),-exp(sbar)*T[2]/(cyss*T[1])]
+CY(s,n,k)=exp(log(cyss)+cys*(s-sbar)+ cyn*(log(n)-log(nss))+cyk*(log(k)-log(kss)))
+
+function Nwedge(vector::Vector)
+    τ, s,n,k=vector
+    cy = CY(s,n,k)
+     eq = 1- (γ/(1-α)) * (cy) * n -τ
+    return eq
+end
+
+τss = Nwedge([0,sbar,nss,kss])
+T=ForwardDiff.gradient(Nwedge,[τss,sbar,nss,kss])
+τn,τk,τs= [-nss*T[3]/(τss*T[1]),-kss*T[4]/(τss*T[1]),-exp(sbar)*T[2]/(τss*T[1])]
+Nwedge(s,n,k)=exp(log(τss)+τs*(s-sbar)+ τn*(log(n)-log(nss))+τk*(log(k)-log(kss)))
+
+function WNy(vector::Vector)
+    wny, s,n,k=vector
+    c=C(s,n,k)
+    θ=Θ(s,n,k)
+    w = (1/(1-τ)) * ((1-φ)*γ * c + φ*(1-τ)*(1-α)*(k/(n-θ*(1-n)))^α *(1+θ))
+
+    eq = -wny + w*(n/y(s,n,k))
+
+    return eq
+end
+
+wnyss = WNy([0,sbar,nss,kss])
+T=ForwardDiff.gradient(WNy,[wnyss,sbar,nss,kss])
+wnyn,wnyk,wnys= [-nss*T[3]/(wnyss*T[1]),-kss*T[4]/(wnyss*T[1]),-exp(sbar)*T[2]/(wnyss*T[1])]
+wny(s,n,k)=exp(log(wnyss)+wnys*(s-sbar)+ wnyn*(log(n)-log(nss))+wnyk*(log(k)-log(kss)))
 A=[ρ 0 0;
 ns nn nk;
-ks kn kk]
-
-eigvals(A)
+ks kn kk ]
 
 
-
-#Defining K and N
-function K1(s,n,k,sbar,nss,kss,ks,kn,kk)
-    level=exp(log(kss)+ks*(s-sbar)+kn*(log(n)-log(nss)) + kk*(log(k)-log(kss)))
-    return level
-end
-function N1(s,n,k,sbar,nss,kss,ns,nn,nk)
-    level=exp(log(nss)+ks*(s-sbar)+nn*(log(n)-log(nss)) + nk*(log(k)-log(kss)))
-    return level
-end
-
-A=[ρ 0 0;
-ns nn nk;
-ks kn kk]
-
-U = [ Θs Θn Θk; Cs Cn Ck]
-
-
-if maximum(eigvals(A)) >= 1
-    error("Eigenvalue > 1")
-end
-D= [ζ; 0; 0]
-m(s,n,k)=[s-sbar,log(n)-log(nss),log(k)-log(kss)]
-mtilde(s,n,k)=[s-sbar,log(n)-log(nss),log(k)-log(kss),log(Θ(s,n,k,sbar,nss,kss,Θss,Θn,Θs,Θk))-log(Θss),
-log(C(s,n,k,sbar,nss,kss,Css,Cn,Cs,Ck))-log(Css)]
-Atilde = hcat(vcat(A,U),zeros(5,2))
+D= [ζ;0; 0]
 
 Σ = ones(3,3)
 d=10
@@ -184,18 +205,39 @@ while d>10^(-15)
     Σ=Σ1
 end
 
-#covar = Atilde*Σ*Atilde'
+Atilde=[ ys yn yk;
+Cs Cn Ck;
+Θs Θn Θk ;
+ks kn kk ;
+ns nn nk ;
+wnys wnyn wnyk;
+cys cyn cyk;
+τs τn τk;
+ρ 0 0]
 
-chur=schur(A)
+Covar = Atilde*Σ*Atilde'
+relative_std=zeros(size(Covar)[1])
+corr = UpperTriangular(zeros(size(Covar)))
+for i=1:size(Covar)[1]
+    global corr, relative_std
+    for j = i:size(Covar)[1]
+    corr[i,j] = Covar[i,j]/(sqrt(Covar[i,i])*sqrt(Covar[j,j]))
+    end
+    relative_std[i] = sqrt(Covar[i,i])/sqrt(Covar[1,1])
+end
 
-T = chur.T
-Z=chur.Z
+table=vcat(relative_std',corr)
+
+m=[ζ/(1-ρ^2)^(1/2),0,0,0,0,0,0,0,0]
+
+M=ones(9,120).*m
+
+A1=copy(Atilde)
 
 
 
-E=zeros(3,120)
-M=ones(3,120).*m(sbar+ζ/(1-ρ^2)^(1/2),nss,kss)
-E[:,1]=inv(Z)*M[:,1]
 
+for t=2:120
 
-plot(M[1,:].*100)
+    M[:,t]=A*M[:,t-1]
+end
