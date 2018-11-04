@@ -4,6 +4,7 @@ using NLsolve
 using ForwardDiff
 using LinearAlgebra
 using Plots
+using DataFrames
 
 #Parameters
 β = 0.996              #Discount Rate
@@ -228,16 +229,43 @@ end
 
 table=vcat(relative_std',corr)
 
-m=[ζ/(1-ρ^2)^(1/2),0,0,0,0,0,0,0,0]
-
-M=ones(9,120).*m
-
-A1=copy(Atilde)
+m(s,n,k)=[s-sbar,log(n)-log(nss),log(k)-log(kss)]
 
 
-
-
-for t=2:120
-
-    M[:,t]=A*M[:,t-1]
+E=zeros(3,120)
+M=ones(3,120).*m(sbar+ζ/(1-ρ^2)^(1/2),nss,kss)
+devs=zeros(120).+ζ/(1-ρ^2)^(1/2)
+devk=zeros(120)
+devn=zeros(120)
+devC=zeros(120)
+devY=zeros(120)
+devτ=zeros(120)
+devwny=zeros(120)
+devcy=zeros(120)
+devΘ=zeros(120)
+for t=1:120
+if t>1
+    devs[t] = ρ*devs[t-1]
+    devk[t] = ks*devs[t-1]+kn*devn[t-1]+kk*devk[t-1]
+    devn[t] = ns*devs[t-1]+nn*devn[t-1]+nk*devk[t-1]
 end
+    devC[t] = Cs*devs[t]+Cn*devn[t]+Ck*devk[t]
+    devY[t] = ys*devs[t]+yn*devn[t]+yk*devk[t]
+    devτ[t] = τs*devs[t]+τn*devn[t]+τk*devk[t]
+    devwny[t] = wnys*devs[t]+wnyn*devn[t]+wnyk*devk[t]
+    devcy[t] = cys*devs[t]+cyn*devn[t]+cyk*devk[t]
+    devΘ[t] =   Θs*devs[t]+Θn*devn[t]+Θk*devk[t]
+end
+
+
+plot(
+    plot(devs,legend = false,ylabel="Productivity Growth s"),
+    plot(devY.+devs,legend = false,ylabel="Output y"),
+    plot(devC.+devs,legend = false,ylabel="Consumption c"),
+    plot(devk.+devs,legend = false,ylabel="Capital k"),
+    plot(devn,legend = false,ylabel="Employment n"),
+    plot(devΘ,legend = false,ylabel="Recruiting/Employment"),
+    plot(devτ,legend = false,ylabel="Labor Wedge"),
+    plot(devwny,legend = false,ylabel="Labor Share"),
+    plot(devcy,legend = false,ylabel="C/Y"),
+)
