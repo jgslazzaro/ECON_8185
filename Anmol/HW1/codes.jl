@@ -256,30 +256,18 @@ end
     devcy[t] = cys*devs[t]+cyn*devn[t]+cyk*devk[t]
     devΘ[t] =   Θs*devs[t]+Θn*devn[t]+Θk*devk[t]
 end
-<<<<<<< HEAD
-
-
-plot(
-    plot(devs,legend = false,ylabel="Productivity Growth s"),
-    plot(devY.+devs,legend = false,ylabel="Output y"),
-    plot(devC.+devs,legend = false,ylabel="Consumption c"),
-    plot(devk.+devs,legend = false,ylabel="Capital k"),
-=======
 
 plot(
     plot(devs,legend = false,ylabel="Productivity Growth s"),
     plot(devY,legend = false,ylabel="Output y"),
     plot((devC),legend = false,ylabel="Consumption c"),
     plot(devk,legend = false,ylabel="Capital k"),
->>>>>>> Anmol-HW1-IRFs
     plot(devn,legend = false,ylabel="Employment n"),
     plot(devΘ,legend = false,ylabel="Recruiting/Employment"),
     plot(devτ,legend = false,ylabel="Labor Wedge"),
     plot(devwny,legend = false,ylabel="Labor Share"),
     plot(devcy,legend = false,ylabel="C/Y"),
 )
-<<<<<<< HEAD
-=======
 
 
 #Working with Data
@@ -332,4 +320,3 @@ plot(
     plot([DATA[:TFPdev]],legend = :bottomright, label = ["TFP log deviations"])
 
 )
->>>>>>> Anmol-HW1-IRFs
