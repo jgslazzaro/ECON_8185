@@ -256,22 +256,12 @@ end
     devcy[t] = cys*devs[t]+cyn*devn[t]+cyk*devk[t]
     devΘ[t] =   Θs*devs[t]+Θn*devn[t]+Θk*devk[t]
 end
-<<<<<<< HEAD
-
-
-plot(
-    plot(devs,legend = false,ylabel="Productivity Growth s"),
-    plot(devY.+devs,legend = false,ylabel="Output y"),
-    plot(devC.+devs,legend = false,ylabel="Consumption c"),
-    plot(devk.+devs,legend = false,ylabel="Capital k"),
-=======
 
 plot(
     plot(devs,legend = false,ylabel="Productivity Growth s"),
     plot(devY,legend = false,ylabel="Output y"),
     plot((devC),legend = false,ylabel="Consumption c"),
     plot(devk,legend = false,ylabel="Capital k"),
->>>>>>> Anmol-HW1-IRFs
     plot(devn,legend = false,ylabel="Employment n"),
     plot(devΘ,legend = false,ylabel="Recruiting/Employment"),
     plot(devτ,legend = false,ylabel="Labor Wedge"),
@@ -300,6 +290,8 @@ rename!(Ydata,  [:GDPC1 => :GDP])
 Ndata = Ndata[Kdata[:DATE][1].<=Ndata[:DATE].<=Kdata[:DATE][end],:]
 Ydata = Ydata[Kdata[:DATE][1].<=Ydata[:DATE].<=Kdata[:DATE][end],:]
 
+meanN=mean((DATA[:Labor]))
+logmeanN = log(meanN)
 #DATA will be a DataFrame containing all variables we buiild it from Ndata since it is monthly
 DATA = copy(Ndata)
 #We will use logs only
@@ -313,28 +305,24 @@ interpK = Spline1D(Dates.value.(Kdata[:DATE]), Kdata[:CapitalStock])
 DATA[:CapitalStock] = log.(interpK(Dates.value.(Ndata[:DATE]))./DATA[:Population])
 
 #Now, we have our dataset. We need to use the HP filter to remove trends
+#in capital and GDP
 using QuantEcon
 
-DATA[:Labor_dev],DATA[:Labor_trend] = hp_filter(DATA[:Labor],1600)
 DATA[:GDP_dev],DATA[:GDP_trend] = hp_filter(DATA[:GDP],1600)
 DATA[:CapitalStock_dev],DATA[:CapitalStock_trend] = hp_filter(DATA[:CapitalStock],1600)
 
-#To get the log deviations of the TFP shock and trend:
+#In our model, and in Data, labor has no trend so we assume its Steady State value is its mean.
+DATA[:Labor_trend] = ones(257).* logmeanN
+DATA[:Labor_dev] = DATA[:Labor] - DATA[:Labor_trend]
 
-DATA[:TFPdev] = (DATA[:GDP_dev] - yn*DATA[:Labor_dev]-yk*DATA[:CapitalStock_dev])./ys
-DATA[:TFPtrend] = (DATA[:GDP_trend] - yn*DATA[:Labor_trend]-yk*DATA[:CapitalStock_trend])./ys
-DATA[:TFP] = DATA[:TFPtrend]+DATA[:TFPdev]
+#If HP filter is desired, uncomment below:
+#DATA[:Labor_dev],DATA[:Labor_trend] = hp_filter(DATA[:Labor],1600)
 
-#Plots!
+
 plot(
-    plot([DATA[:TFP],DATA[:TFPtrend]],legend = :bottomright, label = ["TFP","TREND"]),
-    plot([DATA[:TFPdev]],legend = :bottomright, label = ["TFP log deviations"])
+    plot([DATA[:GDP],DATA[:GDP_trend]],legend = :bottomright, label = ["GDP","TREND"]),
+    plot([DATA[:GDP_dev]], label = ["GDP Deviations"],legend = :bottomright),
+    plot([DATA[:CapitalStock],DATA[:CapitalStock_trend]],legend = :bottomright, label = ["Capital","TREND"]),
+    plot([DATA[:CapitalStock_dev]],legend = :bottomright, label = ["Capital Deviations"])
 
-)
-
-
-using GLM
-ols = glm(@formula(GDP_dev ~ Labor_dev + CapitalStock_dev),
-        DATA, Normal(), IdentityLink())
-
-residuals(ols)
+    )
