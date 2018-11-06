@@ -270,7 +270,6 @@ plot(
 )
 
 
-
 #Working with Data
 
 using CSV
@@ -290,12 +289,16 @@ rename!(Ydata,  [:GDPC1 => :GDP])
 Ndata = Ndata[Kdata[:DATE][1].<=Ndata[:DATE].<=Kdata[:DATE][end],:]
 Ydata = Ydata[Kdata[:DATE][1].<=Ydata[:DATE].<=Kdata[:DATE][end],:]
 
-meanN=mean((DATA[:Labor]))
-logmeanN = log(meanN)
+
 #DATA will be a DataFrame containing all variables we buiild it from Ndata since it is monthly
 DATA = copy(Ndata)
+
+#Some useful labor means
+meanN = log(mean(DATA[:Labor]))
+
 #We will use logs only
 DATA[:Labor] = log.(DATA[:Labor])
+meanN = (mean(DATA[:Labor]))
 DATA[:GDP] = log.(Ydata[:GDP]./DATA[:Population])
 
 #Now, we need to interpolate Kdata from anual to quarterly
@@ -326,3 +329,34 @@ plot(
     plot([DATA[:CapitalStock_dev]],legend = :bottomright, label = ["Capital Deviations"])
 
     )
+
+plot(      plot([DATA[:Labor],DATA[:Labor_trend]],legend = :bottomright, label = ["Labor","TREND"]),
+        plot([DATA[:Labor_dev]],legend = :bottomright, label = ["Labor Deviations"])
+    )
+
+    #To get the log deviations of the TFP shock and trend:
+
+DATA[:TFPdev] = (DATA[:GDP_dev] - yn*DATA[:Labor_dev]-yk*DATA[:CapitalStock_dev])./ys
+DATA[:TFPtrend] = (DATA[:GDP_trend] - yn*DATA[:Labor_trend]-yk*DATA[:CapitalStock_trend])./ys
+DATA[:TFP] = DATA[:TFPtrend]+DATA[:TFPdev]
+
+    #Plots!
+plot(
+        plot([DATA[:TFP],DATA[:TFPtrend]],legend = :bottomright, label = ["TFP","TREND"]),
+        plot([DATA[:TFPdev]], label = ["TFP Deviations"])
+    )
+
+
+    #Solow Residual
+
+    using GLM
+ols = glm(@formula(GDP_dev ~ Labor_dev + CapitalStock_dev),
+        DATA, Normal(), IdentityLink())
+
+β0,β1,β2 = coef(ols)
+
+
+solow =  DATA[:GDP_dev] - β1*DATA[:Labor_dev]-β2*DATA[:CapitalStock_dev].-β0
+
+
+plot([ys.*(DATA[:TFPdev]),solow],label = ["TFP","Solow Residual"])
