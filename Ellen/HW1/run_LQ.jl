@@ -5,6 +5,7 @@
 #We need to find matrices Q,R, W such that
 #U(X,u)≈X′QX+u′Ru+2u′WX=[X u]′M[X u]
 #Where X is a vector of states variables and u of cotrol variables
+cd("C:\\Users\\jgsla\\Google Drive\\ECON_8185\\Ellen\\HW2")
 include("Riccati.jl")
 using Plots
 using ForwardDiff
@@ -12,13 +13,13 @@ using NLsolve
 
 
 #Parameters:
-δ = 1    #depreciation rate
+δ = 0.1    #depreciation rate
 θ = 1/3  #capital share of output
 β = 0.9  #Discouting
 ρ = 0.5  #AR coefficient
 σ = 0.5  #AR shock SD
 μ = 0    #AR(1) constant term
-ϕ = 0    #Labor parameter
+ϕ = 2    #Labor parameter
 γn= 0    #Population growth rate
 γz= 0    #Productivitu growth rate
 

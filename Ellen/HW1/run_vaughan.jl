@@ -5,7 +5,7 @@
 #We need to find matrices Q,R, W such that
 #U(X,u)≈X′QX+u′Ru+2u′WX=[X u]′M[X u]
 #Where X is a vector of states variables and u of cotrol variables
-
+cd("C:\\Users\\jgsla\\Google Drive\\ECON_8185\\Ellen\\HW2")
 include("Vaughan.jl")
 
 

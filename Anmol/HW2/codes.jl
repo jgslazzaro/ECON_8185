@@ -1,4 +1,4 @@
-using Plots, NLsolve, ForwardDiff, DataFrames
+using Plots, NLsolve, ForwardDiff, DataFrames, LinearAlgebra
 cd("C:\\Users\\jgsla\\Google Drive\\ECON_8185\\Anmol\\HW2")
 
 #Parameters:
@@ -13,6 +13,16 @@ gss = 0.03 #average g
 τxss = 0.01 #average τx
 τhss = 0.02 #average τh
 zss = 1 #average z
+
+#Parameters to be estimated
+ρg = 0.0
+ρx = 0.0
+ρh = 0.0
+ρz = 0.0
+σg= 0.00
+σx = 0.00
+σz = 0.00
+σh = 0.00
 
 #Function with the FOCs
 function SS!(eq, vector::Vector)
@@ -29,10 +39,9 @@ function SS!(eq, vector::Vector)
     return eq
 end
 
-SS!(eq,[1.0,3])
 SteadyState = nlsolve(SS!, [0.05,0.97],ftol = :1.0e-20, method = :trust_region , autoscale = true)
 kss,hss = SteadyState.zero
-SS!([1,1.1],[kss,hss])
+
 
 function loglineq1(vector::Vector)
     k,k1,h,z,τh,g= (vector)
@@ -53,28 +62,51 @@ end
 
 #log deviations
 T=ForwardDiff.gradient(loglineq1,[kss,kss,hss,zss,τhss,gss])
-A =[-kss*T[1]/(kss*T[1]),-kss*T[2]/(kss*T[1]),-hss*T[3]/(kss*T[1]),
+a =[-kss*T[1]/(kss*T[1]),-kss*T[2]/(kss*T[1]),-hss*T[3]/(kss*T[1]),
 -zss*T[4]/(kss*T[1]),-τhss*T[5]/(kss*T[1]),-gss*T[6]/(kss*T[1])]
 
 T=ForwardDiff.gradient(loglineq2,[kss,kss,kss,hss,hss,zss,τxss,gss,zss,τxss,gss])
-B = [kss*T[1]/(-kss*T[1]),kss*T[2]/(-kss*T[1]),kss*T[3]/(-kss*T[1]),hss*T[4]/(-kss*T[1]),
+b = [kss*T[1]/(-kss*T[1]),kss*T[2]/(-kss*T[1]),kss*T[3]/(-kss*T[1]),hss*T[4]/(-kss*T[1]),
 hss*T[5]/(-kss*T[1]),zss*T[6]/(-kss*T[1]),τxss*T[7]/(-kss*T[1]),gss*T[8]/(-kss*T[1]),
 zss*T[9]/(-kss*T[1]),τxss*T[10]/(-kss*T[1]),gss*T[11]/(-kss*T[1])]
 
-A1 = [1 0 0; 0 0 0; 0 B[3] B[5]]
-A2 = [0 -1 0; A[1] A[2] A[3]; B[1] B[2] B[4]]
+A1 = [1 0 0; 0 0 0; 0 b[3] b[5]]
+A2 = [0 -1 0; a[1] a[2] a[3]; a[1] a[2] a[4]]
 U = [0 0 0 0 0 0 0 0;
-A[4] A[5] 0 A[6] 0 0 0 0;
-B[6] 0 B[7] B[8] B[9] 0 B[10] B[11]]
+a[4] a[5] 0 a[6] 0 0 0 0;
+b[6] 0 b[7] b[8] b[9] 0 b[10] b[11]]
 
-chur = eigen(A1,-A2,[false,true,false])
-V=chur.vectors
-Π = Diagonal(chur.values)
+eig = eigen(A1,-A2)
+V=eig.vectors
+#Sorting
+V[:,1], V[:,2] =V[:,2], V[:,1]
+Π = Diagonal([eig.values[2], eig.values[1], eig.values[3]])
 
-V11=V[:,2]
-Π11=Π[2,2]
-V21 =ones(3,2)
-V21[:,1]=V[:,1]
-V21[:,2] = V[:,3]
+#If want to check if these matrics conform (they are equal but there is some roundoff error):
+A1*V
+-A2*V*Π
 
-A = V11'*Π11 *V11
+#CHECK this, inv in the last V or not?
+A = V[1,1]*Π[1,1]*inv(V[1,1])
+C = V[2:end,1]*(V[1,1])
+
+P = [ρg 0 0 0;
+0 ρx 0 0 ;
+0 0 ρh 0 ;
+0 0 0 ρz]
+D = [σg 0 0 0;
+0 σx 0 0 ;
+0 0 σh 0 ;
+0 0 0 σz]
+
+function system!(eq,vector::Vector)
+    #vector = rand(8)
+    #eq= rand(8)
+    B=vector[1:4]'
+    D2 = vector[5:8]'
+
+    eq[1:4] = a[2].*B.+a[3].+a[3].*D2.+[a[4] a[5] 0 a[6]]
+    eq[5:8] = b[2].*B.+b[3].*A.*B+b[3].*B*P.+b[4].*D2.+b[5].*C[2].+b[5].*B*P.+[b[6] 0 b[7] b[8]].+[b[9] 0 b[10] b[1]]*P
+ return     eq
+end
+D = nlsolve(system!, [1.0,1,1,1,1,1,1,1],ftol = :1.0e-20, method = :trust_region , autoscale = true)
