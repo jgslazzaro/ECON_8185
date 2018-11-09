@@ -19,10 +19,10 @@ zss = 1 #average z
 ρg = 0.0
 ρx = 0.0
 ρh = 0.0
-ρz = 0.12
+ρz = 0.92
 σg= 0.0
 σx = 0.0
-σz = 1.0
+σz = 0.91
 σh = 0.0
 
 #Function with the FOCs
@@ -115,14 +115,14 @@ A1*V
 A = V[1,1]*Π[1,1]*inv(V[1,1])
 C = V[2:end,1]*(V[1,1])
 
-P = [ρg 0 0 0;
-0 ρx 0 0 ;
-0 0 ρh 0 ;
-0 0 0 ρz]
-Q = [σg 0 0 0;
-0 σx 0 0 ;
-0 0 σh 0 ;
-0 0 0 σz]
+P = [ρz 0 0 0;
+0 ρh 0 0 ;
+0 0 ρx 0 ;
+0 0 0 ρg]
+Q = [σz 0 0 0;
+0 σh 0 0 ;
+0 0 σx 0 ;
+0 0 0 σg]
 
 
 function system!(eq,vector::Vector)
@@ -146,7 +146,7 @@ D[2,:]= Sol.zero[5:8]
 
 T=100
 S= ones(4,T).* [0,0,0,zss]
-Z=ones(2,T).*[kss,hss]
+Z=ones(2,T).*[kss,log(hss)]
 
 
 for t=2:T
