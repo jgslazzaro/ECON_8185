@@ -1,4 +1,4 @@
-using Plots, NLsolve, ForwardDiff, DataFrames, LinearAlgebra
+using Plots, NLsolve, ForwardDiff, DataFrames, LinearAlgebra, QuantEcon
 cd("C:\\Users\\jgsla\\Google Drive\\ECON_8185\\Anmol\\HW2")
 
 #Parameters:
@@ -6,26 +6,39 @@ cd("C:\\Users\\jgsla\\Google Drive\\ECON_8185\\Anmol\\HW2")
 θ = 1/3  #capital share of output
 β = 0.9  #Discouting
 σ = 2  #Elasticity of Intertemporal Substitution
-ψ = 0    #Labor parameter
+ψ = 1    #Labor parameter
 γn= 0.00    #Population growth rate
 γz= 0.00   #Productivitu growth rate
 gss = 0.0 #average g
 τxss = 0.0 #average τx
 τhss = 0.0 #average τh
-zss = 1 #average z
+zss = 0.0 #average z (z is in logs)
 
 
 #Parameters to be estimated
 ρg = 0.0
 ρx = 0.0
 ρh = 0.0
-ρz = 0.92
+ρz = 0.8
+
 σg= 0.0
 σx = 0.0
-σz = 0.91
+σz = 0.08
 σh = 0.0
 
+#In matrix form
+P = [ρz 0 0 0;
+0 ρh 0 0 ;
+0 0 ρx 0 ;
+0 0 0 ρg]
+Q = [σz 0 0 0;
+0 σh 0 0 ;
+0 0 σx 0 ;
+0 0 0 σg]
+
 #Function with the FOCs
+zss = exp(zss)
+
 function SS!(eq, vector::Vector)
     k,h = (vector)
     k1 = k
@@ -47,6 +60,9 @@ kss = (θ*β)^(1/θ)
 
 SteadyState = nlsolve(SS!, [0.2,0.8],ftol = :1.0e-20, method = :trust_region , autoscale = true)
 kss,hss = SteadyState.zero
+#GDP
+yss = kss^(θ)*(zss*hss)^(1-θ)
+xss = (1+γz)*(1+γn)*kss-(1-δ)*kss
 
 
 function loglineq1(vector::Vector)
@@ -114,15 +130,9 @@ A1*V
 #CHECK this, inv in the last V or not?
 A = V[1,1]*Π[1,1]*inv(V[1,1])
 C = V[2:end,1]*(V[1,1])
+C = hcat(C,zeros(2,1))
 
-P = [ρz 0 0 0;
-0 ρh 0 0 ;
-0 0 ρx 0 ;
-0 0 0 ρg]
-Q = [σz 0 0 0;
-0 σh 0 0 ;
-0 0 σx 0 ;
-0 0 0 σg]
+
 
 
 function system!(eq,vector::Vector)
@@ -144,16 +154,114 @@ D[1,:]= Sol.zero[1:4]
 D[2,:]= Sol.zero[5:8]
 
 
+
+#Rewritting to match Anmol's notation
+A = hcat(vcat(C[1],zeros(4,1)),vcat(D[1,:]',P))
+B = hcat(zeros(5,1),vcat(zeros(1,4),Q))
+
+
+#We have h as function of states. To find the Matrix B, we need to find y and x
+#as a function of states
+
+function kt1(vector::Vector)
+    k,z,τh,τx,g = vector
+    tilde = log.([k,z,τh,τx,g]).-log.([kss,zss,τhss,τxss,gss])
+    for i = 1:length(tilde)
+        if isnan(tilde[i])
+            tilde[i] = 0
+        end
+    end
+
+    k1= A[1,:]' * tilde
+    return k1
+end
+
+
+function ht(vector::Vector)
+    k,z,τh,τx,g = vector
+    tilde = log.([k,z,τh,τx,g]).-log.([kss,zss,τhss,τxss,gss])
+    for i = 1:length(tilde)
+        if isnan(tilde[i])
+            tilde[i] = 0
+        end
+    end
+    h = C[2,1]*(log(k)-log(kss)) + D[2,:]' * tilde[2:end]
+    return h
+end
+
+
+
+ht([kss,zss,τhss,τxss,gss])
+
+
+function yt(vector::Vector)
+    k,z,τh,τx,g = vector
+    h = exp(ht(vector)+log(hss))
+    y = k^θ * (z*h)^(1-θ)
+    return y
+end
+
+T=ForwardDiff.gradient(yt,[kss,zss,τhss,τxss,gss])
+ycoefs = [kss*T[1]/yss,zss*T[2]/yss,τhss*T[3]/yss,τxss*T[4]/yss,gss*T[5]/yss]
+
+yt([kss,zss,τhss,τxss,gss])
+
+function xt(vector::Vector)
+    k,z,τh,τx,g = vector
+    k1 = exp(kt1(vector)+log(kss))
+    x= (1+γn)*(1+γz)k1 - (1-δ)k
+
+    return x
+end
+
+T=ForwardDiff.gradient(xt,[kss,zss,τhss,τxss,gss])
+xcoefs = [kss*T[1]/xss,zss*T[2]/xss,τhss*T[3]/xss,τxss*T[4]/xss,gss*T[5]/xss]
+
+C = [ycoefs[1] ycoefs[2] ycoefs[3] ycoefs[4] ycoefs[5];
+xcoefs[1] xcoefs[2] xcoefs[3] xcoefs[4] xcoefs[5];
+C[2,1] D[2,1] D[2,2] D[2,3] D[2,4]]
+
+
+#defining the vectors
 T=100
-S= ones(4,T).* [0,0,0,zss]
-Z=ones(2,T).*[kss,log(hss)]
+X= ones(5,T).* [0,0,0,0,0]
+Y = ones(3,T).*[0,0,0]
+
+
+for t=1:T
+
+    if t>1
+    X[:,t] = A*X[:,t-1]+ B*randn(5,1)
+    end
+    Y[:,t] = C*X[:,t]
+end
+t=2
+A*X[:,t-1]
+plot([X[1,:],X[2,:],Y[2,:],Y[1,:],Y[3,:]],labels = ["K","Z","X","Y","L"])
+
+
+
+
+
+# Data
+
+
+#Kalman Filtering:
+
+
+
+
+#=
+
+T=100
+S= ones(4,T).* [0,0,0,0]
+Z=ones(2,T).*[kss,hss]
 
 
 for t=2:T
     S[:,t] = P*S[:,t-1]+Q*randn(4,1)
-    Z[:,t] = C*Z[1,t] + D*S[:,t]
+    Z[:,t] = C*Z[:,t] + D*S[:,t]
 end
 
 plot([Z[1,:],Z[2,:]],labels = ["K","L"])
-
-#plot([S[1,:],S[4,:]],labels = ["K","L"])
+=#
