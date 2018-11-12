@@ -200,7 +200,8 @@ function State_Space(params_calibrated, P,Q)
 
     C = [ycoefs[1] ycoefs[2] ycoefs[3] ycoefs[4] ycoefs[5];
     xcoefs[1] xcoefs[2] xcoefs[3] xcoefs[4] xcoefs[5];
-    C[2,1] D[2,1] D[2,2] D[2,3] D[2,4]]
+    C[2,1] D[2,1] D[2,2] D[2,3] D[2,4];
+    0 0 0 0 1]
 
 return A,B,C
 end
