@@ -1,6 +1,6 @@
 
 #This function writes the system as a Sta Space represention
-function State_Space(params_calibrated, P,Q)
+function State_Space(params_calibrated,steadystates, P,Q)
 
     #= δ  depreciation rate
     θ   #capital share of output
@@ -14,8 +14,8 @@ function State_Space(params_calibrated, P,Q)
     τhss  #average τh
     zss  #average z (z is in logs) =#
 
-    δ,θ,β,σ,ψ,γn,γz,gss,τxss,τhss,zss = params_calibrated
-
+    δ,θ,β,σ,ψ,γn,γz = params_calibrated
+    gss,τxss,τhss,zss = steadystates
 
     #Function with the FOCs
     zss = exp(zss)
