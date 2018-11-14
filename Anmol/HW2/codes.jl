@@ -2,11 +2,11 @@ using Plots, NLsolve, ForwardDiff, DataFrames, LinearAlgebra, QuantEcon
 cd("C:\\Users\\jgsla\\Google Drive\\ECON_8185\\Anmol\\HW2")
 
 #Parameters:
-δ = 1   #depreciation rate
+δ = 0.0464   #depreciation rate
 θ = 1/3  #capital share of output
-β = 0.9  #Discouting
-σ = 2  #Elasticity of Intertemporal Substitution
-ψ = 1    #Labor parameter
+β = 0.9722  #Discouting
+σ = 1  #Elasticity of Intertemporal Substitution
+ψ = 0   #Labor parameter
 γn= 0.00    #Population growth rate
 γz= 0.00   #Productivitu growth rate
 gss = 0.0 #average g
@@ -39,27 +39,15 @@ Q = [σz 0 0 0;
 #Function with the FOCs
 zss = exp(zss)
 
-function SS!(eq, vector::Vector)
-    k,h = (vector)
-    k1 = k
-    h1 = h
-    g, τx,τh, z = gss,τxss,τhss, zss
-    z1 = z
-    τx1 = τx
-
-    c = k * ((z *h)^(1-θ))^(1/θ) - ((1+γz)*(1+γn)*k1-(1-δ)*k+ g )^(1/θ)
-    c1 = c
-    eq[1] = (ψ *c)^(1/θ)  - (k/h)*((1-h)*(1-τh)*(1-θ)*z^(1-θ))^(1/θ)
-
-    eq[2] = (c^(-σ) *(1-h)^(ψ*(1-σ))*(1+τx)  - (1-δ)*(1+τx1)* β*(1+γz)^(-σ) * c1^(-σ) * (1-h1)^(ψ*(1-σ)))^(-1/θ) -
-     (β*(1+γz)^(-σ) * c1^(-σ) * (1-h1)^(ψ*(1-σ)) * θ*(z1*h1)^(1-θ))^(-1/θ)* k1
-    return eq
+function SS!(eq,vector::Vector)
+    k,h, c= vector
+    eq[1]=k/h-((1+τxss)*(1-β*(1+γz)^(-σ)*(1-δ))/(β*(1+γz)^(-σ)*θ*zss^(1-θ)) )^(1/(θ-1))
+    eq[2]=c-( (k/h)^(θ-1)*zss^(1-θ) -(1+γz)*(1+γn)+1-δ)*k+gss
+    eq[3]=ψ*c-( (1-τhss)*(1-θ)*(k/h)^θ *zss^(1-θ))*(1-h)
 end
 
-kss = (θ*β)^(1/θ)
-
-SteadyState = nlsolve(SS!, [0.2,0.8],ftol = :1.0e-20, method = :trust_region , autoscale = true)
-kss,hss = SteadyState.zero
+SteadyState = nlsolve(SS!, [3,0.25,.4],ftol = :1.0e-20)
+kss,hss,css = SteadyState.zero
 #GDP
 yss = kss^(θ)*(zss*hss)^(1-θ)
 xss = (1+γz)*(1+γn)*kss-(1-δ)*kss

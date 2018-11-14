@@ -20,27 +20,15 @@ function State_Space(params_calibrated,steadystates, P,Q)
     #Function with the FOCs
     zss = exp(zss)
 
-    function SS!(eq, vector::Vector)
-        k,h = (vector)
-        k1 = k
-        h1 = h
-        g, τx,τh, z = gss,τxss,τhss, zss
-        z1 = z
-        τx1 = τx
-
-        c = k * ((z *h)^(1-θ))^(1/θ) - ((1+γz)*(1+γn)*k1-(1-δ)*k+ g )^(1/θ)
-        c1 = c
-        eq[1] = (ψ *c)^(1/θ)  - (k/h)*((1-h)*(1-τh)*(1-θ)*z^(1-θ))^(1/θ)
-
-        eq[2] = (c^(-σ) *(1-h)^(ψ*(1-σ))*(1+τx)  - (1-δ)*(1+τx1)* β*(1+γz)^(-σ) * c1^(-σ) * (1-h1)^(ψ*(1-σ)))^(-1/θ) -
-         (β*(1+γz)^(-σ) * c1^(-σ) * (1-h1)^(ψ*(1-σ)) * θ*(z1*h1)^(1-θ))^(-1/θ)* k1
-        return eq
+    function SS!(eq,vector::Vector)
+        k,h, c= vector
+        eq[1]=k/h-((1+τxss)*(1-β*(1+γz)^(-σ)*(1-δ))/(β*(1+γz)^(-σ)*θ*zss^(1-θ)) )^(1/(θ-1))
+        eq[2]=c-( (k/h)^(θ-1)*zss^(1-θ) -(1+γz)*(1+γn)+1-δ)*k+gss
+        eq[3]=ψ*c-( (1-τhss)*(1-θ)*(k/h)^θ *zss^(1-θ))*(1-h)
     end
 
-    kss = (θ*β)^(1/θ)
-
-    SteadyState = nlsolve(SS!, [0.2,0.8],ftol = :1.0e-20, method = :trust_region , autoscale = true)
-    kss,hss = SteadyState.zero
+    SteadyState = nlsolve(SS!, [3,0.25,.4],ftol = :1.0e-20)
+    kss,hss,css = SteadyState.zero
     #GDP
     yss = kss^(θ)*(zss*hss)^(1-θ)
     xss = (1+γz)*(1+γn)*kss-(1-δ)*kss
@@ -105,8 +93,8 @@ function State_Space(params_calibrated,steadystates, P,Q)
     Π= Diagonal(Π)
     iszero(Π[1])
     #If want to check if these matrics conform (they are equal but there is some roundoff error):
-    A1*V
-    -A2*V*Π
+    #A1*V
+    #-A2*V*Π
 
     #CHECK this, inv in the last V or not?
     A = V[1,1]*Π[1,1]*inv(V[1,1])
