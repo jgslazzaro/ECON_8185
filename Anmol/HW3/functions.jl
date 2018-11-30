@@ -1,4 +1,4 @@
-using Distributions, Optim, ApproxFun
+using Distributions, Optim, ApproxFun, NLsolve
 function Tauchen(ρ,σ,Y,μ = 0,m = 3)
     #This function is to discretize an AR(1) process following Tauchen(1986) method
     # y_{t+1} = μ + ρy_t + ϵ
@@ -32,9 +32,8 @@ end
 
 
 function utility(c,l,η,μ)
-
     if (c<=0) || (η<1 && l==0)
-        u=-10^10
+        u=-Inf
     elseif μ==1
         u = log(c^η * l^(1-η))
     else
@@ -44,14 +43,15 @@ function utility(c,l,η,μ)
 end
 
 
-function VFI(A,E,r,w)
+function VFI(A,E,r,w,τy,T,β,η,μ)
 
     nA = length(A)
     nE = length(E)
     u = ones(nA,nE,nA)
     policy_l1=ones(nA,nE,nA)
-    #Solving the labor problem
 
+    #Solving the labor problem for each level of asset today and tommorow
+    #I tested and it is faster than including this in the main while loop
     c(l,a,e,a1) = (1-τy)*E[e]*w*(1-l)+T+(1+(1-τy)*r)*A[a]-A[a1]
     for a=1:nA,e=1:nE,a1=1:nA
             maxu(l) = -utility(c(l,a,e,a1),l,η,μ)
@@ -62,92 +62,150 @@ function VFI(A,E,r,w)
 
     #VFI
     #Initial value function guess:
-        V  = zeros(nA,nE)
+        V  = ones(nA,nE)
         #preallocation
         policy_a = Array{Int64,2}(undef,nA,nE)
         #loop stuff
         distance = 1
-        tol =10^(-10)
+        tol =10^(-7)
         #iterating on Value functions:
         while distance >= tol
-            #global distance, tol, V, policy_a
             Vf = copy(V) #save V to compare later
+
             #find the expected Vf: E[V(k,z')|z] = π(z1|z)*V(k,z1) +π(z2|z)*V(k,z2)
             EVf= (pdfE*Vf')'  #The transposing fix the dimensions so it works!
+            #maximization loop, for each state I find the a1 that maximizes the value function
+            #This is discretized, no interpolation. It could be faster and smarter,
+            #I'll get back to this
             for a in 1:nA, e in 1:nE
                 V[a,e] , policy_a[a,e] = findmax(u[a,e,:] .+ β * EVf[:,e]) #Bellman Equation
+            #The if below is necessary because in the worst states, consumption is negative,
+            #no matter what choice of assets. So, in these casesthe findmax function above would
+            #choose weird values, so I set the policy functions at the initial values at the grid
+                if u[a,e,policy_a[a,e]] == -Inf
+                    #policy_a[a,e] = 1
+                end
             end
          distance = maximum(abs.(V-Vf))
         end
         #Finally, find labor policy:
-
         policy_l = Array{Float64,2}(undef,nA,nE)
         for a in 1:nA, e in 1:nE
             policy_l[a,e] = policy_l1[a,e,policy_a[a,e]]
+            #it is the policy for labor we found before, with the addition of the
+            #policy function for assets
         end
 
         #and for consumption
             policy_c=ones(nA,nE)
         for a=1:nA,e=1:nE
-
             policy_c[a,e] = (1-τy)*E[e]*w*(1-policy_l[a,e])+T+(1+(1-τy)*r)*A[a]-A[policy_a[a,e]]
-
         end
 return policy_a, policy_c, policy_l
 end
 
 
-function ayiagary(A,E,r0,w0) #Given an initial interest rate and initial grids,
+
+function ayiagary(A,E,r0,w0,τy,T,β,η,μ,Z) #Given an initial interest rate and initial grids,
     #returns the distribution of states and policy functions, and equilibirum interest rate.
     r = r0
-    K = ((r+δ)/θ)^(1/(θ-1))
-    w =  (1-θ)*K^θ
+    w = w0
     nA = length(A)
     nE = length(E)
     dist_r = 1.0
-    dist_k = 1.0
-    λ = ones(nA,nE).*1/(nA*nE)
-    policy_a, policy_c, policy_l = VFI(A,E,r,w)
-    while maximum([dist_r,dist_k])>10^-8
-            #global dist_r, r, dist_k
+    dist_w = 1.0
+    k = 5.0
+    n = 1.0
+    policy_a, policy_c, policy_l = VFI(A,E,r,w,τy,T,β,η,μ)
 
-            dist = 10
-            iterations = 0
-
-            while dist>10^-10
-                    #global λ,dist,iterations
-                    λ1=zeros(nA,nE)
-                    for a1=1:nA,e1=1:nE
-                            for a=1:nA
-                                    for e =1:nE
-                                        if a1 .==policy_a[a,e]
-                                                λ1[a1,e1] +=  λ[a,e].*pdfE[e,e1]
-                                        end
-                                    end
-                            end
-                    end
-                    dist = maximum(abs.(λ1-λ))
-                    λ = λ1
-                    iterations +=1
-                    #println(iterations)
-            end
-            K = ((r+δ)/θ)^(1/(θ-1))
-            k= sum(λ .* A[policy_a])
-            if k>0
-                r1=1/2 * (r + (θ*k^(θ-1)-δ) )
-            else
-                r1 = 1/2 *r
-            end
-            dist_r = abs(r1-r)
-            dist_k = abs(K-k)
-
-            r=r1
-            w =  (1-θ)*K^θ
-            policy_a, policy_c, policy_l = VFI(A,E,r,w)
+    #creting a and and e grids
+    X=zeros(Int64,nA*nE,2)
+    i=0
+    for a=1:nA,e=1:nE
+            i=i+1
+            X[i,1]=a
+            X[i,2]=e
     end
 
-return  λ,r,w, policy_a, policy_c, policy_l
+    λ = ones(1,nA*nE).*1/(nA*nE) #initial guess for the distribution
+    #used since I find it iterating a MC until convergence
+    iterations = 0
+    while max(dist_r,dist_w)>10^-6
+            #global dist_r, r, dist_k
+            Q=zeros(nA*nE,nA*nE)
+            #Q is the MC that takes from state x to x'
+            #this MC is used to compute the stationary distribution.
+            #This method is equivalent to Young's when the grid for assets and for the distribution
+            # are the same. I'll get back to this.
+            for x=1:nA*nE, x1=1:nA*nE
+                a = X[x,1]
+                a1=X[x1,1]
+                e = X[x,2]
+                e1=X[x1,2]
+                if a1 == policy_a[a,e] #Indicator function
+                    Q[x,x1]=pdfE[e,e1]
+                end
+            end
+            λ = rand(1,nA*nE) #initial guess for the distribution
+            λ = λ./sum(λ)
+            dist = 10
+            #Iterate the MC until convergence
+            it =0
+            while dist>10^-8
+                        #global λ,dist,iterations
+                        λ1=λ*Q
+                        dist = maximum(abs.(λ1.-λ))
+                        λ = copy(λ1)
+                        it +=1
+                        if it >1000
+                            break
+                        end
+            end #=
+            ei = eigen(I-Q)
+            col = findall(ei.values.==1.0)
+            for i = 0:maximum(col)-1
+                if minimum(real(ei.vectors[:,maximum(col)-i]))>=0
+                    λ = real(ei.vectors[:,maximum(col)-i])
+                    i=maximum(col)-1
+                end
+            end =#
+            λ = λ./sum(λ)
+            #k given λ and the policy function
+            k, n, i= [0,0,0]
+            for a=1:nA
+                for e=1:nE
+                    i =i+1
+                    k = k + λ[i] * A[policy_a[a,e]]
+                    n = n + λ[i] * (1-policy_l[a,e])
+                end
+            end
+            #Bisection method
+
+                r1= 1/2 * r + 1/2 * min((Z*θ*k^(θ-1)*n^(1-θ)-δ),1/β-1)
+                w1 =1/2 * w + 1/2* (Z*(1-θ)*k^θ*n^(-θ))
+
+
+            #checking convergence
+            dist_r = abs(r1-r)
+            dist_w = abs(w1-w)
+            iterations += 1
+            if iterations>50
+                println("Reached maximum number of Iterations")
+                break
+            end
+            println("Iteration: $iterations, r is: $r1, w is: $w1")
+            r=copy(r1)
+            w =  copy(w1)
+            policy_a, policy_c, policy_l = VFI(A,E,r,w,τy,T,β,η,μ)
+    end
+    println("r converged to $r")
+    println("w converged to $w")
+return  λ,r,w, policy_a, policy_c, policy_l,k,n
 end
+
+
+
+
 function ayiagary_supply(A,E,r0,w0,R) #Given an initial interest rate and initial grids,
     #returns the distribution of states and policy functions, and equilibirum interest rate.
     r = r0
@@ -162,6 +220,27 @@ function ayiagary_supply(A,E,r0,w0,R) #Given an initial interest rate and initia
     #while maximum([dist_r,dist_k])>10^-8
     k=zeros(R)
     policy_a, policy_c, policy_l = VFI(A,E,0,w)
+
+    #creting a and and e grids
+    X=zeros(Int64,nA*nE,2)
+    i=0
+    for a=1:nA,e=1:nE
+            i=i+1
+            X[i,1]=a
+            X[i,2]=e
+    end
+    Q=zeros(nA*nE,nA*nE)
+    #Q is the MC that takes from state x to x'
+    for x=1:nA*nE, x1=1:nA*nE
+        a = X[x,1]
+        a1=X[x1,1]
+        e = X[x,2]
+        e1=X[x1,2]
+        if a1 == policy_a[a,e]
+            Q[x,x1]=pdfE[e,e1]
+        end
+    end
+
     i = 1
     for r = range(0.0,stop = 1.0,length = R)
             #global dist_r, r, dist_k
@@ -170,37 +249,17 @@ function ayiagary_supply(A,E,r0,w0,R) #Given an initial interest rate and initia
             iterations = 0
 
             while dist>10^-10
-                    #global λ,dist,iterations
-                    λ1=zeros(nA,nE)
-                    for a1=1:nA,e1=1:nE
-                            for a=1:nA
-                                    for e =1:nE
-                                        if a1 .==policy_a[a,e]
-                                                λ1[a1,e1] +=  λ[a,e].*pdfE[e,e1]
-                                        end
-                                    end
-                            end
-                    end
-                    dist = maximum(abs.(λ1-λ))
-                    λ = λ1
-                    iterations +=1
-                    #println(iterations)
+                        #global λ,dist,iterations
+                        λ1=λ*Q
+                        dist = maximum(abs.(λ1.-λ))
+                        λ = λ1
+                        iterations +=1
+                        #println(iterations)
             end
-            #K = ((r+δ)/θ)^(1/(θ-1))
             k[i]= sum(λ .* A[policy_a])
             i=i+1
-            #=if k>0
-                r1=1/2 * (r + (θ*k^(θ-1)-δ) )
-            else
-                r1 = 1/2 *r
-            end
-            dist_r = abs(r1-r)
-            dist_k = abs(K-k)
-
-            r=r1 =#
             w =  (1-θ)*K^θ
-            #policy_a, policy_c, policy_l = VFI(A,E,r,w)
-    end
+        end
 
 return  k
 end
