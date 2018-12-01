@@ -106,7 +106,7 @@ end
 
 
 
-function ayiagary(A,E,r0,w0,τy,T,β,η,μ,Z) #Given an initial interest rate and initial grids,
+function ayiagary(A,E,r0,w0,τy,T,β,η,μ,Z,G,fast = false) #Given an initial interest rate and initial grids,
     #returns the distribution of states and policy functions, and equilibirum interest rate.
     r = r0
     w = w0
@@ -115,9 +115,10 @@ function ayiagary(A,E,r0,w0,τy,T,β,η,μ,Z) #Given an initial interest rate an
     dist_r = 1.0
     dist_w = 1.0
     k = 5.0
+    K=0
     n = 1.0
     policy_a, policy_c, policy_l = VFI(A,E,r,w,τy,T,β,η,μ)
-
+    B =0.0
     #creting a and and e grids
     X=zeros(Int64,nA*nE,2)
     i=0
@@ -160,15 +161,8 @@ function ayiagary(A,E,r0,w0,τy,T,β,η,μ,Z) #Given an initial interest rate an
                         if it >1000
                             break
                         end
-            end #=
-            ei = eigen(I-Q)
-            col = findall(ei.values.==1.0)
-            for i = 0:maximum(col)-1
-                if minimum(real(ei.vectors[:,maximum(col)-i]))>=0
-                    λ = real(ei.vectors[:,maximum(col)-i])
-                    i=maximum(col)-1
-                end
-            end =#
+            end
+
             λ = λ./sum(λ)
             #k given λ and the policy function
             k, n, i= [0,0,0]
@@ -176,21 +170,27 @@ function ayiagary(A,E,r0,w0,τy,T,β,η,μ,Z) #Given an initial interest rate an
                 for e=1:nE
                     i =i+1
                     k = k + λ[i] * A[policy_a[a,e]]
-                    n = n + λ[i] * (1-policy_l[a,e])
+                    n = n + λ[i] * E[e]*(1-policy_l[a,e])
                 end
             end
-            #Bisection method
 
-                r1= 1/2 * r + 1/2 * min((Z*θ*k^(θ-1)*n^(1-θ)-δ),1/β-1)
-                w1 =1/2 * w + 1/2* (Z*(1-θ)*k^θ*n^(-θ))
+            #Government
+            B = (τy*(w*n+r*k)-G-T)./((1-τy)*r-1)
+            K = max(k - B,0.0)
+            #Bisection method
+            r1= 1/2 * r + 1/2 * min((Z*θ*K^(θ-1)*n^(1-θ)-δ),1/β-1)
+            w1 =1/2 * w + 1/2* (Z*(1-θ)*K^θ*n^(-θ))
 
 
             #checking convergence
             dist_r = abs(r1-r)
             dist_w = abs(w1-w)
             iterations += 1
-            if iterations>50
+            if iterations>100
                 println("Reached maximum number of Iterations")
+                break
+            elseif fast== true
+                println("We assumed that the initial guesses were correct.")
                 break
             end
             println("Iteration: $iterations, r is: $r1, w is: $w1")
@@ -200,7 +200,14 @@ function ayiagary(A,E,r0,w0,τy,T,β,η,μ,Z) #Given an initial interest rate an
     end
     println("r converged to $r")
     println("w converged to $w")
-return  λ,r,w, policy_a, policy_c, policy_l,k,n
+
+    #GDP
+
+    Y = Z*K^θ*n^(1-θ)
+
+
+
+return  λ,r,w, policy_a, policy_c, policy_l,k,n,Y,B,K
 end
 
 
