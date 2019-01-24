@@ -10,7 +10,7 @@ using  JLD2,FileIO
 β = 0.98 #Discount rate
 μ = 1.5  #Elasticity of intertemporal substitution
 η = 0.3 #Utility parameter
-τy = 0.2 #Income tax
+τy = 0.4 #Income tax
 ρ = 0.6 #autocorrelation
 σ = 0.3 #Variance
 δ = 0.075 #Depreciation rate
@@ -25,7 +25,7 @@ amin = -0.0   #Debt limit
 amax= 13.0 #capital limit
 
 nE = 5 #Number of states for e
-nA = 500#states for assets
+nA = 80#states for assets
 
 r= (1/β - 1)-0.0001 #initial guess for r liens in the interval (-δ, 1/β-1)
 

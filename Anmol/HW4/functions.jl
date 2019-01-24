@@ -48,16 +48,27 @@ function VFI(A,E,r,w,τy,T,β,η,μ)
     nA = length(A)
     nE = length(E)
     u = ones(nA,nE,nA)
-    policy_l1=ones(nA,nE,nA)
+
 
     #Solving the labor problem for each level of asset today and tommorow
     #I tested and it is faster than including this in the main while loop
     c(l,a,e,a1) = (1-τy)*E[e]*w*(1-l)+T+(1+(1-τy)*r)*A[a]-A[a1]
-    for a=1:nA,e=1:nE,a1=1:nA
-            maxu(l) = -utility(c(l,a,e,a1),l,η,μ)
-            maxU = optimize(maxu, 0.0, 1.0)
-            u[a,e,a1] = -maxU.minimum
-            policy_l1[a,e,a1] = maxU.minimizer
+    if η<1
+        policy_l1=ones(nA,nE,nA)
+        for a=1:nA,e=1:nE,a1=1:nA
+                maxu(l) = -utility(c(l,a,e,a1),l,η,μ)
+                maxU = optimize(maxu, 0.0, 1.0)
+                u[a,e,a1] = -maxU.minimum
+                policy_l1[a,e,a1] = maxU.minimizer
+        end
+    else
+        for a=1:nA,e=1:nE,a1=1:nA
+            if E[e]>0
+                u[a,e,a1] = utility(c(0,a,e,a1),0,η,μ)
+            else
+                u[a,e,a1] = utility(c(1,a,e,a1),1,η,μ)
+            end
+        end
     end
 
     #VFI
@@ -89,11 +100,19 @@ function VFI(A,E,r,w,τy,T,β,η,μ)
          distance = maximum(abs.(V-Vf))
         end
         #Finally, find labor policy:
-        policy_l = Array{Float64,2}(undef,nA,nE)
-        for a in 1:nA, e in 1:nE
-            policy_l[a,e] = policy_l1[a,e,policy_a[a,e]]
-            #it is the policy for labor we found before, with the addition of the
-            #policy function for assets
+        policy_l = zeros(nA,nE)
+        if η<1
+            for a in 1:nA, e in 1:nE
+                policy_l[a,e] = policy_l1[a,e,policy_a[a,e]]
+                #it is the policy for labor we found before, with the addition of the
+                #policy function for assets
+            end
+        else
+            for e = 1:nE
+                if E[e]<=0
+                    policy_l[:,e] = ones(nA)
+                end
+            end
         end
 
         #and for consumption
@@ -140,9 +159,9 @@ function ayiagary(A,E,r0,w0,τy,T,β,η,μ,Z,G,fast = false) #Given an initial i
             # are the same. I'll get back to this.
             for x=1:nA*nE, x1=1:nA*nE
                 a = X[x,1]
-                a1=X[x1,1]
+                a1= X[x1,1]
                 e = X[x,2]
-                e1=X[x1,2]
+                e1= X[x1,2]
                 if a1 == policy_a[a,e] #Indicator function
                     Q[x,x1]=pdfE[e,e1]
                 end
@@ -208,4 +227,18 @@ function ayiagary(A,E,r0,w0,τy,T,β,η,μ,Z,G,fast = false) #Given an initial i
 
 
 return  λ,r,w, policy_a, policy_c, policy_l,k,n,Y,B,K
+end
+
+function KrusselSmith(A,E,Z,β,η,μ)
+
+    nZ = length(Z)
+    nA = length(A)
+    nE = length(E)
+    B = [0 1] #Initial guess for the coefficients
+    K1(K,B) = B[1] + B[2]*K
+    N = ones(nZ)
+    r(z,K) = θ*z * K.^(θ-1) *
+
+
+
 end
