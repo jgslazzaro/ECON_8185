@@ -1,0 +1,2 @@
+To get the results and graphs of HW2.pdf, run file main.jl by blocks. Note that there is also in that file some BCA exercises since I used the same codes for Anmol's homework. 
+The pdf contains the answers to Ellen's homework

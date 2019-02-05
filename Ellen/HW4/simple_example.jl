@@ -1,7 +1,7 @@
 #This code is to find the simple example:
 #d'(x)+d(x)=0, x∈[0,xmax]
 #The solution is d(x) = exp(-x)
-using ForwardDiff,QuadGK, NLsolve
+using ForwardDiff,QuadGK, NLsolve,Plots, Optim,FastGaussQuadrature
 
 cd("C:\\Users\\jgsla\\Google Drive\\ECON_8185\\Ellen\\HW4")
 
@@ -9,73 +9,131 @@ cd("C:\\Users\\jgsla\\Google Drive\\ECON_8185\\Ellen\\HW4")
 
 xmax = 10
 
-X = [0 1.0 3 6]
-θ = [1 2 1 5.0]
+X = [0 1 2 3 6]
+
 #Piecewise linear Approximation:
 
 #Constructing the basis function:
 
-function ϕ(x,X=X)
-
-        if X[1]<=x<=X[2]
-            f = (x-X[1])/(X[2]-X[1])
-        elseif X[2]<=x<=X[3]
-            f = (X[3]-x)/(X[3]-X[2])
+function ϕi(x,X,i::Int)
+    if i>1 && i<length(X) #i is not in a boundary
+        if X[i-1]<=x<=X[i]
+            f = (x-X[i-1])/(X[i]-X[i-1])
+        elseif X[i]<=x<=X[i+1]
+            f = (X[i+1]-x)/(X[i+1]-X[i])
         else
             f = 0
         end
-    return f
-end
-
-function derivϕ(x,X=X)
-        if X[1]<=x<=X[2]
-            f = 1/(X[2]-X[1])
-        elseif X[2]<=x<=X[3]
-            f = -1/(X[3]-X[2])
+    elseif i==1
+        if X[i]<=x<=X[i+1]
+            f = (X[i+1]-x)/(X[i+1]-X[i])
         else
             f = 0
         end
-    return f
-end
-
-
-function d(x,θ=θ,X=X)
-    n=length(X)
-    f = 0
-    for i = 1:n
-        if i==1
-            f = f+ θ[i]*ϕ(x,[X[i] X[i] X[i+1]])
-        elseif i==n
-            f = f+ θ[i]*ϕ(x,[X[i-1] X[i-1] X[i]])
+    elseif i==length(X)
+        if X[i-1]<=x<=X[i]
+            f = (x-X[i-1])/(X[i]-X[i-1])
         else
-                f=f+θ[i] *ϕ(x,X[i-1:i+1])
+            f=0
         end
     end
     return f
 end
 
 
-
-d(2.5)
-
-function R(x,θ=θ,X=X)
-        n=length(X)
-        f = 0
-        for i = 1:n
-            if i==1
-                f = f+ θ[i]*(derivϕ(x,[X[i] X[i] X[i+1]])+ϕ(x,[X[i] X[i] X[i+1]]))
-            elseif i==n
-                f = f+ θ[i]*(derivϕ(x,[X[i-1] X[i-1] X[i]])+ϕ(x,[X[i-1] X[i-1] X[i]]))
-            else
-                    f=f+θ[i] *(derivϕ(x,X[i-1:i+1])+ϕ(x,X[i-1:i+1]))
-            end
+function derivϕi(x,X,i)
+    if i>1 && i<length(X) #i is not in a boundary
+        if X[i-1]<=x<=X[i]
+            f = 1/(X[i]-X[i-1])
+        elseif X[i]<=x<=X[i+1]
+            f = -1/(X[i+1]-X[i])
+        else
+            f = 0
         end
-        return f
+    elseif i==1
+        if X[i]<=x<=X[i+1]
+            f = -1/(X[i+1]-X[i])
+        else
+            f = 0
+        end
+    elseif i==length(X)
+        if X[i-1]<=x<=X[i]
+            f = 1/(X[i]-X[i-1])
+        else
+            f=0
+        end
+    end
+    return f
+end
+
+function residual(x,θ)
+    R=0
+    for i=1:length(X)
+        R = R+ θ[i] *(derivϕi(x,X,i) + ϕi(x,X,i))
+    end
+    return R
+end
+
+#Minimizing the integral using non-linear method
+
+function mini(α)
+    if length(α) < length(X)
+        α = vcat(1,α)
     end
 
-R(0.4)
+nodes, weights = gausslegendre(200) #Gauss Legendre nodes and weights
+    function integra(x)
+    T=zeros(length(X))
+        for i=1:length(X)
+            T[i] = ϕi(x,X,i)*residual(x,α)
+        end
+    return T
+    end
+    #g = quadgk.(integra,X[1],X[end])[1] #Integral
+    #See Judd's book pg 261 on numerical integration and the gausslegendre formula
+    g = sum((X[end]-X[1])/2 .* weights .* integra.((nodes .+1).*(X[end]-X[1])/2 .+ X[1]))
 
-nlsolve(essa!,[1,4.7,1,0.95],ftol = :1.0e-9, method = :trust_region , autoscale = true)
+    return sum(abs.(g))
+end
+
+#Minimizing the weighted integral
+initial = ones(length(X)-1)
+mini(initial)
+
+bla = optimize(mini,initial,BFGS())#;autodiff = :forward)
+θ = vcat(1,bla.minimizer)
 
 
-μ
+#Using linear method as comparison
+m=length(X)
+K = zeros(m,m)
+
+for i=1:m-1
+    global K
+
+    l = X[i+1]-X[i]
+    Ki = [l/3-1/2 l/6+1/2; l/6-1/2 l/3+1/2]
+    K[i:i+1,i:i+1] = K[i:i+1,i:i+1] + Ki
+end
+
+K
+θlinear = K[2:end,2:end] \ (zeros(m-1)-K[2:end,1])
+
+θlinear = vcat(1,θlinear)
+
+difference = abs.(θ-θlinear)
+
+#Get the solution:
+
+function d(x)
+    n=length(θ)
+    solution =0
+    for i =1:n
+        solution = solution + θ[i]*ϕi(x,X,i)
+    end
+    return solution
+end
+
+x=0:0.1:6
+
+plot(x,[exp.(-x) d.(x)])
