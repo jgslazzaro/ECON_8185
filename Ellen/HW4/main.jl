@@ -41,34 +41,43 @@ function ϕi(x,X,i::Int)
 end
 
 #Defining the elements:
-K = zeros(11)
+K = zeros(15)
 for i=2:length(K)
-    K[i] = K[i-1] + 0.005*exp(0.574*(i-2))
+    global K
+    K[i] = K[i-1] +0.0005*exp(0.574*(i-2))
 end
+K
 
 #Defining consumption approximate function, this definition would hold for any
 #function to be approximated
 function cn(k,α;K=K)
+#This function is piecewise linear approximation for a function with arguments k
+#To get a good approximations one need to find the parameters α
+#K are the elements nodes. It is optionally defined here for efficiency.
         n = length(K)
         c = 0
         for i = 1:n
             c = c + α[i]*ϕi(k,K,i)
         end
         return c
-    end
+end
 
 #capital policy function from Bugdet constraint
 polk(k,α) = min(max(eps(),A*k.^θ+(1-δ)*k-cn(k,α)),K[end])
 #min max are needed to avoid NaNs and other numerical instabilities
 
-function residual(k,α) #Residual function comes from FOCs
+function residual(k,α)
+    #This function is specific for the deterministic growth model.
+    #Residual function comes from FOCs
+    #cn below is an approximation for consumption
         R = cn(k,α)/cn(polk(k,α),α) * β * (A*θ*polk(k,α)^(θ-1)+1-δ)- 1
     return R
 end
 
-#This function calculates the function that will be integrated:
-#integra(k;α):= ϕi(k)R(k;α)
 function integra(k,α;K=K)
+#This function calculates the function that will be integrated:
+#integra(k;α):= ϕi(k)R(k;α), where ϕi are the weights and R is the residual function
+#In the Finite element methods, the weights are the same as the approximating functions
     T=zeros(length(K))
     for i=1:length(K)
         T[i] = ϕi(k,K,i)*residual(k,α)
