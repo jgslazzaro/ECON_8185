@@ -42,66 +42,72 @@ for i=2:length(K)
     K[i] = K[i-1] + 0.005*exp(0.574*(i-2))
 end
 
-K = 1/4:1/8:2
+K=0:0.5:2
 
-
-function cn(k,K,α) #Defining consumption approximate function
-    n = length(K)
-    c = 0
-    for i = 1:n
-        c = c + α[i]*ϕi(k,K,i)
+#Defining consumption approximate function
+function cn(k,α;K=K)
+        n = length(K)
+        c = 0
+        for i = 1:n
+            c = c + α[i]*ϕi(k,K,i)
+        end
+        return c
     end
-    return c
-end
 
-polk(k,α) = max(0,A*k.^θ+(1-δ)*k-cn(k,K,α)) #capital policy function from Bugdet constraint
+polk(k,α) = min(max(eps(),A*k.^θ+(1-δ)*k-cn(k,α)),K[end]) #capital policy function from Bugdet constraint
 
 function residual(k,α) #Residual function comes from FOCs
-    R =  (cn(k,K,α)*β*(A*θ*polk(k,α)^(θ-1)+1-δ))/cn(polk(k,α),K,α) - 1
-    if R==-Inf
-        R=-1e10
-    elseif R==Inf
-        R=1e10
-    end
+        R = cn(k,α)/cn(polk(k,α),α) * β * (A*θ*polk(k,α)^(θ-1)+1-δ)- 1
     return R
 end
 
 #This function calculates the weighted integral for a given parameter α
-nodes, weights = gausslegendre(500) #Gauss Legendre nodes and weights
-
-function mini(α)
-    if length(α) < length(K)
-        α = vcat(0,α)
-    end
-    function integra(k)
+function integra(k,α;K=K)
     T=zeros(length(K))
-        for i=1:length(K)
-            T[i] = ϕi(k,K,i)*residual(k,α)
-        end
+    for i=1:length(K)
+        T[i] = ϕi(k,K,i)*residual(k,α)
+    end
     return T
+end
+
+nodes, weights = gausslegendre(3*length(K)) #Gauss Legendre nodes and weights
+function mini(α;nodes=nodes,weights=weights,K=K)
+    if length(α)<length(K)
+        α = vcat(0,α)
     end
     #g = quadgk.(integra,K[1],K[end])[1] #Integral
     #See Judd's book pg 261 on numerical integration and the gausslegendre formula:
-    gaussleg = sum((K[end]-K[1])/2 .* weights .* integra.((nodes .+1).*(K[end]-K[1])/2 .+ K[1]))
-
+    gaussleg = zeros(length(K))
+    for j=1:length(nodes)
+        gaussleg .+= (K[end]-K[1])/2 .* weights[j] .* integra((nodes[j] .+1).*
+        (K[end]-K[1])/2 .+ K[1],α)
+    end
     return norm(gaussleg,1)
 end
 
-#ForwardDiff.gradient(mini,initial)
 #Minimizing the weighted integral
-initial =  vcat(0,rand(length(K)-1))
-α = initial
-mini(initial)
 
-bla = optimize(mini,initial, BFGS())
+initial =  ones(length(K)-1) .* range(1, stop = 4, length = length(K)-1)
+lower = zeros(length(initial))
+upper = Inf*ones(length(initial))
+inner_optimizer = BFGS()
 
-#global_min, α = minimise(mini)
+
+
+grad!(A,initial)
+
+@time mini(initial)
+
+bla = optimize(mini,lower,upper,initial, Fminbox(inner_optimizer))
+
+
 α = vcat(0,bla.minimizer)
+
 mini(α)
 
 #Plotting
 k=K[1]:0.01:K[end]
 
 c(k) = (1-β*θ)*A*k^θ
-cnplot(k) = cn(k,K,α)
+cnplot(k) = cn(k,α)
 plot(k,[cnplot.(k),c.(k)])
