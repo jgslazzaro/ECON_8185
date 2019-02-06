@@ -117,6 +117,7 @@ bla = optimize(mini,lower,upper,initial, Fminbox(inner_optimizer))
 
 #Plotting
 k=K[1]:0.01:K[end]
+
 c(k) = (1-β*θ)*A*k^θ
 cnplot(k) = cn(k,α)
-plot(k,[cnplot.(k),c.(k)])
+plot(k,[cnplot.(k),c.(k)],label=["Approximation" "True Function"],legend=:bottomright)
