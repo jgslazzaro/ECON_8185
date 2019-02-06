@@ -2,16 +2,20 @@
 #Main code used to solve HW 4
 
 
-using Plots, QuadGK, Optim, ForwardDiff, LinearAlgebra, FastGaussQuadrature
+using Plots, Optim, LinearAlgebra, FastGaussQuadrature
 #Defining parameters
 θ = 0.25
 β = 0.9
 δ = 1
-A = (1-β*(1-δ))/(θ * β)
+A = (1-β*(1-δ))/(θ * β) #This will normalize the SS to 1
 
 kss = ((1- β*(1-δ))/(β*A*θ))^(1/(θ-1))
 
-function ϕi(x,X,i::Int) #Piecewise Linear function
+#Finite elements Piecewise Linear function:
+function ϕi(x,X,i::Int)
+    #x: point to evaluate the function
+    #X: Vector with elements nodes
+    #i: Which element in the function
     if i>1 && i<length(X) #i is not in a boundary
         if X[i-1]<=x<=X[i]
             f = (x-X[i-1])/(X[i]-X[i-1])
@@ -36,15 +40,15 @@ function ϕi(x,X,i::Int) #Piecewise Linear function
     return f
 end
 
-
+#Defining the elements:
 K = zeros(11)
 for i=2:length(K)
     K[i] = K[i-1] + 0.005*exp(0.574*(i-2))
 end
 
-K=0:0.5:2
 
-#Defining consumption approximate function
+#Defining consumption approximate function, this definition would hold for any
+#function to be approximated
 function cn(k,α;K=K)
         n = length(K)
         c = 0
@@ -54,14 +58,18 @@ function cn(k,α;K=K)
         return c
     end
 
-polk(k,α) = min(max(eps(),A*k.^θ+(1-δ)*k-cn(k,α)),K[end]) #capital policy function from Bugdet constraint
+#capital policy function from Bugdet constraint
+polk(k,α) = min(max(eps(),A*k.^θ+(1-δ)*k-cn(k,α)),K[end])
+
+#min max are needed to avoid NaNs and other numerical instabilities
+
 
 function residual(k,α) #Residual function comes from FOCs
         R = cn(k,α)/cn(polk(k,α),α) * β * (A*θ*polk(k,α)^(θ-1)+1-δ)- 1
     return R
 end
 
-#This function calculates the weighted integral for a given parameter α
+#This function calculates the function that will be integrated.
 function integra(k,α;K=K)
     T=zeros(length(K))
     for i=1:length(K)
@@ -70,7 +78,9 @@ function integra(k,α;K=K)
     return T
 end
 
-nodes, weights = gausslegendre(3*length(K)) #Gauss Legendre nodes and weights
+#This function calculates the integral (the norm of the integrated functions), as a functions of the parameters to minimized
+#We define that way since this is the format accepted by the solver
+nodes, weights = gausslegendre(3*(length(K)-1)) #Gauss Legendre nodes and weights,this function is just a Quadrature table
 function mini(α;nodes=nodes,weights=weights,K=K)
     if length(α)<length(K)
         α = vcat(0,α)
@@ -85,29 +95,28 @@ function mini(α;nodes=nodes,weights=weights,K=K)
     return norm(gaussleg,1)
 end
 
-#Minimizing the weighted integral
 
-initial =  ones(length(K)-1) .* range(1, stop = 4, length = length(K)-1)
+#Setting initial conditions
+initial =  ones(length(K)-1) .* range(0.35, stop = 3.5, length = length(K)-1)
+
+#Check if the initial conditions are somewhat close to the true parameters.
+mini(initial)
+
+#Solver stuff
+#lower and upper bound of the parameters:
 lower = zeros(length(initial))
 upper = Inf*ones(length(initial))
+#Optimizer method is BFGS, see Judd's book page 114 for an explanation:
 inner_optimizer = BFGS()
 
-
-
-grad!(A,initial)
-
-@time mini(initial)
-
+#Solver:
 bla = optimize(mini,lower,upper,initial, Fminbox(inner_optimizer))
-
-
+#Parameters
 α = vcat(0,bla.minimizer)
 
-mini(α)
 
 #Plotting
 k=K[1]:0.01:K[end]
-
 c(k) = (1-β*θ)*A*k^θ
 cnplot(k) = cn(k,α)
 plot(k,[cnplot.(k),c.(k)])
