@@ -1,0 +1,1 @@
+run main.jl in blocks. Note that there are separete parts in the file to each question and each part has its owon instructions.
