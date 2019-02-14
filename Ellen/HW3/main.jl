@@ -1,8 +1,6 @@
-using Plots, NLsolve, ForwardDiff, DataFrames, LinearAlgebra, QuantEcon, Plots
+using Plots, NLsolve, ForwardDiff, LinearAlgebra
 using Optim, Statistics, NLSolversBase,LaTeXStrings
-cd("C:\\Users\\jgsla\\Google Drive\\ECON_8185\\Anmol\\HW2")
 include("State_Space.jl")
-include("load_data.jl")
 include("KalmanFilter.jl")
 #Parameters:
 δ = 0.0464   #depreciation rate
@@ -78,33 +76,30 @@ end
 
 
 #plot([X[2,:],X[3,:],X[4,:],X[5,:]],title ="Wedges", labels = ["Z","tauh","taux","g"])
-#plot([X[1,:],Y[2,:],Y[1,:],Y[3,:]],title = "Endogenous Variables",labels = ["K","X","Y","L"])
+plot([X[1,:],Y[2,:],Y[1,:],Y[3,:]],title = "Endogenous Variables",labels = ["K","X","Y","L"])
 
 
-
+original = [ρg,ρx,ρh,ρz,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρgx,ρgh]#,σg,σx,σz,σh,σzg,σzx,σzh,σhx,σhg,σxg,gss,τxss,τhss,zss]
 #Initial guess
-initial = [0.795,0.715,0.495,0.5,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001] #ρz,ρh,ρx,ρg,σz,σh,σx,σg,gss,τxss,τhss,zss
-d=10
-lower = zeros(12) #Lower bound for the parameters
-upper = [1.0,1.0,1.0,1.0,0.1,0.1,0.1,0.1,0.05,0.05,0.05,0.05] #Upper bound.
-#This was kind of random
-#Canova recommend to run optimization until the estimates converge
-#This loop here does this
-while d>10^(-4)
-    global d, initial
-    bla = optimize(maxloglikelihood,lower, upper, initial)
-    d = maximum(abs.(initial - bla.minimizer))
-    println(d)
-    initial = bla.minimizer
-end
-#Get the results
-ρz,ρh,ρx,ρg,σz,σh,σx,σg,gss,τxss,τhss,zss = initial
-Pe = [ρz  0 0 0;
-0 ρh 0  0;
-0 0 ρx 0;
-0 0 0 ρg]
+maxloglikelihood(original)
 
-Qe = [σz 0 0 0;
-0 σh 0  0;
-0 0 σx 0;
-0 0 0 σg]
+
+initial = original .+ rand(length(original))*0.1
+
+maxloglikelihood(initial)
+
+#Solver Stuff
+inner_optimizer = LBFGS()
+
+lower=zeros(length(initial))
+lower[5:16] = -ones(12)
+#lower[27:30] = -1*ones(4)
+upper = ones(length(initial))
+
+bla = optimize(maxloglikelihood,lower,upper, initial,Fminbox(inner_optimizer))
+
+estimates = bla.minimizer
+
+initial - estimates
+
+original - estimates
