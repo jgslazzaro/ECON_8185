@@ -1,6 +1,6 @@
 
 #This function writes the system as a Sta Space represention
-function State_Space(params_calibrated,steadystates, P,Q;nl=false)
+function State_Space(params_calibrated,steadystates, P,Q)
 
     #= δ  depreciation rate
     θ   #capital share of output
@@ -101,11 +101,7 @@ function State_Space(params_calibrated,steadystates, P,Q;nl=false)
     C = V[2:end,1]*(V[1,1])
     C = hcat(C,zeros(2,1))
 
-
-
-
-
-    if nl == true
+    #=
         function system!(eq,vector::Vector)
             #vector = rand(8)
             #eq= rand(8)
@@ -120,22 +116,22 @@ function State_Space(params_calibrated,steadystates, P,Q;nl=false)
         Sol = nlsolve(system!, ones(8),ftol = :1.0e-20, method = :trust_region , autoscale = true)
         D=ones(2,4)
         D[1,:]= Sol.zero[1:4]
-        D[2,:]= Sol.zero[5:8]
+        D[2,:]= Sol.zero[5:8] =#
 
-    else
+
         #Implementing the code solve the system commented out above as a system of linear equations.
         TOP = hcat(a[2]*Matrix{Float64}(I,4,4),   a[3]*Matrix{Float64}(I,4,4))
         #Everything multiplying B concatenated with stuff multiplying D in the first equations
-        BOTTOMLEFT =  b[2] .+ b[3].*A .+ b[3]*P .+ b[5].*C[2] .+ b[5]*P
+        BOTTOMLEFT =  b[2]*I + b[3].*A *I + b[3]*P + b[5].*C[2]*I + b[5]*P
         #Everything multiplying B in the last equations
         BOTTOM = hcat(BOTTOMLEFT',  b[4]*Matrix{Float64}(I,4,4)) #Concatenates with stuff multiplying D
         RHS = - vcat([a[4] a[5] 0 a[6]]',  ([b[6] 0 b[7] b[8]].+[b[9] 0 b[10] b[11] ]*P)') #Constant terms
         #Solving the system
         BD = (vcat(TOP,BOTTOM)\RHS)[:]
-        D=ones(2,4)
-        D[1,:]= BD[1:4]
-        D[2,:]= BD[5:8]
-    end
+        Dteste=ones(2,4)
+        Dteste[1,:]= BD[1:4]
+        Dteste[2,:]= BD[5:8]
+
 
 
 
