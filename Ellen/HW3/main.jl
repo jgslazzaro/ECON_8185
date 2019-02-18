@@ -1,5 +1,5 @@
 using Plots, NLsolve, ForwardDiff, LinearAlgebra
-using Optim, Statistics, NLSolversBase,LaTeXStrings
+using Optim, Statistics, NLSolversBase,LaTeXStrings,BlackBoxOptim
 include("State_Space.jl")
 include("KalmanFilter.jl")
 #Parameters:
@@ -59,7 +59,7 @@ Q = [σz σzh σzx σzg;
 
 params_calibrated = [δ,θ,β,σ,ψ,γn,γz,]
 steadystates = [gss,τxss,τhss,zss]
-A,B,C = State_Space(params_calibrated,steadystates, P,Q)
+@time A,B,C = State_Space(params_calibrated,steadystates, P,Q)
 
 T=300
 X= zeros(5,T)
@@ -79,24 +79,27 @@ end
 plot([X[1,:],Y[2,:],Y[1,:],Y[3,:]],title = "Endogenous Variables",labels = ["K","X","Y","L"])
 
 
-original = [ρg,ρx,ρh,ρz,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρgx,ρgh]#,σg,σx,σz,σh,σzg,σzx,σzh,σhx,σhg,σxg,gss,τxss,τhss,zss]
+original = [ρg,ρx,ρh,ρz,σg,σx,σz,σh]#,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρgx,ρgh,σg,σx,σz,σh,σzg,σzx,σzh,σhx,σhg,σxg,gss,τxss,τhss,zss]
 #Initial guess
 maxloglikelihood(original)
 
 
-initial = original .+ rand(length(original))*0.1
+initial = ones(8)*0.5 #original .+ rand(length(original))*0.1
 
 maxloglikelihood(initial)
 
 #Solver Stuff
-inner_optimizer = LBFGS()
+inner_optimizer = BFGS()
 
 lower=zeros(length(initial))
-lower[5:16] = -ones(12)
+#lower[5:16] = -ones(12)
 #lower[27:30] = -1*ones(4)
 upper = ones(length(initial))
 
+blackbox = bboptimize(maxloglikelihood; SearchRange = (0.0, 1.0), NumDimensions = 8, MaxFuncEvals= 100000)
+
 bla = optimize(maxloglikelihood,lower,upper, initial,Fminbox(inner_optimizer))
+
 
 estimates = bla.minimizer
 

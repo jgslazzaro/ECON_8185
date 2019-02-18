@@ -128,9 +128,9 @@ function State_Space(params_calibrated,steadystates, P,Q)
         RHS = - vcat([a[4] a[5] 0 a[6]]',  ([b[6] 0 b[7] b[8]].+[b[9] 0 b[10] b[11] ]*P)') #Constant terms
         #Solving the system
         BD = (vcat(TOP,BOTTOM)\RHS)[:]
-        Dteste=ones(2,4)
-        Dteste[1,:]= BD[1:4]
-        Dteste[2,:]= BD[5:8]
+        D=ones(2,4)
+        D[1,:]= BD[1:4]
+        D[2,:]= BD[5:8]
 
 
 
