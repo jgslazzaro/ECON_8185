@@ -10,9 +10,9 @@ using  JLD2,FileIO
 #I'll use a similar calibration as KS
 β = 0.99 #Discount rate
 μ = 1  #Elasticity of intertemporal substitution
-η = 1 #Utility parameter
-δ = 0.075 #Depreciation rate
-θ = 0.3 #Capital Share of output
+η = 1.9/2.9 #Utility parameter
+δ = 0.025 #Depreciation rate
+θ = 0.36 #Capital Share of output
 
 
 ρe = 0.6 #autocorrelation of employment shock
@@ -55,10 +55,6 @@ A = range(amin,stop = amax, length = nA) #Half points will be in the first third
 
 #Initial guesses:
 
-r= ((1/β - 1)-0.0001).*ones(nZ) #initial guess for r liens in the interval (-δ, 1/β-1)
 
-Kguess = ((r.+δ)./(Z.*θ)).^(1/(θ-1))#K for the nitial guess of r
-w=  (1-θ).*Z.*Kguess.^θ  #Initial wage given r0
-Nguess = (w./(Z.*(1-θ))).^(-1/θ).*Kguess
 
-λ,r,w, policy_a, policy_c, policy_l,Assets,N,Y,B,K = ayiagary(A,E,r,w,τy,T,β,η,μ,Z,G,fast)
+λ,r,w, policy_a, policy_c, policy_l,Assets,N,Y,B,K = KrusselSmith(A,E,Z,β,η,μ)
