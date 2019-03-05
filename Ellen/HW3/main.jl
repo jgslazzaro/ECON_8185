@@ -84,7 +84,7 @@ original = [ρg,ρx,ρh,ρz,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρ
 maxloglikelihood(original)
 
 
-initial = rand(length(original))*0.05 #original .+ rand(length(original))*0.1
+initial = rand(length(original))*0.25 #original .+ rand(length(original))*0.1
 
 maxloglikelihood(initial)
 
@@ -97,7 +97,7 @@ lower[5:16] = -ones(12)
 upper = ones(length(initial))
 
 
-bla = optimize(maxloglikelihood,lower,upper, initial,Fminbox(inner_optimizer),Optim.Options(show_every = 1))
+bla = optimize(maxloglikelihood,lower,upper, initial,Fminbox(inner_optimizer),Optim.Options(show_trace = true, show_every = 5))
 
 
 estimates = bla.minimizer
