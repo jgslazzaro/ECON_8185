@@ -77,14 +77,14 @@ function VFI(A,E,Z,Kbar,Lbar,r,w,τy,T,β,η,μ)
     #Initial value function guess:
         V  = ones(nA,nE,nZ)
         #preallocation
-        policy_a = Array{Int64,2}(undef,nA,nE,nZ)
+        policy_a = Array{Int64,3}(undef,nA,nE,nZ)
         #loop stuff
         distance = 1
         tol =10^(-7)
         #iterating on Value functions:
         while distance >= tol
             Vf = copy(V) #save V to compare later
-
+            EVf = copy(V)
             #find the expected Vf: E[V(k,z')|z] = π(z1|z)*V(k,z1) +π(z2|z)*V(k,z2)
             for z=1:nZ
                 EVf[:,:,z]= (pdfZ*pdfE[:,:,z]*Vf[:,:,z]')'  #The transposing fix the dimensions so it works!
@@ -152,7 +152,7 @@ function KrusselSmith(A,E,Z,β,η,μ)
     #Step 4: Solve the household problem and obtain the decision rule with standard methods.
     #Since I'm using only one moment, I won't create a grid for m.
 
-    policy_a, policy_c, policy_l = VFI(A,E,Z, r, w,0,0,β,η,μ)
+    policy_a, policy_c, policy_l = VFI(A,E,Z,1,1, r, w,0,0,β,η,μ)
 
 
 
