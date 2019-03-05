@@ -1,0 +1,83 @@
+JULIA_CPU_THREADS set to 10 
+Julia 1.1.0: loaded 
+
+signal (15): Terminated
+in expression starting at /home/santo279/ECON_8185/Ellen/HW3/main.jl:103
++ at ./float.jl:395 [inlined]
+add_sum at ./reduce.jl:24 [inlined]
+_mapreduce at ./reduce.jl:316
+_mapreduce_dim at ./reducedim.jl:308 [inlined]
+#mapreduce#548 at ./reducedim.jl:304 [inlined]
+mapreduce at ./reducedim.jl:304 [inlined]
+_sum at ./reducedim.jl:653 [inlined]
+#sum#551 at ./reducedim.jl:649 [inlined]
+sum at ./reducedim.jl:649 [inlined]
+trust_region_ at /home/santo279/.julia/packages/NLsolve/KEjSj/src/solvers/trust_region.jl:176
+trust_region at /home/santo279/.julia/packages/NLsolve/KEjSj/src/solvers/trust_region.jl:229 [inlined]
+trust_region at /home/santo279/.julia/packages/NLsolve/KEjSj/src/solvers/trust_region.jl:229 [inlined]
+#nlsolve#14 at /home/santo279/.julia/packages/NLsolve/KEjSj/src/nlsolve/nlsolve.jl:23
+#nlsolve at ./none:0 [inlined]
+#nlsolve#15 at /home/santo279/.julia/packages/NLsolve/KEjSj/src/nlsolve/nlsolve.jl:60 [inlined]
+#nlsolve at ./none:0
+State_Space at /home/santo279/ECON_8185/Ellen/HW3/State_Space.jl:30
+unknown function (ip: 0x7f8dd8d92712)
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
+maxloglikelihood at /home/santo279/ECON_8185/Ellen/HW3/KalmanFilter.jl:72
+finite_difference_gradient! at /home/santo279/.julia/packages/DiffEqDiffTools/visbP/src/gradients.jl:284
+g! at /home/santo279/.julia/packages/NLSolversBase/KG9Ie/src/objective_types/oncedifferentiable.jl:56
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
+fg! at /home/santo279/.julia/packages/NLSolversBase/KG9Ie/src/objective_types/oncedifferentiable.jl:60
+function_barrier at /home/santo279/.julia/packages/Optim/ULNLZ/src/multivariate/solvers/constrained/fminbox.jl:56
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
+#55 at /home/santo279/.julia/packages/Optim/ULNLZ/src/multivariate/solvers/constrained/fminbox.jl:181
+barrier_combined at /home/santo279/.julia/packages/Optim/ULNLZ/src/multivariate/solvers/constrained/fminbox.jl:61
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
+#57 at /home/santo279/.julia/packages/Optim/ULNLZ/src/multivariate/solvers/constrained/fminbox.jl:236
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
+value_gradient!! at /home/santo279/.julia/packages/NLSolversBase/KG9Ie/src/interface.jl:82
+value_gradient! at /home/santo279/.julia/packages/NLSolversBase/KG9Ie/src/interface.jl:69
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
+value_gradient! at /home/santo279/.julia/packages/Optim/ULNLZ/src/Manifolds.jl:50
+ϕdϕ at /home/santo279/.julia/packages/LineSearches/WrsMD/src/LineSearches.jl:84
+secant2! at /home/santo279/.julia/packages/LineSearches/WrsMD/src/hagerzhang.jl:369
+HagerZhang at /home/santo279/.julia/packages/LineSearches/WrsMD/src/hagerzhang.jl:270
+unknown function (ip: 0x7f8dd8daf5da)
+HagerZhang at /home/santo279/.julia/packages/LineSearches/WrsMD/src/hagerzhang.jl:101 [inlined]
+perform_linesearch! at /home/santo279/.julia/packages/Optim/ULNLZ/src/utilities/perform_linesearch.jl:40
+update_state! at /home/santo279/.julia/packages/Optim/ULNLZ/src/multivariate/solvers/first_order/l_bfgs.jl:198
+optimize at /home/santo279/.julia/packages/Optim/ULNLZ/src/multivariate/optimize/optimize.jl:57
+unknown function (ip: 0x7f8dd8da5d26)
+jl_fptr_trampoline at /buildworker/worker/package_linux64/build/src/gf.c:1864
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
+optimize at /home/santo279/.julia/packages/Optim/ULNLZ/src/multivariate/optimize/optimize.jl:33
+optimize at /home/santo279/.julia/packages/Optim/ULNLZ/src/multivariate/solvers/constrained/fminbox.jl:257
+#optimize#53 at /home/santo279/.julia/packages/Optim/ULNLZ/src/multivariate/solvers/constrained/fminbox.jl:164 [inlined]
+optimize at /home/santo279/.julia/packages/Optim/ULNLZ/src/multivariate/solvers/constrained/fminbox.jl:163
+unknown function (ip: 0x7f8dd8d9b07a)
+jl_fptr_trampoline at /buildworker/worker/package_linux64/build/src/gf.c:1864
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
+do_call at /buildworker/worker/package_linux64/build/src/interpreter.c:323
+eval_value at /buildworker/worker/package_linux64/build/src/interpreter.c:411
+eval_stmt_value at /buildworker/worker/package_linux64/build/src/interpreter.c:362 [inlined]
+eval_body at /buildworker/worker/package_linux64/build/src/interpreter.c:773
+jl_interpret_toplevel_thunk_callback at /buildworker/worker/package_linux64/build/src/interpreter.c:885
+unknown function (ip: 0xfffffffffffffffe)
+unknown function (ip: 0x7f8ddba0ef8f)
+unknown function (ip: 0x8)
+jl_interpret_toplevel_thunk at /buildworker/worker/package_linux64/build/src/interpreter.c:894
+jl_toplevel_eval_flex at /buildworker/worker/package_linux64/build/src/toplevel.c:764
+jl_parse_eval_all at /buildworker/worker/package_linux64/build/src/ast.c:883
+jl_load at /buildworker/worker/package_linux64/build/src/toplevel.c:826
+include at ./boot.jl:326 [inlined]
+include_relative at ./loading.jl:1038
+include at ./sysimg.jl:29
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
+exec_options at ./client.jl:267
+_start at ./client.jl:436
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
+unknown function (ip: 0x40191d)
+unknown function (ip: 0x401523)
+__libc_start_main at /lib64/libc.so.6 (unknown line)
+unknown function (ip: 0x4015c4)
+unknown function (ip: 0xffffffffffffffff)
+Allocations: 415875795 (Pool: 414003913; Big: 1871882); GC: 6455
