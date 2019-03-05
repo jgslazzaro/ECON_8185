@@ -1,9 +1,8 @@
 using Plots, NLsolve, ForwardDiff, DataFrames, LinearAlgebra, QuantEcon, Plots
 using Optim, Statistics, NLSolversBase,LaTeXStrings
-cd("C:\\Users\\jgsla\\Google Drive\\ECON_8185\\Anmol\\HW2")
+
 include("State_Space.jl")
-include("load_data.jl")
-include("KalmanFilter.jl")
+
 #Parameters:
 δ = 0.0464   #depreciation rate
 θ = 1/3  #capital share of output
