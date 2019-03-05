@@ -95,7 +95,7 @@ maxloglikelihood(initial)
 inner_optimizer = LBFGS()
 
 lower=zeros(length(initial))
-lower[5:16] = -ones(12)
+#lower[5:16] = -ones(12)
 #lower[27:30] = -1*ones(4)
 upper = ones(length(initial))
 

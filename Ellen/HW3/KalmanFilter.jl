@@ -48,7 +48,7 @@ return L
 end
 
 
-function maxloglikelihood(vector::Vector)
+function maxloglikelihood(vector::Vector;Y=Y)
     #ρg,ρx,ρh,ρz,σg,σx,σz,σh=vector
     ρg,ρx,ρh,ρz=vector
     #ρg,ρx,ρh,ρz,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρgx,ρgh,σg,σx,σz,σh,σzg,σzx,σzh,σhx,σhg,σxg,gss,τxss,τhss,zss = vector
