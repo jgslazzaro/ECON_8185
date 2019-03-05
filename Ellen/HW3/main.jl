@@ -79,12 +79,12 @@ end
 plot([X[1,:],Y[2,:],Y[1,:],Y[3,:]],title = "Endogenous Variables",labels = ["K","X","Y","L"])
 
 
-original = [ρg,ρx,ρh,ρz,σg,σx,σz,σh]#,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρgx,ρgh,σg,σx,σz,σh,σzg,σzx,σzh,σhx,σhg,σxg,gss,τxss,τhss,zss]
+original = [ρg,ρx,ρh,ρz,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρgx,ρgh,σg,σx,σz,σh,σzg,σzx,σzh,σhx,σhg,σxg,gss,τxss,τhss,zss]
 #Initial guess
 maxloglikelihood(original)
 
 
-initial = ones(8)*0.5 #original .+ rand(length(original))*0.1
+initial = rand(30)*0.5 #original .+ rand(length(original))*0.1
 
 maxloglikelihood(initial)
 
@@ -92,7 +92,7 @@ maxloglikelihood(initial)
 inner_optimizer = BFGS()
 
 lower=zeros(length(initial))
-#lower[5:16] = -ones(12)
+lower[5:16] = -ones(12)
 #lower[27:30] = -1*ones(4)
 upper = ones(length(initial))
 
