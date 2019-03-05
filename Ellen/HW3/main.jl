@@ -61,9 +61,12 @@ params_calibrated = [δ,θ,β,σ,ψ,γn,γz,]
 steadystates = [gss,τxss,τhss,zss]
 @time A,B,C = State_Space(params_calibrated,steadystates, P,Q)
 
+
 T=300
 X= zeros(5,T)
 Y = zeros(4,T)
+
+Random.seed!(0403);
 S = randn(5,T) #vector with shocks
 
 #Simulating data
@@ -83,7 +86,7 @@ original = [ρg,ρx,ρh,ρz,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρ
 #Initial guess
 maxloglikelihood(original)
 
-
+Random.seed!(0403);
 initial = rand(length(original))*0.05 #original .+ rand(length(original))*0.1
 
 maxloglikelihood(initial)
