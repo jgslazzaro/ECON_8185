@@ -62,7 +62,7 @@ steadystates = [gss,τxss,τhss,zss]
 @time A,B,C = State_Space(params_calibrated,steadystates, P,Q)
 
 
-T=300
+T=1000
 X= zeros(5,T)
 Y = zeros(4,T)
 
@@ -82,7 +82,7 @@ end
 #plot([X[1,:],Y[2,:],Y[1,:],Y[3,:]],title = "Endogenous Variables",labels = ["K","X","Y","L"])
 
 
-original = [ρg,ρx,ρh,ρz,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρgx,ρgh,σg,σx,σz,σh,σzg,σzx,σzh,σhx,σhg,σxg]
+original = [ρg,ρx,ρh,ρz]#,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρgx,ρgh,σg,σx,σz,σh,σzg,σzx,σzh,σhx,σhg,σxg]
 #Initial guess
 maxloglikelihood(original)
 
@@ -104,9 +104,12 @@ bla = optimize(maxloglikelihood,lower,upper, initial,Fminbox(inner_optimizer),Op
 
 
 estimates = bla.minimizer
-@save "results.jld2"
+
+@save "results_$(length(original)).jld2"
 
 
 initial - estimates
 
 original - estimates
+
+@load "results.jld2"
