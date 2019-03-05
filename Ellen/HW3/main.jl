@@ -76,15 +76,15 @@ end
 
 
 #plot([X[2,:],X[3,:],X[4,:],X[5,:]],title ="Wedges", labels = ["Z","tauh","taux","g"])
-plot([X[1,:],Y[2,:],Y[1,:],Y[3,:]],title = "Endogenous Variables",labels = ["K","X","Y","L"])
+#plot([X[1,:],Y[2,:],Y[1,:],Y[3,:]],title = "Endogenous Variables",labels = ["K","X","Y","L"])
 
 
-original = [ρg,ρx,ρh,ρz,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρgx,ρgh,σg,σx,σz,σh,σzg,σzx,σzh,σhx,σhg,σxg,gss,τxss,τhss,zss]
+original = [ρg,ρx,ρh,ρz,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρgx,ρgh,σg,σx,σz,σh,σzg,σzx,σzh,σhx,σhg,σxg]
 #Initial guess
 maxloglikelihood(original)
 
 
-initial = ones(30)*0.5 #original .+ rand(length(original))*0.1
+initial = rand(length(original))*0.05 #original .+ rand(length(original))*0.1
 
 maxloglikelihood(initial)
 
@@ -97,7 +97,7 @@ lower[5:16] = -ones(12)
 upper = ones(length(initial))
 
 
-bla = optimize(maxloglikelihood,lower,upper, initial,Fminbox(inner_optimizer),Optim.Options(callback = advanced_time_control))
+bla = optimize(maxloglikelihood,lower,upper, initial,Fminbox(inner_optimizer),Optim.Options(show_every = 1))
 
 
 estimates = bla.minimizer
