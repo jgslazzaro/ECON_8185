@@ -1,7 +1,9 @@
-using Plots, NLsolve, ForwardDiff, LinearAlgebra, Random, JLD2,FileIO
+
+using NLsolve, ForwardDiff, LinearAlgebra, Random, JLD2,FileIO
 using Optim, Statistics, NLSolversBase,LaTeXStrings
 include("State_Space.jl")
 include("KalmanFilter.jl")
+
 #Parameters:
 δ = 0.0464   #depreciation rate
 θ = 1/3  #capital share of output
@@ -13,7 +15,7 @@ include("KalmanFilter.jl")
 
 
 #Parameters to be estimated and here used in our simulated example
-gss = 0.1 #average g
+gss = 0.03 #average g
 τxss = 0.05 #average τx
 τhss = 0.02 #average τh
 zss = 0.0 #average z (z is in logs)
@@ -62,7 +64,7 @@ steadystates = [gss,τxss,τhss,zss]
 @time A,B,C = State_Space(params_calibrated,steadystates, P,Q)
 
 
-T=1000
+T=2000
 X= zeros(5,T)
 Y = zeros(4,T)
 
@@ -82,14 +84,14 @@ end
 #plot([X[1,:],Y[2,:],Y[1,:],Y[3,:]],title = "Endogenous Variables",labels = ["K","X","Y","L"])
 
 
-original = [ρg,ρx,ρh,ρz]#,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρgx,ρgh,σg,σx,σz,σh,σzg,σzx,σzh,σhx,σhg,σxg]
+original = [ρg,ρx,ρh,ρz,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρgx,ρgh,σg,σx,σz,σh,σzg,σzx,σzh,σhx,σhg,σxg,gss,τxss,τhss,zss]
 #Initial guess
 maxloglikelihood(original)
 
 Random.seed!(0403);
-initial = rand(length(original))*0.05 #original .+ rand(length(original))*0.1
+initial = original .+ randn(length(original))*0.1
 
-maxloglikelihood(initial)
+
 
 #Solver Stuff
 inner_optimizer = LBFGS()
@@ -98,6 +100,14 @@ lower=zeros(length(initial))
 #lower[5:16] = -ones(12)
 #lower[27:30] = -1*ones(4)
 upper = ones(length(initial))
+upper[17:26] = 0.05.*ones(10)
+upper[27:30] = 0.1 * ones(4)
+
+#making sure that the initial guess is within the bounds
+initial = min.(upper.*0.99,initial)
+initial = max.(lower.+0.0001,initial)
+
+maxloglikelihood(initial)
 
 
 bla = optimize(maxloglikelihood,lower,upper, initial,Fminbox(inner_optimizer),Optim.Options(show_trace = true, show_every = 5))
@@ -111,5 +121,3 @@ estimates = bla.minimizer
 initial - estimates
 
 original - estimates
-
-@load "results.jld2"
