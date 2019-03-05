@@ -29,8 +29,9 @@ amax= 13.0 #capital limit
 
 nE = 2 #Number of states for e
 nZ = 2 #Number of states for e
-nA = 30#states for assets
-
+nA = 30 #states for assets
+nK = 10 #states for aggregate Capital
+nL = 10 #states for aggregate Labor
 pdfZ,Z = Tauchen(ρz,σz,nZ)    #Z comes from Tauchen method
 Z = exp.(Z) #Z is nonnegative
 
@@ -41,7 +42,6 @@ pdfE = ones(nE,nE,nZ)
 pdfE[:,:,1] = [0.1 0.9; 0.1 0.9]
 pdfE[:,:,2] = [0.04 0.96; 0.04 0.96]
 
-
 ##
 
 #Defining grids
@@ -50,6 +50,8 @@ pdfE[:,:,2] = [0.04 0.96; 0.04 0.96]
 #pdfZ,Z = Tauchen(ρz,σz,nZ)    #Z comes from Tauchen method
 #Z = exp.(Z) #Z is nonnegative
 A = range(amin,stop = amax, length = nA) #Half points will be in the first third
+K = copy(A)
+L = range(0,stop = 1, length = NL)
 # of the grid
 
 
@@ -57,4 +59,4 @@ A = range(amin,stop = amax, length = nA) #Half points will be in the first third
 
 
 
-λ,r,w, policy_a, policy_c, policy_l,Assets,N,Y,B,K = KrusselSmith(A,E,Z,β,η,μ)
+λ,r,w, policy_a, policy_c, policy_l,Assets,N,Y,B,K = KrusselSmith(A,E,Z,K,L,β,η,μ,θ,δ)
