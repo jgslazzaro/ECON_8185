@@ -104,6 +104,8 @@ bla = optimize(maxloglikelihood,lower,upper, initial,Fminbox(inner_optimizer),Op
 
 
 estimates = bla.minimizer
+@save "results.jld2"
+
 
 initial - estimates
 
