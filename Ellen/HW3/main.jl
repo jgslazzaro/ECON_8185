@@ -1,9 +1,9 @@
-using Plots, NLsolve, ForwardDiff, DataFrames, LinearAlgebra, QuantEcon, Plots
+
+using NLsolve, ForwardDiff, LinearAlgebra, Random, JLD2,FileIO
 using Optim, Statistics, NLSolversBase,LaTeXStrings
-cd("C:\\Users\\jgsla\\Google Drive\\ECON_8185\\Anmol\\HW2")
 include("State_Space.jl")
-include("load_data.jl")
 include("KalmanFilter.jl")
+
 #Parameters:
 δ = 0.0464   #depreciation rate
 θ = 1/3  #capital share of output
@@ -15,7 +15,7 @@ include("KalmanFilter.jl")
 
 
 #Parameters to be estimated and here used in our simulated example
-gss = 0.1 #average g
+gss = 0.03 #average g
 τxss = 0.05 #average τx
 τhss = 0.02 #average τh
 zss = 0.0 #average z (z is in logs)
@@ -61,11 +61,14 @@ Q = [σz σzh σzx σzg;
 
 params_calibrated = [δ,θ,β,σ,ψ,γn,γz,]
 steadystates = [gss,τxss,τhss,zss]
-A,B,C = State_Space(params_calibrated,steadystates, P,Q)
+@time A,B,C = State_Space(params_calibrated,steadystates, P,Q)
 
-T=300
+
+T=2000
 X= zeros(5,T)
 Y = zeros(4,T)
+
+Random.seed!(0403);
 S = randn(5,T) #vector with shocks
 
 #Simulating data
@@ -81,30 +84,40 @@ end
 #plot([X[1,:],Y[2,:],Y[1,:],Y[3,:]],title = "Endogenous Variables",labels = ["K","X","Y","L"])
 
 
-
+original = [ρg,ρx,ρh,ρz,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρgx,ρgh,σg,σx,σz,σh,σzg,σzx,σzh,σhx,σhg,σxg,gss,τxss,τhss,zss]
 #Initial guess
-initial = [0.795,0.715,0.495,0.5,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001] #ρz,ρh,ρx,ρg,σz,σh,σx,σg,gss,τxss,τhss,zss
-d=10
-lower = zeros(12) #Lower bound for the parameters
-upper = [1.0,1.0,1.0,1.0,0.1,0.1,0.1,0.1,0.05,0.05,0.05,0.05] #Upper bound.
-#This was kind of random
-#Canova recommend to run optimization until the estimates converge
-#This loop here does this
-while d>10^(-4)
-    global d, initial
-    bla = optimize(maxloglikelihood,lower, upper, initial)
-    d = maximum(abs.(initial - bla.minimizer))
-    println(d)
-    initial = bla.minimizer
-end
-#Get the results
-ρz,ρh,ρx,ρg,σz,σh,σx,σg,gss,τxss,τhss,zss = initial
-Pe = [ρz  0 0 0;
-0 ρh 0  0;
-0 0 ρx 0;
-0 0 0 ρg]
+maxloglikelihood(original)
 
-Qe = [σz 0 0 0;
-0 σh 0  0;
-0 0 σx 0;
-0 0 0 σg]
+Random.seed!(0403);
+initial = original .+ randn(length(original))*0.1
+
+
+
+#Solver Stuff
+inner_optimizer = LBFGS()
+
+lower=zeros(length(initial))
+#lower[5:16] = -ones(12)
+#lower[27:30] = -1*ones(4)
+upper = ones(length(initial))
+upper[17:26] = 0.05.*ones(10)
+upper[27:30] = 0.1 * ones(4)
+
+#making sure that the initial guess is within the bounds
+initial = min.(upper.*0.99,initial)
+initial = max.(lower.+0.0001,initial)
+
+maxloglikelihood(initial)
+
+
+bla = optimize(maxloglikelihood,lower,upper, initial,Fminbox(inner_optimizer),Optim.Options(show_trace = true, show_every = 5))
+
+
+estimates = bla.minimizer
+
+@save "results_$(length(original)).jld2"
+
+
+initial - estimates
+
+original - estimates

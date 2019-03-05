@@ -48,26 +48,26 @@ return L
 end
 
 
-function maxloglikelihood(vector::Vector)
-    ρz,ρh,ρx,ρg,σz,σh,σx,σg,gss,τxss,τhss,zss = vector
-
+function maxloglikelihood(vector::Vector;Y=Y)
+    #ρg,ρx,ρh,ρz,σg,σx,σz,σh=vector
+    #ρg,ρx,ρh,ρz=vector
+    ρg,ρx,ρh,ρz,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρgx,ρgh,σg,σx,σz,σh,σzg,σzx,σzh,σhx,σhg,σxg,gss,τxss,τhss,zss = vector
+    #ρg,ρx,ρh,ρz,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρgx,ρgh,σg,σx,σz,σh,σzg,σzx,σzh,σhx,σhg,σxg = vector
 
     #In matrix form
     P = [ρz ρzh ρzx ρzg;
     ρhz ρh ρhx ρhg ;
     ρxz ρxh ρx ρxg ;
     ρgz ρgh ρgx ρg]
+
+    Q = [σz σzh σzx σzg;
+    σzh σh σhx σhg ;
+    σzx σhx σx σxg ;
+    σzg σhg σxg σg]
+
     steadystates = gss,τxss,τhss,zss
     params_calibrated = [δ,θ,β,σ,ψ,γn,γz]
-    #In matrix form
-    P = [ρz 0 0 0;
-    0 ρh 0 0 ;
-    0 0 ρx 0 ;
-    0 0 0 ρg]
-    Q = [σz 0 0 0;
-    0 σh 0 0 ;
-    0 0 σx 0 ;
-    0 0 0 σg]
+
 
     A,B,C = State_Space(params_calibrated,steadystates, P,Q)
     X, a, Ω = KalmanFilter(Y,A,B,C)

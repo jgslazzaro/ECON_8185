@@ -37,17 +37,17 @@ function State_Space(params_calibrated,steadystates, P,Q)
     function loglineq1(vector::Vector)
         k,k1,h,z,τh,g= vector
 
-        c = k * ((z *h)^(1-θ))^(1/θ) - ((1+γz)*(1+γn)*k1-(1-δ)*k+ g )^(1/θ)
+        c = k^θ  * ((z *h)^(1-θ)) - ((1+γz)*(1+γn)*k1-(1-δ)*k+ g )
         eq =(ψ *c)^(1/θ)  - (k/h)*((1-h)*(1-τh)*(1-θ)*z^(1-θ))^(1/θ)
 
         return eq
     end
     function loglineq2(vector::Vector)
         k,k1,k2,h,h1,z,τx,g,z1,τx1,g1 = (vector)
-        c = k * ((z *h)^(1-θ))^(1/θ) - ((1+γz)*(1+γn)*k1-(1-δ)*k+ g )^(1/θ)
-        c1 = k * ((z1 *h1)^(1-θ))^(1/θ) - ((1+γz)*(1+γn)*k2-(1-δ)*k1+ g1 )^(1/θ)
+        c = k^θ  * ((z *h)^(1-θ)) - ((1+γz)*(1+γn)*k1-(1-δ)*k+ g )
+        c1 = k1^θ * ((z1 *h1)^(1-θ)) - ((1+γz)*(1+γn)*k2-(1-δ)*k1+ g1 )
         eq =  (c^(-σ) *(1-h)^(ψ*(1-σ))*(1+τx)  - (1-δ)*(1+τx1)* β*(1+γz)^(-σ) * c1^(-σ) * (1-h1)^(ψ*(1-σ)))^(-1/θ) -
-         (β*(1+γz)^(-σ) * c1^(-σ) * (1-h1)^(ψ*(1-σ)) * θ*(z1*h1)^(1-θ))^(-1/θ)* k1
+           (β*(1+γz)^(-σ) * c1^(-σ) * (1-h1)^(ψ*(1-σ)) * θ*(z1*h1)^(1-θ))^(-1/θ)* k1
         return eq
     end
 
@@ -101,26 +101,37 @@ function State_Space(params_calibrated,steadystates, P,Q)
     C = V[2:end,1]*(V[1,1])
     C = hcat(C,zeros(2,1))
 
+    #=
+        function system!(eq,vector::Vector)
+            #vector = rand(8)
+            #eq= rand(8)
+            B=vector[1:4]'
+            D2 = vector[5:8]'
+
+            eq[1:4] = a[2].*B .+ a[3].*D2 .+ [a[4] a[5] 0 a[6]]
+            eq[5:8] = b[2].*B .+ b[3].*A.*B .+ b[3].*B*P .+ b[4].*D2 .+ b[5].*C[2].*B .+ b[5].*B*P.+
+            [b[6] 0 b[7] b[8]].+[b[9] 0 b[10] b[11] ]*P
+         return     eq
+        end
+        Sol = nlsolve(system!, ones(8),ftol = :1.0e-20, method = :trust_region , autoscale = true)
+        D=ones(2,4)
+        D[1,:]= Sol.zero[1:4]
+        D[2,:]= Sol.zero[5:8] =#
 
 
+        #Implementing the code solve the system commented out above as a system of linear equations.
+        TOP = hcat(a[2]*Matrix{Float64}(I,4,4),   a[3]*Matrix{Float64}(I,4,4))
+        #Everything multiplying B concatenated with stuff multiplying D in the first equations
+        BOTTOMLEFT =  b[2]*I + b[3].*A *I + b[3]*P + b[5].*C[2]*I + b[5]*P
+        #Everything multiplying B in the last equations
+        BOTTOM = hcat(BOTTOMLEFT',  b[4]*Matrix{Float64}(I,4,4)) #Concatenates with stuff multiplying D
+        RHS = - vcat([a[4] a[5] 0 a[6]]',  ([b[6] 0 b[7] b[8]].+[b[9] 0 b[10] b[11] ]*P)') #Constant terms
+        #Solving the system
+        BD = (vcat(TOP,BOTTOM)\RHS)[:]
+        D=ones(2,4)
+        D[1,:]= BD[1:4]
+        D[2,:]= BD[5:8]
 
-    function system!(eq,vector::Vector)
-        #vector = rand(8)
-        #eq= rand(8)
-        B=vector[1:4]'
-        D2 = vector[5:8]'
-
-        eq[1:4] = a[2].*B .+ a[3].*D2 .+ [a[4] a[5] 0 a[6]]
-        eq[5:8] = b[2].*B .+ b[3].*A.*B .+ b[3].*B*P .+ b[4].*D2 .+ b[5].*C[2].*B .+ b[5].*B*P.+
-        [b[6] 0 b[7] b[8]].+[b[9] 0 b[10] b[11] ]*P
-     return     eq
-    end
-
-
-    Sol = nlsolve(system!, ones(8),ftol = :1.0e-20, method = :trust_region , autoscale = true)
-    D=ones(2,4)
-    D[1,:]= Sol.zero[1:4]
-    D[2,:]= Sol.zero[5:8]
 
 
 
