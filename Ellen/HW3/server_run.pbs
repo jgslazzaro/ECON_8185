@@ -1,0 +1,14 @@
+#PBS -S /bin/bash
+#PBS -q batch
+#PBS -l nodes=1:ppn=10
+#PBS -l mem=10gb
+#PBS -l walltime=48:00:00
+#PBS -N main
+#PBS -o main.out
+#PBS -e main.err
+#PBS -m abe
+#PBS -M santo279@umn.edu
+
+cd $PBS_O_WORKDIR/
+module load julia
+julia main.jl
