@@ -1,4 +1,4 @@
-using Plots, NLsolve, ForwardDiff, LinearAlgebra
+using Plots, NLsolve, ForwardDiff, LinearAlgebra, Random
 using Optim, Statistics, NLSolversBase,LaTeXStrings
 include("State_Space.jl")
 include("KalmanFilter.jl")
