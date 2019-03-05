@@ -1,5 +1,5 @@
 using Plots, NLsolve, ForwardDiff, LinearAlgebra
-using Optim, Statistics, NLSolversBase,LaTeXStrings,BlackBoxOptim
+using Optim, Statistics, NLSolversBase,LaTeXStrings
 include("State_Space.jl")
 include("KalmanFilter.jl")
 #Parameters:
@@ -96,7 +96,6 @@ lower=zeros(length(initial))
 #lower[27:30] = -1*ones(4)
 upper = ones(length(initial))
 
-blackbox = bboptimize(maxloglikelihood; SearchRange = (0.0, 1.0), NumDimensions = 8, MaxFuncEvals= 100000)
 
 bla = optimize(maxloglikelihood,lower,upper, initial,Fminbox(inner_optimizer))
 
