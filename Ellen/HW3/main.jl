@@ -84,12 +84,12 @@ original = [ρg,ρx,ρh,ρz,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρ
 maxloglikelihood(original)
 
 
-initial = rand(length(original))*0.25 #original .+ rand(length(original))*0.1
+initial = rand(length(original))*0.05 #original .+ rand(length(original))*0.1
 
 maxloglikelihood(initial)
 
 #Solver Stuff
-inner_optimizer = BFGS()
+inner_optimizer = LBFGS()
 
 lower=zeros(length(initial))
 lower[5:16] = -ones(12)
