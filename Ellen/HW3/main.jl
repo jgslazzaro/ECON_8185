@@ -15,10 +15,10 @@ include("KalmanFilter.jl")
 
 
 #Parameters to be estimated and here used in our simulated example
-gss = 0.03 #average g
+gss = log(0.01) #average g (in logs)
 τxss = 0.05 #average τx
 τhss = 0.02 #average τh
-zss = 0.0 #average z (z is in logs)
+zss = log(1) #average z (z is in logs)
 
 #Parameters to be estimated
 ρg = 0.8
@@ -64,7 +64,7 @@ steadystates = [gss,τxss,τhss,zss]
 @time A,B,C = State_Space(params_calibrated,steadystates, P,Q)
 
 
-T=2000
+T=5000
 X= zeros(5,T)
 Y = zeros(4,T)
 
@@ -86,7 +86,7 @@ end
 
 original = [ρg,ρx,ρh,ρz,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρgx,ρgh,σg,σx,σz,σh,σzg,σzx,σzh,σhx,σhg,σxg,gss,τxss,τhss,zss]
 #Initial guess
-maxloglikelihood(original)
+truelikelihood = maxloglikelihood(original)
 
 Random.seed!(0403);
 initial = original .+ randn(length(original))*0.1
@@ -94,15 +94,27 @@ initial = original .+ randn(length(original))*0.1
 
 
 #Solver Stuff
-inner_optimizer = LBFGS()
+inner_optimizer = LBFGS() #LBFGS()  # SimulatedAnneaestimates - originalling() #NelderMead() ConjugateGradient()
+println("Starting Likelihood maximization")
+println("Solver is: $(inner_optimizer)"[1:25])
 
+
+#Defining lower and upper bounds for estimator
 lower=zeros(length(initial))
-#lower[5:16] = -ones(12)
-#lower[27:30] = -1*ones(4)
-upper = ones(length(initial))
-upper[17:26] = 0.05.*ones(10)
-upper[27:30] = 0.1 * ones(4)
 
+upper = ones(length(initial))
+if length(initial) == 8
+    upper[5:8] = 0.05 *ones(4)
+end
+if length(initial)>16
+    upper[17:26] = 0.05.*ones(10)
+    lower[5:16] = -1*ones(12)
+end
+if length(initial) == 30
+    upper[27:30] = 0.1 * ones(4)
+    lower[30] = -100 #z lower bound (in logs)
+    lower[27] = -100 #g lower bound (in logs)
+end
 #making sure that the initial guess is within the bounds
 initial = min.(upper.*0.99,initial)
 initial = max.(lower.+0.0001,initial)
@@ -110,14 +122,10 @@ initial = max.(lower.+0.0001,initial)
 maxloglikelihood(initial)
 
 
-bla = optimize(maxloglikelihood,lower,upper, initial,Fminbox(inner_optimizer),Optim.Options(show_trace = true, show_every = 5))
+bla = optimize(maxloglikelihood,lower,upper, initial,Fminbox(inner_optimizer),Optim.Options(show_trace = true, show_every = 5,iterations =500, time_limit = 60*60*1.0))
 
+bla.minimum - truelikelihood
 
 estimates = bla.minimizer
 
-@save "results_$(length(original)).jld2"
-
-
-initial - estimates
-
-original - estimates
+@save "results_$(length(original))_$("$(inner_optimizer)"[1:5]).jld2"

@@ -17,6 +17,10 @@ function State_Space(params_calibrated,steadystates, P,Q)
     δ,θ,β,σ,ψ,γn,γz = params_calibrated
     gss,τxss,τhss,zss = steadystates
 
+    if ψ == 0
+        ψ =eps()
+    end
+
     #Function with the FOCs
     #Note that g and z are nonegative and are defined in logs
     zss = exp(zss)

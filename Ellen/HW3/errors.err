@@ -1,11 +1,0 @@
-/var/spool/pbs/mom_priv/jobs/4185.compute.cla.SC: line 11: $'\r': command not found
-/var/spool/pbs/mom_priv/jobs/4185.compute.cla.SC: line 12: cd: /home/santo279/ECON_8185/Ellen/HW3/: No such file or directory
-JULIA_CPU_THREADS set to 3 
-Julia 1.1.0: loaded 
-ERROR: could not open file /home/santo279/ECON_8185/Ellen/HW3/main.jl
-Stacktrace:
- [1] include at ./boot.jl:326 [inlined]
- [2] include_relative(::Module, ::String) at ./loading.jl:1038
- [3] include(::Module, ::String) at ./sysimg.jl:29
- [4] exec_options(::Base.JLOptions) at ./client.jl:267
- [5] _start() at ./client.jl:436
