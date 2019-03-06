@@ -18,7 +18,9 @@ function State_Space(params_calibrated,steadystates, P,Q)
     gss,τxss,τhss,zss = steadystates
 
     #Function with the FOCs
+    #Note that g and z are nonegative and are defined in logs
     zss = exp(zss)
+    gss = exp(gss)
 
     function SS!(eq,vector::Vector)
         k,h, c= vector
@@ -101,38 +103,29 @@ function State_Space(params_calibrated,steadystates, P,Q)
     C = V[2:end,1]*(V[1,1])
     C = hcat(C,zeros(2,1))
 
-    #=
-        function system!(eq,vector::Vector)
-            #vector = rand(8)
-            #eq= rand(8)
-            B=vector[1:4]'
-            D2 = vector[5:8]'
+    #=Checking if k coefficients are 0:
 
-            eq[1:4] = a[2].*B .+ a[3].*D2 .+ [a[4] a[5] 0 a[6]]
-            eq[5:8] = b[2].*B .+ b[3].*A.*B .+ b[3].*B*P .+ b[4].*D2 .+ b[5].*C[2].*B .+ b[5].*B*P.+
-            [b[6] 0 b[7] b[8]].+[b[9] 0 b[10] b[11] ]*P
-         return     eq
-        end
-        Sol = nlsolve(system!, ones(8),ftol = :1.0e-20, method = :trust_region , autoscale = true)
-        D=ones(2,4)
-        D[1,:]= Sol.zero[1:4]
-        D[2,:]= Sol.zero[5:8] =#
+    check1 = a[1] + a[2]*A + a[3]*C[2]
+    check2 = b[1] + b[2]*A + b[3]*A^2 + b[4]*C[2] + b[5]*C[2]*A
+
+    if abs(check1) >1e-5 || check2 > 1e-5
+        println("k coefficients are not 0")
+    end
+    =#
 
 
-        #Implementing the code solve the system commented out above as a system of linear equations.
-        TOP = hcat(a[2]*Matrix{Float64}(I,4,4),   a[3]*Matrix{Float64}(I,4,4))
-        #Everything multiplying B concatenated with stuff multiplying D in the first equations
-        BOTTOMLEFT =  b[2]*I + b[3].*A *I + b[3]*P + b[5].*C[2]*I + b[5]*P
-        #Everything multiplying B in the last equations
-        BOTTOM = hcat(BOTTOMLEFT',  b[4]*Matrix{Float64}(I,4,4)) #Concatenates with stuff multiplying D
-        RHS = - vcat([a[4] a[5] 0 a[6]]',  ([b[6] 0 b[7] b[8]].+[b[9] 0 b[10] b[11] ]*P)') #Constant terms
-        #Solving the system
-        BD = (vcat(TOP,BOTTOM)\RHS)[:]
-        D=ones(2,4)
-        D[1,:]= BD[1:4]
-        D[2,:]= BD[5:8]
-
-
+    #Implementing the code solve the system commented out above as a system of linear equations.
+    TOP = hcat(a[2]*Matrix{Float64}(I,4,4),   a[3]*Matrix{Float64}(I,4,4))
+    #Everything multiplying B concatenated with stuff multiplying D in the first equations
+    BOTTOMLEFT =  b[2]*I + b[3].*A *I + b[3]*P + b[5].*C[2]*I + b[5]*P
+    #Everything multiplying B in the last equations
+    BOTTOM = hcat(BOTTOMLEFT',  b[4]*Matrix{Float64}(I,4,4)) #Concatenates with stuff multiplying D
+    RHS = - vcat([a[4] a[5] 0 a[6]]',  ([b[6] 0 b[7] b[8]].+[b[9] 0 b[10] b[11] ]*P)') #Constant terms
+    #Solving the system
+    BD = (vcat(TOP,BOTTOM)\RHS)[:]
+    D=ones(2,4)
+    D[1,:]= BD[1:4]
+    D[2,:]= BD[5:8]
 
 
     #Rewritting to match Anmol's notation

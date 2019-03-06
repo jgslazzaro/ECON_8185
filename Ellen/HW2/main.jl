@@ -4,20 +4,20 @@ using Optim, Statistics, NLSolversBase,LaTeXStrings
 include("State_Space.jl")
 
 #Parameters:
-δ = 0.0464   #depreciation rate
+δ = 1   #depreciation rate
 θ = 1/3  #capital share of output
 β = 0.972  #Discouting
-σ = 1  #Elasticity of Intertemporal Substitution
-ψ = 3    #Labor parameter
-γn= 0.00    #Population growth rate
-γz= 0.00   #Productivitu growth rate
+σ = 2  #Elasticity of Intertemporal Substitution
+ψ = 3   #Labor parameter
+γn= 0.01    #Population growth rate
+γz= 0.03   #Productivitu growth rate
 
 
 #Parameters to be estimated and here used in our simulated example
-gss = 0.0 #average g
-τxss = 0.0 #average τx
-τhss = 0.0 #average τh
-zss = 0.0 #average z (z is in logs)
+gss = log(0.01) #average g (in logs)
+τxss = 0.01 #average τx
+τhss = 0.01 #average τh
+zss = log(1) #average z (in logs)
 
 #Parameters to be estimated
 ρg = 0.85

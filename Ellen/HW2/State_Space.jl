@@ -17,8 +17,14 @@ function State_Space(params_calibrated,steadystates, P,Q)
     δ,θ,β,σ,ψ,γn,γz = params_calibrated
     gss,τxss,τhss,zss = steadystates
 
+    if ψ == 0
+        ψ =eps()
+    end
+
     #Function with the FOCs
+    #Note that g and z are nonegative and are defined in logs
     zss = exp(zss)
+    gss = exp(gss)
 
     function SS!(eq,vector::Vector)
         k,h, c= vector
@@ -101,6 +107,15 @@ function State_Space(params_calibrated,steadystates, P,Q)
     C = V[2:end,1]*(V[1,1])
     C = hcat(C,zeros(2,1))
 
+    #=Checking if k coefficients are 0:
+
+    check1 = a[1] + a[2]*A + a[3]*C[2]
+    check2 = b[1] + b[2]*A + b[3]*A^2 + b[4]*C[2] + b[5]*C[2]*A
+
+    if abs(check1) >1e-5 || check2 > 1e-5
+        println("k coefficients are not 0")
+    end
+    =#
 
 
     #Implementing the code solve the system commented out above as a system of linear equations.
