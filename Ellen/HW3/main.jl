@@ -89,7 +89,7 @@ original = [ρg,ρx,ρh,ρz,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρ
 truelikelihood = maxloglikelihood(original)
 
 Random.seed!(0403);
-initial = original .+ randn(length(original))*0.1
+initial = original .+ randn(length(original))*0.15
 
 
 

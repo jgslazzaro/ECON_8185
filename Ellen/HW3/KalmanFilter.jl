@@ -40,7 +40,7 @@ function likelihood(Y,Ω,a)
     L = 0
 for t=1:T
     iteration = t
-    L = L + (-T*m/2 * log(2*π)-0.5*log(det(Ω[:,m*t-(m-1):(m*t)])) -
+    L = L + (-0.5*m * log(2*π)-0.5*log(det(Ω[:,m*t-(m-1):(m*t)])) -
     0.5*a[:,t]'*(Ω[:,m*t-(m-1):(m*t)]\a[:,t]))
 end
 
