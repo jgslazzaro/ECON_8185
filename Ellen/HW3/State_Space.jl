@@ -1,5 +1,17 @@
 
+
+function numgradient(f,arguments::Vector;step=1e-10)
+    n=length(arguments)
+    grad = zeros(n)
+    for i=1:n
+        e = zeros(n)
+        e[i] = 1
+        grad[i] = (f(arguments.+e*step)-f(arguments))/step
+    end
+    return grad
+end
 #This function writes the system as a Sta Space represention
+
 function State_Space(params_calibrated,steadystates, P,Q)
 
     #= δ  depreciation rate
@@ -59,14 +71,14 @@ function State_Space(params_calibrated,steadystates, P,Q)
 
 
     #log deviations
-    T=ForwardDiff.gradient(loglineq1,[kss,kss,hss,zss,τhss,gss])
+    T=numgradient(loglineq1,[kss,kss,hss,zss,τhss,gss])
     a =[-kss*T[1]/(kss*T[1]),-kss*T[2]/(kss*T[1]),-hss*T[3]/(kss*T[1]),
     -zss*T[4]/(kss*T[1]),-τhss*T[5]/(kss*T[1]),-gss*T[6]/(kss*T[1])]
     #if ψ==0
     #    a[1],a[2:end]=-1,zeros(5)
     #end
 
-    T=ForwardDiff.gradient(loglineq2,[kss,kss,kss,hss,hss,zss,τxss,gss,zss,τxss,gss])
+    T=numgradient(loglineq2,[kss,kss,kss,hss,hss,zss,τxss,gss,zss,τxss,gss])
     b = [kss*T[1]/(-kss*T[1]),kss*T[2]/(-kss*T[1]),kss*T[3]/(-kss*T[1]),hss*T[4]/(-kss*T[1]),
     hss*T[5]/(-kss*T[1]),zss*T[6]/(-kss*T[1]),τxss*T[7]/(-kss*T[1]),gss*T[8]/(-kss*T[1]),
     zss*T[9]/(-kss*T[1]),τxss*T[10]/(-kss*T[1]),gss*T[11]/(-kss*T[1])]
@@ -178,7 +190,7 @@ function State_Space(params_calibrated,steadystates, P,Q)
         return y
     end
 
-    T=ForwardDiff.gradient(yt,[kss,zss,τhss,τxss,gss])
+    T=numgradient(yt,[kss,zss,τhss,τxss,gss])
     ycoefs = [kss*T[1]/yss,zss*T[2]/yss,τhss*T[3]/yss,τxss*T[4]/yss,gss*T[5]/yss]
 
     yt([kss,zss,τhss,τxss,gss])
@@ -191,7 +203,7 @@ function State_Space(params_calibrated,steadystates, P,Q)
         return x
     end
 
-    T=ForwardDiff.gradient(xt,[kss,zss,τhss,τxss,gss])
+    T=numgradient(xt,[kss,zss,τhss,τxss,gss])
     xcoefs = [kss*T[1]/xss,zss*T[2]/xss,τhss*T[3]/xss,τxss*T[4]/xss,gss*T[5]/xss]
 
     C = [ycoefs[1] ycoefs[2] ycoefs[3] ycoefs[4] ycoefs[5];

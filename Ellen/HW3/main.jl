@@ -64,7 +64,7 @@ steadystates = [gss,τxss,τhss,zss]
 @time A,B,C = State_Space(params_calibrated,steadystates, P,Q)
 
 
-T=5000
+T=500
 X= zeros(5,T)
 Y = zeros(4,T)
 
@@ -79,12 +79,11 @@ for t=1:T
     Y[:,t] = C*X[:,t]
 end
 
-
 #plot([X[2,:],X[3,:],X[4,:],X[5,:]],title ="Wedges", labels = ["Z","tauh","taux","g"])
 #plot([X[1,:],Y[2,:],Y[1,:],Y[3,:]],title = "Endogenous Variables",labels = ["K","X","Y","L"])
 
 
-original = [ρg,ρx,ρh,ρz,ρzg,ρzx,ρzh,ρhz,ρhx,ρhg,ρxz,ρxh,ρxg,ρgz,ρgx,ρgh,σg,σx,σz,σh,σzg,σzx,σzh,σhx,σhg,σxg,gss,τxss,τhss,zss]
+original = [ρg,ρx,ρh,ρz]
 #Initial guess
 truelikelihood = maxloglikelihood(original)
 
@@ -122,7 +121,11 @@ initial = max.(lower.+0.0001,initial)
 maxloglikelihood(initial)
 
 
-bla = optimize(maxloglikelihood,lower,upper, initial,Fminbox(inner_optimizer),Optim.Options(show_trace = true, show_every = 5,iterations =500, time_limit = 60*60*1.0))
+#bla = optimize(maxloglikelihood,lower,upper, initial,Fminbox(inner_optimizer),Optim.Options(show_trace = true,
+#show_every = 5,iterations =500, time_limit = 60*60*1.0))
+
+
+bla = optimize(maxloglikelihood, initial, inner_optimizer)
 
 bla.minimum - truelikelihood
 

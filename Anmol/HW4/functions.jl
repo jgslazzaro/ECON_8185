@@ -43,10 +43,24 @@ function utility(c,l,η,μ)
     return u
 end
 
+function uc(c,l,η,μ)
+    #derivative of u with respect to c
+    uc = (η * c^(η-1) * l^(1-η)) * (c^η * l^(1-η))^(-μ)
+    return ul
+end
 
+function ul(c,l,η,μ)
+    #derivative of u with respect to l
+    ul = ((1-η) * c^η * l^(-η))*(c^η * l^(1-η))^(-μ)
+    return ul
+end
 
+function policies(A,E,Z,K,L)
 
-function KrusselSmith(A,E,Z,K,L,β,η,μ)
+return policy_a, policy_c, policy_l
+end
+
+function KrusselSmith(A,E,Z,K,L,pdfE,pdfZ;β=β,η=η,μ=μ)
 
     #Following Violante slides steps:
     #Step 1: Specify a functional form for the law of motion, for example, linear:
@@ -65,7 +79,7 @@ function KrusselSmith(A,E,Z,K,L,β,η,μ)
     w(z,K,L) = (1-θ)*z * K^θ * L^(-θ)
 
     #Step 4: Solve the household problem and obtain the decision rule with standard methods.
-    #Since I'm using only one moment, I won't create a grid for m.
+    #
 
     policy_a, policy_c, policy_l = policies(A,E,Z,K,L)
 
