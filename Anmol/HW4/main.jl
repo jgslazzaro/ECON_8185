@@ -1,6 +1,5 @@
 ﻿
-cd("C:\\Users\\jgsla\\Google Drive\\ECON_8185\\Anmol\\HW3")
-#cd("\\\\tsclient\\C\\Users\\jgsla\\Google Drive\\ECON_8185\\Anmol\\HW3")
+
 include("functions.jl")
 using  LinearAlgebra, Plots
 using  JLD2,FileIO
@@ -59,4 +58,4 @@ L = range(0,stop = 1, length = NL)
 
 
 
-λ,r,w, policy_a, policy_c, policy_l,Assets,N,Y,B,K = KrusselSmith(A,E,Z,K,L,β,η,μ,θ,δ)
+λ,r,w, policy_a, policy_c, policy_l,Assets,N,Y,B,K = KrusselSmith(A,E,Z,K,L,pdfE,pdfZ)

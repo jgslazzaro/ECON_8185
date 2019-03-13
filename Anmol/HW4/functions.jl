@@ -56,6 +56,15 @@ function ul(c,l,η,μ)
 end
 
 function policies(A,E,Z,K,L)
+    nA = length(A)
+    nE = length(Z)
+    nK = length(K)
+    nL = length(L)
+
+
+    policy_a = zeros(nA,nE,nZ,nK,nL)
+    for a=1:nA, e = 1:nE, k=1:nK , l=1:nL
+        if
 
 return policy_a, policy_c, policy_l
 end
