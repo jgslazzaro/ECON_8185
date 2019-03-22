@@ -180,6 +180,7 @@ function iterateEE(K; tol = 1e-7, η = η)
                 k = K[i]
                 #solk[i] = optimize(Eulereq, 0.0, 120,Brent()).minimizer
                 solk[i] = nlsolve(Eulereq!, [solk0[i]], autodiff = :forward).zero[1]
+                
             end
             d = maximum(abs.(solk - gk0.(K)))
             solk0 = copy(solk)
