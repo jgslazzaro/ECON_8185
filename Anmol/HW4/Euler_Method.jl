@@ -84,7 +84,7 @@ end
 δ = 1
 A = (1-β*(1-δ))/(α * β) #This will normalize the SS to 1
 kss = ((1- β*(1-δ))/(β*A*α))^(1/(α-1))
-η = 4/5
+η = 1
 μ = 1
 
 nK = 150 #number of Capital gridpoints
@@ -101,7 +101,7 @@ function iterateEE(K; tol = 1e-7, η = η)
     #guessing policy functions
     gk0(k) = 0.5*k
     gl0(k) = 4/5
-    gc0(k) = f(k) -gk0(k)
+    gc0(k) = f(k,gl0(k)) -gk0(k)
     nK = length(K)
     k=1.0
     #defining the Euler Equation:
@@ -180,7 +180,7 @@ function iterateEE(K; tol = 1e-7, η = η)
                 k = K[i]
                 #solk[i] = optimize(Eulereq, 0.0, 120,Brent()).minimizer
                 solk[i] = nlsolve(Eulereq!, [solk0[i]], autodiff = :forward).zero[1]
-                
+
             end
             d = maximum(abs.(solk - gk0.(K)))
             solk0 = copy(solk)
@@ -193,7 +193,7 @@ function iterateEE(K; tol = 1e-7, η = η)
             break
         end
     end
-    return gk0, gl0
+    return gk0, gl0,gc0
 end
 
 
@@ -202,7 +202,7 @@ end
 #nlsolve(Eulereq!,0.2.*ones(2*length(K)), autodiff = :forward)
 
 
-gk,gl = iterateEE(K)
+gk,gl,gc = iterateEE(K)
 #gk, gl = gk0, gl
 
 using Plots
@@ -210,5 +210,6 @@ plot([0.1:0.01:2*kss],[gk.(0.1:0.01:2*kss),gl.(0.1:0.01:2*kss), A*α*β*(0.1:0.0
 label = ["Capital Approximation" "Labor Approximation" "True"],legend=:bottomright)
 
 
-plot([0.1:0.01:2*kss],gk.(0.1:0.01:2*kss),label = ["Capital Approximation" ])
+#plot([0.1:0.01:2*kss],gk.(0.1:0.01:2*kss),label = ["Capital Approximation" ])
 #plot([0.1:0.01:2],gl.(0.1:0.01:2),label = ["Labor Approximation" ])
+#plot([0.1:0.01:2],gc.(0.1:0.01:2),label = ["Consumption Approximation" ])

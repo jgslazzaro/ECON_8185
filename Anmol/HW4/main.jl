@@ -1,61 +1,53 @@
-﻿
 
+using Distributions, Plots,Random
+using Optim, Interpolations
 include("functions.jl")
-using  LinearAlgebra, Plots
-using  JLD2,FileIO
+include("VFI_KS.jl")
+#Defining parameters they were taken frmom KS
+α = 0.33
+β = 0.99
+δ = 0.025
 
+η = 1.9/2.9
+μ = 1
 
-#Defining Parameters:
-#I'll use a similar calibration as KS
-β = 0.99 #Discount rate
-μ = 1  #Elasticity of intertemporal substitution
-η = 1.9/2.9 #Utility parameter
-δ = 0.025 #Depreciation rate
-θ = 0.36 #Capital Share of output
-
-
-ρe = 0.6 #autocorrelation of employment shock
-σe = 0.3 #Variance of employment shock
-ρz = 0.6 #autocorrelation of Aggregate shock
-σz = 0.2 #Variance of Aggregate shock
-
-
-fast = false #Used to get the policy functions faster, assuming we know the
-#equilibrium r and w
-
-amin = -0.0   #Debt limit
-amax= 13.0 #capital limit
-
-nE = 2 #Number of states for e
-nZ = 2 #Number of states for e
-nA = 30 #states for assets
-nK = 10 #states for aggregate Capital
-nL = 10 #states for aggregate Labor
-pdfZ,Z = Tauchen(ρz,σz,nZ)    #Z comes from Tauchen method
-Z = exp.(Z) #Z is nonnegative
-
-E = [0.0 1.0]
-
-pdfE = ones(nE,nE,nZ)
-
-pdfE[:,:,1] = [0.1 0.9; 0.1 0.9]
-pdfE[:,:,2] = [0.04 0.96; 0.04 0.96]
-
-##
-
-#Defining grids
-
-#pdfE,E = Tauchen(ρe,σe,nE)    #E comes from Tauchen method
-#pdfZ,Z = Tauchen(ρz,σz,nZ)    #Z comes from Tauchen method
-#Z = exp.(Z) #Z is nonnegative
-A = range(amin,stop = amax, length = nA) #Half points will be in the first third
-K = copy(A)
-L = range(0,stop = 1, length = NL)
-# of the grid
-
-
-#Initial guesses:
+N = 5000 #number of agents in each economy
+T = 10000 #number of simulation periods
 
 
 
-λ,r,w, policy_a, policy_c, policy_l,Assets,N,Y,B,K = KrusselSmith(A,E,Z,K,L,pdfE,pdfZ)
+nA = 50 #number of assets gridpoints
+nK = 15 #Number of aggregate capital gridpoints
+nH = 15 #Number of aggregate labor gridpoints
+
+#productivity shocks
+Z = [0.99,1.01]
+pdfZ = [1/2 1/2; 1/2 1/2]
+
+nZ=length(Z)
+
+#Employment shocks
+E = [0.0,1.0]
+pdfE =[1/4 3/4; 1/6 5/6]
+nE = length(E)
+
+#Asset grid:
+A = range(eps(),stop = 6, length = nA)
+K = range(A[1],stop = A[end], length = nK)
+H = range(eps(),stop = 1, length = nH)
+
+
+#Wages functions
+R(K,H,z)= z*α*K^(α-1)*H^(1-α) + (1-δ)
+w(K,H,z) = z*(1-α)*K^(α)*H^(-α)
+
+#Guessing Law of motions
+b = [0,1.0]
+d = [0.0,0]
+K1(K;b=b) = exp(b[1]+b[2]*log(K))
+H1(K;d=d) = exp(d[1]+d[2]*log(K))
+
+
+policy_a,policy_n,policy_c,V,b,d, csim,nsim,asim,Ksim,Hsim = KrusselSmith(A,E,pdfE,Z,pdfZ,K,H,K1,H1,b,d;
+inner_optimizer = BFGS(), iterate = "Policy",N=N,T=T)
+plot(Ksim)
