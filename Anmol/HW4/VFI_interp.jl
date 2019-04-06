@@ -3,21 +3,21 @@ using Optim, Interpolations, Plots
 include("CRRA_utility.jl")
 
 #Uncomment the section below to test this code
-#=
+
 #Defining parameters
 α = 0.3
-β = 0.9
+β = 0.99
 δ = 1
 Z = (1-β*(1-δ))/(α * β) #This will normalize the SS to 1
 ass = ((1- β*(1-δ))/(β*Z*α))^(1/(α-1))
-η = 2/3
+η = 1
 μ = 1
 
 
-R(a,n)= 1#α*Z*a^(α-1)+(1-δ)
+R(a,n)= α*Z*a^(α-1)+(1-δ)
 w(a,n) = 1.1
 
-nA = 35 #number of Capital gridpoints
+nA = 50 #number of Capital gridpoints
 
 
 
@@ -31,7 +31,7 @@ pdfE =[3/4 1/4; 5/6 1/6]
 nE = length(E)
 
 #Asset grid:
-A = range(-1,stop = 6, length = nA)
+A = range(0.01,stop = 3, length = nA)
 #A = zeros(nA)
 #A[1:Int64(3/5*nA)] = range(-2.5,stop=ass,length=Int64(3*nA/5))
 #A[Int64(3*nA/5)+1:end] = range(ass+2*ass/nA,stop=8*ass,length=Int64(2*nA/5)) =#
@@ -115,9 +115,9 @@ function VFI(A,E,pdfE;α = α,β = β, η = η, μ =μ,inner_optimizer = NelderM
     policy_c(a,e) = c(a,e,policy_n(a,e),policy_a(a,e))
     return  policy_a,policy_n,policy_c,V
 end
-#@time policy_a, policy_n, policy_c, V = VFI(A,E,pdfE;α = α,β = β, η = η, μ =μ,inner_optimizer = BFGS())
+@time policy_a, policy_n, policy_c, V = VFI(A,E,pdfE;α = α,β = β, η = η, μ =μ,inner_optimizer = BFGS())
 
 #plot(A[1]:0.05:A[end],[policy_a.(A[1]:0.05:A[end],1) Z*α*β.*(A[1]:0.05:A[end]).^α A[1]:0.05:A[end]], label =["Approximation" "True" "45" ]) #log utility, exogenous labor case
-#plot(A[1]:0.05:A[end],[policy_a.(A[1]:0.05:A[end],1) policy_a.(A[1]:0.05:A[end],0) A[1]:0.05:A[end]],label =["Employed", "Unemployed","45"],legend = :bottomright)
+plot(A[1]:0.05:A[end],[policy_a.(A[1]:0.05:A[end],1) policy_a.(A[1]:0.05:A[end],0) A[1]:0.05:A[end]],label =["Employed", "Unemployed","45"],legend = :bottomright)
 
 #plot(A,[policy_a.(A) Z*α*β.*(A).^α A])

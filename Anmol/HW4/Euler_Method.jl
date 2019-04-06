@@ -4,7 +4,7 @@
 #u'(c)/(βu'(c')) = αAk'^(α-1) + 1-δ
 
 #Let's first define the utility functions (CRRA)
-using NLsolve, Optim
+using NLsolve, Optim, Interpolations
 function u(c,l;η = η,μ = μ)
     if (c<=0) || (η<1 && l==0)
         u=-Inf
@@ -79,25 +79,25 @@ function fl(k,l;δ = δ, A = A, α = α, η = η)
 end
 
 #Defining parameters
-α = 0.3
-β = 0.9
-δ = 1
+α = 0.33
+β = 0.99
+δ = 0.025
 A = (1-β*(1-δ))/(α * β) #This will normalize the SS to 1
 kss = ((1- β*(1-δ))/(β*A*α))^(1/(α-1))
-η = 1
+η = 4/5
 μ = 1
 
-nK = 150 #number of Capital gridpoints
+nK = 50 #number of Capital gridpoints
 
 
 #Capital grid:
-K=zeros(nK)
-K[1:Int64(2*nK/3)] = range(0.1 * kss,stop=kss,length=Int64(2*nK/3))
-K[Int64(2*nK/3)+1:end] = range(kss+2*kss/nK,stop=2*kss,length=Int64(1*nK/3))
+
+K= range(0.01,stop=2,length=nK)
+
 #
 
 
-function iterateEE(K; tol = 1e-7, η = η)
+function iterateEE(K; tol = 1e-6, η = η)
     #guessing policy functions
     gk0(k) = 0.5*k
     gl0(k) = 4/5
@@ -163,35 +163,36 @@ function iterateEE(K; tol = 1e-7, η = η)
     while d>tol
         #global gk0, gl0,it,d,sol,solk0,soll0,k
         if η!=1
-           for i = 1:nK
+          for i = 1:nK
               #global gk0, gl0,it,d,sol,solk0,soll0,k]
-              #sol[i,:] = optimize(Eulereq, [0.0,0.0], [5,1.0],[0.9,4/5],
-              #Fminbox(LBFGS())).minimizer
-              sol[i,:] = nlsolve(Eulereq!, [solk0[i],soll0[i]], autodiff = :forward).zero
+              sol[i,:] = optimize(Eulereq, [0.0,0.0], [5,1.0],[0.9,4/5],
+              Fminbox(BFGS())).minimizer
+              #sol[i,:] = nlsolve(Eulereq!, [solk0[i],soll0[i]], autodiff = :forward).zero
             end
             d = maximum(abs.(sol .- hcat( gk0.(K),gl0.(K))))
             solk0 = copy(sol[:,1])
             soll0 = copy(sol[:,2])
-            gl0(k) =g1(k,soll0; K = K)
-            gk0(k) =g1(k,solk0; K = K)
+            gl0(k) =LinearInterpolation(K,soll0, extrapolation_bc=Line())(k)
+            gk0(k) =LinearInterpolation(K,solk0, extrapolation_bc=Line())(k)
+            #gl0(k) =g1(k,soll0; K = K)
+            #gk0(k) =g1(k,solk0; K = K)
 
         else
             for i = 1:nK
                 k = K[i]
-                #solk[i] = optimize(Eulereq, 0.0, 120,Brent()).minimizer
-                solk[i] = nlsolve(Eulereq!, [solk0[i]], autodiff = :forward).zero[1]
+                solk[i] = optimize(Eulereq, 0.0, 120,Brent()).minimizer
+                #solk[i] = nlsolve(Eulereq!, [solk0[i]], autodiff = :forward).zero[1]
 
             end
             d = maximum(abs.(solk - gk0.(K)))
             solk0 = copy(solk)
-            gk0(k) = g1(k,solk0; K = K)
+            gk0(k) = LinearInterpolation(K,solk0, extrapolation_bc=Line())(k)
+            #gk0(k) = g1(k,solk0; K = K)
             gl0(k) = 1.0
         end
         it +=1
         println("end of iteration $(it), distance is $(d)")
-        if it>50
-            break
-        end
+
     end
     return gk0, gl0,gc0
 end
@@ -202,14 +203,14 @@ end
 #nlsolve(Eulereq!,0.2.*ones(2*length(K)), autodiff = :forward)
 
 
-gk,gl,gc = iterateEE(K)
+@time gk,gl,gc = iterateEE(K)
 #gk, gl = gk0, gl
 
 using Plots
-plot([0.1:0.01:2*kss],[gk.(0.1:0.01:2*kss),gl.(0.1:0.01:2*kss), A*α*β*(0.1:0.01:2*kss).^α],
-label = ["Capital Approximation" "Labor Approximation" "True"],legend=:bottomright)
+#plot([0.1:0.01:K[end]],[gk.(0.1:0.01:K[end]),gl.(0.1:0.01:K[end]), A*α*β*(0.1:0.01:K[end]).^α],
+#label = ["Capital Approximation" "Labor Approximation" "True"],legend=:bottomright)
 
 
-#plot([0.1:0.01:2*kss],gk.(0.1:0.01:2*kss),label = ["Capital Approximation" ])
+plot([0.1:0.01:K[end]],[0.1:0.01:K[end],gk.(0.1:0.01:K[end])],label = ["45","Capital Approximation" ], legend = :bottomright)
 #plot([0.1:0.01:2],gl.(0.1:0.01:2),label = ["Labor Approximation" ])
 #plot([0.1:0.01:2],gc.(0.1:0.01:2),label = ["Consumption Approximation" ])

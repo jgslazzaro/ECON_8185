@@ -2,7 +2,7 @@
 #This code defines typical CRRA utility functions
 
 
-function u(c,l;η = η,μ = μ)
+function u(c::Float64,l::Float64;η::Real = η,μ::Real = μ)
     if (c<=0) || (η<1 && l<=0)
         if μ ==1
             u=log(eps(0.)^η * l^(1-η))+ 1e5*min(c,l) - eps(0.)
