@@ -90,8 +90,13 @@ function VFI(δ,θ,β,ρ,σ,μ,γn=0,γz=0,ϕ=0,K=500,kmax=10,kmin=0.01,Z=10,Xnn
     k = range(kmin,stop = kmax, length=K)
     H=K
 #grid for z
+    if Z==1
+        z=exp(μ)
+        Π =1
+    else
     Π, z = Tauchen(ρ,σ,Z,μ) #Transition matrix and values for log(z)
     z=exp.(z) #recover z
+    end
 #grid for h
     h = range(0,stop = 1, length = K)
 #utility Function:
@@ -139,18 +144,13 @@ while distance >= tol
  distance = maximum(abs.(V-Vf))
 
 end
-#Find labor policy:
+#Finally, find labor policy:
     if ϕ>0
         policy_h = Array{Int64,2}(undef,K,Z)
         for k0 in 1:K, z0 in 1:Z
             policy_h[k0,z0] = policy_h1[k0,z0,policy_k[k0,z0]]
         end
     end
-#Finally, consumption policy:
-c = consumption(k,z,h,γn,γz,ϕ,δ,θ, Xnneg)
-policy_c = Array{Float64,2}(undef,K,Z)
-for k0 in 1:K, z0 in 1:Z
-    policy_c[k0,z0] = c[k0,z0,policy_k[k0,z0],policy_h[k0,z0]]
-end
-    return V, policy_k,policy_h,policy_c,k,h, z, Π
+
+    return V, policy_k,policy_h, k,h, z, Π
 end

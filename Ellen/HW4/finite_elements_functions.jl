@@ -1,3 +1,5 @@
+#This script defines some functions used for the finite elements
+#method. It is fairly general and can be used for severa univariate functions
 using Optim, LinearAlgebra, FastGaussQuadrature
 
 

@@ -28,9 +28,6 @@ function VFI_KS(A::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwiceP
     #Defining consumption function:
     c(a::Float64,e::Float64, n::Float64 ,a1::Float64,k::Float64,h::Float64,z::Float64) =  R(k,h,z)*a+e*w(k,h,z)*n-a1
 
-    #Constructing the stochastic pdf
-    pdf = [πz*πe for πz in pdfZ, πe in pdfE] #nZxnZxnExnE
-    pdf = permutedims(pdf, (1,3,2,4)) #nZxnExnZxnE
 
     #Guess for Value function
     V(a::Float64,e::Float64,k::Float64,h::Float64,z::Float64) = Vinitial(a,e,K,H,z) #u(c(a,e,0.0,a,k,h,z),1.0)

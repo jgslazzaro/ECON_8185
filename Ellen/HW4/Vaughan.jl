@@ -1,37 +1,16 @@
-#Author: Joao Lazzaro
-#This code defines a fuction to iterate the Riccati equation as in Ellen's notes
-using ForwardDiff
-using NLsolve
-using LinearAlgebra
-function Riccati(A,B,Q,R,W,β,γ1=10^(-5),γ2=10^(-5),p=1)
+using LinearAlgebra, NLsolve
+#This function implements the Vaughan's method
 
-#γ s are the convergece parameter ad p is the matrix p norm we are usig
-#Guess initial value for P
-
-
-
-P=ones(size(A)[2],size(A)[1])
-F=ones(size(R)[1],size(W)[1])
-
-#initialize loop:
-distP = 10; distF = 10; i=1
-
-#see the notes to understand this. It is basically a translation from there to Julia
-while distP>=γ1.*opnorm(P,p) || distF>=γ2*opnorm(F,p)
-    #global P, F, i, distP, distF, P1, F1
-    P1 = Q + A'*P*A - A'*P*B*((R+B'* P *B)\B')*P*A
-    F1 = (R+B'*P*B) \ B' * P * A
-    distP = opnorm(P1-P,p)
-    distF = opnorm(F1-F,p)
-    i=i+1
-
-    P=copy(P1)
-    F = copy(F1)
-end
-
-F = F+R\W'
-
-return P, F
+function Vaughan(A,B,Q,R,W)
+    L=size(A)[1]
+    ℋ = [inv(A)  (A\B)*(R\B');Q/A Q*(A\B)*(R\B')+A'] #This is the coefficient matrix.
+    V= eigen(ℋ).vectors #Take the eigenvector matrix The first
+    #Note that Julia puts the eigenvalues out of the unit circle in the bottom of the matrix,
+    #while in the lecture notes they are at the top
+    P = V[L+1:end,L+1:end] / (V[1:L,L+1:end])  #Get the P matrix
+    F1= (R+B'*P*B) \ B' * P * A
+    F = F1 + R\W' #Finally, compute F
+    return P, F
 end
 
 
@@ -57,15 +36,15 @@ end
 
 #Euler Equation:
 #using NLsolve we need to define the Euler equation as functions
-function ee!(eq, x;β = β,δ = δ,θ = θ,ϕ = ϕ,γn=γn,γz = γz)
+function ee!(eq, x;β = β,δ = δ,θ = θ,ϕ = ϕ,γn=γn,γz = γz,zss=zss)
     h=(x[2])
     k=(x[1])
-    eq[1] = k^(1-θ) - (β*θ / ((1+γz)-β*(1-δ))) *h^((1-θ))
+    eq[1] = k - exp(zss)*(β*θ)^(1/(1-θ))
     eq[2] = (1-h)*((1-θ) *k^θ * h^(-θ)) - ϕ*(k^θ * h^(1-θ) +(1-δ)*k - (1+γn)*(1+γz)k)
 end
 
-function LQ(δ,β,ρ,σ,μ,ϕ,γn,γz)
 
+function run_Vaughan(δ,β,ρ,σ,μ,ϕ,γn,γz)
     #Getting the Steady States from Euler Equations
     S = nlsolve(ee!, [0.1,0.8],ftol = :1.0e-9, method = :trust_region , autoscale = true)
     #kss=exp(μ)*((1-β*(1-δ))/(θ*β))^(1/(θ-1))
@@ -111,11 +90,8 @@ function LQ(δ,β,ρ,σ,μ,ϕ,γn,γz)
     Q1 = Q- W*(R\W')
 
 
-    P, F = Riccati(A1,B1,Q1,R,W,β)
 
-    F1= F-inv(R) *W';F[:,3] = F[:,3]/2;P[3,:]=1.41*P[3,:];
-
-
-
-return A,B,C,P ,F,A1,B1, F1,kss,hss
+    Pv,Fv = Vaughan(A1,B1,Q1,R,W)
+    F1v= Fv-inv(R) *W';Fv[:,3] = Fv[:,3]/2;Pv=2*Pv;
+    return A,B,C,Fv,Pv,kss,hss
 end

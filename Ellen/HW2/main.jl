@@ -1,29 +1,30 @@
-using Plots, NLsolve, ForwardDiff, DataFrames, LinearAlgebra, QuantEcon, Plots
-using Optim, Statistics, NLSolversBase,LaTeXStrings
 
-include("State_Space.jl")
+
+
+include("functions.jl")
+
 
 #Parameters:
-δ = 1   #depreciation rate
+δ = 0.0464   #depreciation rate
 θ = 1/3  #capital share of output
-β = 0.972  #Discouting
+β = 0.9  #Discouting
 σ = 2  #Elasticity of Intertemporal Substitution
-ψ = 3   #Labor parameter
-γn= 0.01    #Population growth rate
-γz= 0.03   #Productivitu growth rate
+ψ = 0.5    #Labor parameter
+γn= 0.00    #Population growth rate
+γz= 0.00   #Productivitu growth rate
 
 
 #Parameters to be estimated and here used in our simulated example
 gss = log(0.01) #average g (in logs)
-τxss = 0.01 #average τx
-τhss = 0.01 #average τh
-zss = log(1) #average z (in logs)
+τxss = 0.05 #average τx
+τhss = 0.02 #average τh
+zss = log(1) #average z (z is in logs)
 
 #Parameters to be estimated
-ρg = 0.85
-ρx = 0.73
-ρh = 0.74
-ρz = 0.98
+ρg = 0.8
+ρx = 0.5
+ρh = 0.7
+ρz = 0.9
 ρzg= 0.0
 ρzx = 0.0
 ρzh = 0.0
@@ -37,16 +38,16 @@ zss = log(1) #average z (in logs)
 ρgx = 0.0
 ρgh = 0.0
 
-σg= 0.035
-σx = 0.08
-σz = 0.05
+σg= 0.02
+σx = 0.01
+σz = 0.02
 σh = 0.01
-σzg= 0.02
-σzx = 0.001
-σzh = 0.02
-σhx = 0.01
-σhg = 0.02
-σxg = 0.02
+σzg= 0.0
+σzx = 0.00
+σzh = 0.0
+σhx = 0.0
+σhg = 0.0
+σxg = 0.0
 
 #In matrix form
 P = [ρz ρzh ρzx ρzg;
@@ -60,7 +61,7 @@ Q = [σz σzh σzx σzg;
 
 params_calibrated = [δ,θ,β,σ,ψ,γn,γz,]
 steadystates = [gss,τxss,τhss,zss]
-A,B,C = State_Space(params_calibrated,steadystates, P,Q)
+@time A,B,C = State_Space(params_calibrated,steadystates, P,Q)
 
 T=500
 X= zeros(5,T)
@@ -75,7 +76,7 @@ for t=1:T
     Y[:,t] = C*X[:,t]
 end
 
-
+Plots
 plot([X[2,:],X[3,:],X[4,:],X[5,:]],title ="Wedges", labels = ["Z","tauh","taux","g"])
 plot([X[1,:],Y[2,:],Y[1,:],Y[3,:]],title = "Endogenous Variables",labels = ["K","X","Y","L"])
 
