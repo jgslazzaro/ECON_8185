@@ -19,7 +19,7 @@ end
 #X is the state variables vector (and a constant) while u is the cotrol variables vector
 function u(x::Vector;β = β,δ = δ,θ = θ,ϕ = ϕ,γn=γn,γz = γz)
     c = x[1]^θ *(exp(x[2])*x[5])^(1-θ) -(1+γz) *(1+γn)x[4]  + (1-δ)*x[1]
-    investment = (1+γz) *(1+γn)x[4]  + (1-δ)*x[1]
+    investment = (1+γz) *(1+γn)x[4]  - (1-δ)*x[1]
     if c<=0
         u = -Inf #any value of negative consumtpion in the grid will be avoided
     elseif investment <0

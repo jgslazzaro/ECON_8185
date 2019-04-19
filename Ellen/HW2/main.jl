@@ -1,30 +1,24 @@
-
-
-
-include("functions.jl")
-
-
 #Parameters:
 δ = 0.0464   #depreciation rate
 θ = 1/3  #capital share of output
 β = 0.9  #Discouting
-σ = 2  #Elasticity of Intertemporal Substitution
-ψ = 0.5    #Labor parameter
+σ = 1 #Elasticity of Intertemporal Substitution
+ψ =  1  #Labor parameter
 γn= 0.00    #Population growth rate
 γz= 0.00   #Productivitu growth rate
-
+β=β*(1+γn)
 
 #Parameters to be estimated and here used in our simulated example
-gss = log(0.01) #average g (in logs)
-τxss = 0.05 #average τx
+gss = 0.01 #average g (in logs)
+τxss = 0.01 #average τx
 τhss = 0.02 #average τh
 zss = log(1) #average z (z is in logs)
 
 #Parameters to be estimated
-ρg = 0.8
-ρx = 0.5
-ρh = 0.7
-ρz = 0.9
+ρg = 0.2
+ρx = 0.4
+ρh = 0.6
+ρz = 0.8
 ρzg= 0.0
 ρzx = 0.0
 ρzh = 0.0
@@ -38,10 +32,10 @@ zss = log(1) #average z (z is in logs)
 ρgx = 0.0
 ρgh = 0.0
 
-σg= 0.02
-σx = 0.01
-σz = 0.02
-σh = 0.01
+σg= 0.05
+σx = 0.02
+σz = 0.1
+σh = 0.07
 σzg= 0.0
 σzx = 0.00
 σzh = 0.0
@@ -61,11 +55,50 @@ Q = [σz σzh σzx σzg;
 
 params_calibrated = [δ,θ,β,σ,ψ,γn,γz,]
 steadystates = [gss,τxss,τhss,zss]
-@time A,B,C = State_Space(params_calibrated,steadystates, P,Q)
+include("functions.jl")
 
-T=500
+#First get the LQ policy function:
+
+R, B1y,P,F1,B2,A2y,kss,hss,Wy =   LQ_distorted(params_calibrated,steadystates)
+
+K = range(kss-2,stop=kss+2,length =300)
+
+u1= zeros(300,2)
+uf = copy(u1)
+
+
+
+for i=1:300
+    global u,u1
+    u1[i,:] += -F1*[K[i],zss,τhss, τxss, gss,1]
+    uf[i,:] = u1[i,:]/(sqrt(β)) - (R\Wy')*[K[i],zss,τhss, τxss, gss,1]
+end
+
+
+using Plots
+plot(K,[K uf[:,1]],labels = ["45" "LQ"],legend = :bottomright, title = "LQ capital policy function")
+savefig("figure1.png")
+
+
+#Let's now work with the Vaughan method
+#In matrix form
+P = [ρz ρzh ρzx ρzg;
+ρhz ρh ρhx ρhg ;
+ρxz ρxh ρx ρxg ;
+ρgz ρgh ρgx ρg]
+Q = [σz σzh σzx σzg;
+σzh σh σhx σhg ;
+σzx σhx σx σxg ;
+σzg σhg σxg σg]
+
+A,B,C = State_Space(params_calibrated,steadystates, P,Q)
+
+T=200
+
 X= zeros(5,T)
 Y = zeros(4,T)
+using Random
+Random.seed!(1234)
 S = randn(5,T) #vector with shocks
 
 #Simulating data
@@ -76,9 +109,20 @@ for t=1:T
     Y[:,t] = C*X[:,t]
 end
 
-Plots
-plot([X[2,:],X[3,:],X[4,:],X[5,:]],title ="Wedges", labels = ["Z","tauh","taux","g"])
+#Plots
+plot([X[2,:],X[3,:],X[4,:],X[5,:]],title ="Wedges", labels = ["Z","tau_h","taux","g"],legend=:bottomright)
+savefig("figure2.png")
 plot([X[1,:],Y[2,:],Y[1,:],Y[3,:]],title = "Endogenous Variables",labels = ["K","X","Y","L"])
+savefig("figure3.png")
+
+w =  θ*(X[1,:].-Y[3,:]) .+ (1-θ)*X[2,:]
+dividends = Y[1,:].- Y[3,:] .-Y[2,:].+w
+
+
+
+plot(dividends,labels = ["Dividends"],legend = :bottomright)
+savefig("figure4.png")
+
 
 #Only efficiency shocks
 Xz= ones(5,T).* [0,0,0,0,0]
@@ -141,6 +185,7 @@ plot(plot([Yz[1,:],Y[1,:]],title = "Only efficiency wedge",labels = ["Yz","Y"]),
     plot([Yx[1,:],Y[1,:]],title = "Only investment wedge",labels = ["Yx","Y"]),
 plot([Yg[1,:],Y[1,:]],title = "Only government wedge",labels = ["Yg","Y"]))
 
+savefig("figure5.png")
 #No efficiency shocks
 XZ= ones(5,T).* [0,0,0,0,0]
 YZ = ones(4,T).*[0,0,0,0]
@@ -201,7 +246,4 @@ plot(plot([YZ[1,:],Y[1,:]],title = "No efficiency wedge",labels = ["YZ","Y"]),
     plot([YH[1,:],Y[1,:]],title = "No labor wedge",labels = ["YH","Y"]),
     plot([YX[1,:],Y[1,:]],title = "No investment wedge",labels = ["YX","Y"]),
 plot([YG[1,:],Y[1,:]],title = "No government wedge",labels = ["YG","Y"]))
-
-#If real data is wanted
-#DATA = loaddata()
-#Y = vcat(DATA[:GDP_dev]',DATA[:Investment_dev]',DATA[:Labor_dev]',DATA[:GOV_dev]')
+savefig("figure6.png")

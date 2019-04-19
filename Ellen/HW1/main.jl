@@ -28,7 +28,7 @@ include("Riccati.jl")
 
 #VFI
 #grid for k
-K = 100 #number of gridpoints for capital
+K = 150 #number of gridpoints for capital
 kmax = 3*kss # maximum value for k (set low if no productivity shocks!)
 kmin = 1/5*kss #minimum value for k
 #grid for z

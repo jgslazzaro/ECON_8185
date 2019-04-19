@@ -228,38 +228,50 @@ function u(x::Vector;params_calibrated = params_calibrated)
     c = r*k + (1-τh)*w*h + g -(1+τx)*((1+γn)*(1+γz)*k1-(1-δ)*k)
     if c<=0
         u = -Inf #any value of negative consumtpion in the grid will be avoided
-    elseif (σ ==1.0 && ψ!=0)
+    elseif  (σ ==1.0 && ψ!=0)
         u = log(c) + ψ * log(1-h)
     elseif (σ ==1.0 && ψ==0)
         u = log(c)
     else
-        u = ((c*(1-h)^ψ)^(1-σ)) / (1-σ)
+        u = (c*(1-h)^ψ)^(1-σ) / (1-σ)
+
     end
     return u
 end
 
 function LQ_distorted(params_calibrated,steadystates)
     #This function implements the LQ method for a distorted economy
+#Function with the FOCs
+#Note that g and z are nonegative and are defined in logs
 
+δ,θ,β,σ,ψ,γn,γz = params_calibrated
+gss,τxss,τhss,zss = steadystates
 
-if params_calibrated[5]==0
-    #params_calibrated[1]==eps()
+if ψ == 0
+    ψ =eps()
 end
 
 #Function with the FOCs
 #Note that g and z are nonegative and are defined in logs
-
-function SS!(eq,vector::Vector;params_calibrated = params_calibrated,steadystates= steadystates )
-    δ,θ,β,σ,ψ,γn,γz = params_calibrated
-    gss,τxss,τhss,zss = steadystates
+zss = exp(zss)
+gss = exp(gss)
+function SS!(eq,vector::Vector)
     k,h, c= vector
-    eq[1]=k/h-((1+τxss)*(1-β*(1+γz)^(-σ)*(1-δ))/(β*(1+γz)^(-σ)*θ*exp(zss)^(1-θ)) )^(1/(θ-1))
-    eq[2]=c-( (k/h)^(θ-1)*exp(zss)^(1-θ) -(1+γz)*(1+γn)+1-δ)*k+ gss
-    eq[3]=ψ*c-( (1-τhss)*(1-θ)*(k/h)^θ *exp(zss)^(1-θ))*(1-h)
+    if σ!=1
+    eq[1]=k/h-((1+τxss)*(1-β*(1+γz)^(-σ)*(1-δ))/(β*(1+γz)^(-σ)*θ*zss^(1-θ)) )^(1/(θ-1))
+    eq[2]=c-( (k/h)^(θ-1)*zss^(1-θ) -(1+γz)*(1+γn)+1-δ)*k+gss
+    eq[3]=ψ*c-( (1-τhss)*(1-θ)*(k/h)^θ *zss^(1-θ))*(1-h)
+    else
+    eq[1] = ((1+τxss)*((1+γz)*(1+γn)/β  -(1-δ)))^(1/(1-θ))*k -(θ)^(1/(1-θ))*zss*h
+    eq[2] = (ψ*c*zss^(θ-1)/((1-τhss)*(1-θ)))^(1/θ) - k/h *(1-h)^(1/θ)
+    eq[3] = c -( θ*k^θ*(zss*h)^(1-θ)+(1-τxss)*(1-θ)*k^θ*(zss*h)^(1-θ) -(1+τxss)*((1+γn)*(1+γz)k-(1-δ)*k))
+    end
 end
 
-S= nlsolve(SS!, [3,0.9,.4],ftol = :1.0e-20)
-kss,hss,css = S.zero
+
+
+SteadyState = nlsolve(SS!, [3,0.25,4],ftol = :1.0e-20)
+kss,hss,css = SteadyState.zero
 #GDP
 yss = kss^(θ)*(zss*hss)^(1-θ)
 xss = (1+γz)*(1+γn)*kss-(1-δ)*kss
@@ -270,6 +282,7 @@ rss = θ*kss^(θ-1)*(exp(zss)*hss)^(1-θ)
 vss= [kss,zss,τhss, τxss, gss,1,kss,hss, kss, hss]
 #Find the Gradient and Hessian AT THE SS
 uss=u(vss)
+
 ∇u = ForwardDiff.gradient(u,vss)
 Hu = ForwardDiff.hessian(u,vss)
 
@@ -285,10 +298,18 @@ M = e.* (uss - ∇u'*vss .+ (0.5 .* vss' *Hu *vss) ) * e' +
 
 vss'*M*vss
 
+
+
 #Translating M into the Matrices we need:
 Q = M[1:8,1:8]
 W = M[1:8,9:10]
 R = M[9:10,9:10]
+
+xss = vss[1:8]
+uss = vss[9:10]
+
+xss'*Q*xss+uss'*R*uss+2*xss'*W*uss
+
 
 
 A = [0 0 0 0 0 0 0 0; #capital
@@ -323,13 +344,20 @@ A1 = sqrt(β) *(A -B* (R\W'))
 B1 = sqrt(β) *B
 Q1 = Q- W*(R\W')
 
+
+xss1 = xss*β^(1/2)
+uss1 = (uss+R\W'*xss)*β^(1/2)
+
+xss1'*Q1*xss1 + uss1'*R*uss1
+
+
 A1y = A1[1:6,1:6]
 A1z = A1[1:6,7:8]
 B1y = B1[1:6,:]
 Q1y = Q1[1:6,1:6]
 Q1z = Q1[1:6,7:8]
 
-    #Big K litlle k:
+#Big K litlle k:
 Θ = [1 0 0 0 0 0;
     0 0 0 0 0 0]
 Ψ = [0 0;
@@ -346,12 +374,12 @@ B2 = B1y + A1z*Ψ1
 Q2 = Q1y+Q1z*Θ1
 Abar = A1y - B1y*(R\Ψ1')*Q1z'
 
-P = Vaughan(A2,B2,R,B1y,Q2,Abar)
-Pr = Riccati(A2,B2,R,B1y,Q2,Abar)
+P,F1 = Vaughan(A2,B2,R,B1y,Q2,Abar)
 
 
-return R, B1y,P,B2,A2[1:6,1:6],kss,Wy
+return R, B1y,P,F1,B2,A2[1:6,1:6],kss,hss,Wy
 end
+
 function Vaughan(A2,B2,R,B1y,Q2,Abar)
     L=size(A2)[1]
     ℋ = [inv(A2)  (A2\B2)*(R\B1y');Q2/A2 Q2*(A2\B2)*(R\B1y')+Abar'] #This is the coefficient matrix.
@@ -366,37 +394,8 @@ function Vaughan(A2,B2,R,B1y,Q2,Abar)
     end
 
     P = (V[L+1:end,1:L]) / (V[1:L,1:L])  #Get the P matrix
-
+    F1 = (R+B1y'*P*B2)\B1y'*P*A2
     #F2= (R+B2'*P*B2) \ B2' * P * A2
     #F = F2 + R\Wy' #Finally, compute F
-    return P
-end
-
-
-
-
-function Riccati(A2,B2,R,B1y,Q2,Abar;γ1=10^(-5),γ2=10^(-5),p=1)
-
-#γ s are the convergece parameter ad p is the matrix p norm we are usig
-#Guess initial value for P
-
-P = -Matrix{Float64}(I, size(A2)[2],size(A2)[1])
-F=ones(size(R)[1],size(W)[1])
-
-#initialize loop:
-distP = 10; distF = 10; i=1
-
-#see the notes to understand this. It is basically a translation from there to Julia
-while distP>=γ1.*opnorm(P,p) #|| distF>=γ2*opnorm(F,p)
-#    global P, F, i, distP, P1, F1, distF
-    P1 = inv((A2/(P-Q2))*Abar'-(B2/R)*B1y')
-    distP = opnorm(P1-P,p)
-    i=i+1
-
-    P=copy(P1)
-end
-
-F = F+R\W'
-
-return P
+    return P,F1
 end
