@@ -3,9 +3,9 @@
 
 
 function u(c::Float64,l::Float64;η::Real = η,μ::Real = μ)
-    if (c<=0) || (η<1 && l<=0)
+    if (c<=0) || (η!=1 && l<=0)
         if μ ==1
-            u=log(eps(0.)^η * l^(1-η))+ 1e5*min(c,l) - eps(0.)
+            u= log(eps(0.)^η * l^(1-η))+ 1e5*min(c,l) - eps(0.)
         else
             u=((eps(0.)^η * l^(1-η))^(1-μ) )/ (1-μ)-eps(0.) + 1e5*1e5*min(c,l)
         end

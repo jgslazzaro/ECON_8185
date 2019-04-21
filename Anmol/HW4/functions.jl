@@ -36,25 +36,38 @@ function simMC(S,pdf,T,s0)
     #This function simulates a Markov chain
     #S possible states
     #pdF transition matrix of the states
+    #n number of state variables controlled by pdf
     #T simulation length
     #s0 initial state
-    nS = length(S)
-    ssim = fill(s0, T)
-    r = rand(T)
-    s=1
-    #Simulating the economy
-    for t=2:T
-        s = findfirst(S.==ssim[t-1])
-
-        ps = pdf[s,1]
-        for i=1:nS
-            if r[t]<=ps
-                ssim[t]=S[i]
-                break
-            else
-                ps+=pdf[s,i+1]
-            end
+nS = length(S)
+ssim = fill(s0, T)
+r = rand(T)
+s=1
+#Simulating the economy
+for t=2:T
+    s = findfirstn(S,ssim[t-1])
+    ps = pdf[s,1]
+    for i=1:nS
+        if r[t]<=ps
+            ssim[t]=S[i][:]
+            break
+        else
+            ps+=pdf[s,i+1]
         end
     end
+end
     return ssim
+end
+
+function findfirstn(A,b)
+#this function finds the first index in which an element of A equals b
+s=0
+nA=length(A)
+    for i=1:nA
+        if A[i] == b
+            s = i
+            break
+        end
+    end
+        return s
 end
