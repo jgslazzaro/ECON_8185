@@ -5,15 +5,15 @@ using JLD2, FileIO
 include("functions.jl")
 include("VFI_KS.jl")
 #Defining parameters they were taken frmom KS
-α = 0.36
-β = 0.99
-δ = 0.025
+const α = 0.36
+const β = 0.99
+const δ = 0.025
 
-η = 1.0#1.9/2.9
-μ = 1.0
+const η = 1.0#1.9/2.9
+const μ = 1.0
 
-N = 5000 #number of agents in each economy
-T = 2000 #number of simulation periods
+const N = 5000 #number of agents in each economy
+const T = 2000 #number of simulation periods
 
 
 nA = 35 #number of assets gridpoints
@@ -54,7 +54,6 @@ K1(K::Float64,z::Float64;b::Array{Float64,2}=b,Z::Array{Float64,1} = Z) = exp(b[
 H1(K::Float64,z::Float64;d::Array{Float64,2}=d,Z::Array{Float64,1}=Z) = exp(d[findfirst(Z.==z),1]+d[findfirst(Z.==z),2]*log(K))
 
 #@time K1(3.0,1.01)
-
 #@time H1(3.0,1.01)
 
 

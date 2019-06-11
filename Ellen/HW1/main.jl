@@ -28,7 +28,7 @@ include("Riccati.jl")
 
 #VFI
 #grid for k
-K = 150 #number of gridpoints for capital
+K = 60 #number of gridpoints for capital
 kmax = 3*kss # maximum value for k (set low if no productivity shocks!)
 kmin = 1/5*kss #minimum value for k
 #grid for z
@@ -37,17 +37,27 @@ Z = 40 #number of productivity states
 @time VFI_V, VFI_policyk,VFI_policyh, k,h, z, Π = VFI(δ,θ,β,ρ,σ,μ,γn,γz,ϕ,K,kmax,kmin,Z,Xnneg)
 
 
+
 LQ_policyk = -F[1,1].*k .+ -F[1,2] * (0) .+ -F[1,3]
+LQ_policyh = collect(-F[2,1].*k .+ -F[2,2] * (0) .+ -F[2,3])
 Vaughan_policyk = -Fv[1,1].*k .+ -Fv[1,2] * (0) .+ -Fv[1,3]
+Vaughan_policyh = collect(-Fv[2,1].*k .+ -Fv[2,2] * (0) .+ -Fv[2,3])
 
 
 
 using Plots
-figures = Array{Plots.Plot{Plots.GRBackend}}(undef, 4)
+figures = Array{Plots.Plot{Plots.GRBackend}}(undef, 8)
 
 title = "Capital Policy Function \\delta =$(δ), \\phi=$(ϕ), \\gamma_{n}=$(γn),\\gamma_{z} =$(γz) "
 figures[1] = plot(k,[k,θ*β*z[20]*k.^(θ),k[VFI_policyk[:,20]],LQ_policyk,Vaughan_policyk],
 label = ["45","True","VFI","LQ","Vaughan"],legend=:topleft,title = title)
+
+title = "Labor Policy Function \\delta =$(δ), \\phi=$(ϕ), \\gamma_{n}=$(γn),\\gamma_{z} =$(γz) "
+figures[2] = plot(k,[ones(K),h[VFI_policyh[:,20]],LQ_policyh,Vaughan_policyh],
+label = ["True","VFI","LQ","Vaughan"],legend=:bottomleft,title = title)
+
+
+
 
 #=Value Functions
 LQ_VF = zeros(K)
@@ -93,13 +103,19 @@ kmin = 1/5*kss #minimum value for k
 @time VFI_V, VFI_policyk,VFI_policyh, k,h, z, Π = VFI(δ,θ,β,ρ,σ,μ,γn,γz,ϕ,K,kmax,kmin,Z,Xnneg)
 
 
-LQ_policyk = (A-B*F)[1,1].*k .+ ((A-B*F)[1,2] * (0) .+ (A-B*F)[1,3])
-Vaughan_policyk = (Av-Bv*Fv)[1,1].*k .+ (Av-Bv*Fv)[1,2] * 0 .+ (A-B*F)[1,3]
+LQ_policyk = -F[1,1].*k .+ -F[1,2] * (0) .+ -F[1,3]
+LQ_policyh = collect(-F[2,1].*k .+ -F[2,2] * (0) .+ -F[2,3])
+Vaughan_policyk = -Fv[1,1].*k .+ -Fv[1,2] * (0) .+ -Fv[1,3]
+Vaughan_policyh = collect(-Fv[2,1].*k .+ -Fv[2,2] * (0) .+ -Fv[2,3])
+
 
 title = "Capital Policy Function \\delta =$(δ), \\phi=$(ϕ), \\gamma_{n}=$(γn),\\gamma_{z} =$(γz)"
-figures[2] = (plot(k,[k,k[VFI_policyk[:,20]],LQ_policyk,Vaughan_policyk],
+figures[3] = (plot(k,[k,k[VFI_policyk[:,20]],LQ_policyk,Vaughan_policyk],
 label = ["45","VFI","LQ","Vaughan"],legend=:topleft,title = title))
 
+title = "Labor Policy Function \\delta =$(δ), \\phi=$(ϕ), \\gamma_{n}=$(γn),\\gamma_{z} =$(γz) "
+figures[4] = plot(k,[h[VFI_policyh[:,20]],LQ_policyh,Vaughan_policyh],
+label = ["VFI","LQ","Vaughan"],legend=:bottomleft,title = title)
 
 
 #Third Calibration, Depreciation is not full, technology growth:
@@ -131,12 +147,19 @@ kmin = 1/5*kss #minimum value for k
 @time VFI_V, VFI_policyk,VFI_policyh, k,h, z, Π = VFI(δ,θ,β,ρ,σ,μ,γn,γz,ϕ,K,kmax,kmin,Z,Xnneg)
 
 
-LQ_policyk = (A-B*F)[1,1].*k .+ ((A-B*F)[1,2] * (0) .+ (A-B*F)[1,3])
-Vaughan_policyk = (Av-Bv*Fv)[1,1].*k .+ (Av-Bv*Fv)[1,2] * 0 .+ (A-B*F)[1,3]
+LQ_policyk = -F[1,1].*k .+ -F[1,2] * (0) .+ -F[1,3]
+LQ_policyh = collect(-F[2,1].*k .+ -F[2,2] * (0) .+ -F[2,3])
+Vaughan_policyk = -Fv[1,1].*k .+ -Fv[1,2] * (0) .+ -Fv[1,3]
+Vaughan_policyh = collect(-Fv[2,1].*k .+ -Fv[2,2] * (0) .+ -Fv[2,3])
+
 
 title = "Capital Policy Function \\delta =$(δ), \\phi=$(ϕ), \\gamma_{n}=$(γn),\\gamma_{z} =$(γz)"
-figures[3] = (plot(k,[k,k[VFI_policyk[:,20]],LQ_policyk,Vaughan_policyk],
+figures[5] = (plot(k,[k,k[VFI_policyk[:,20]],LQ_policyk,Vaughan_policyk],
 label = ["45","VFI","LQ","Vaughan"],legend=:topleft,title = title))
+
+title = "Labor Policy Function \\delta =$(δ), \\phi=$(ϕ), \\gamma_{n}=$(γn),\\gamma_{z} =$(γz) "
+figures[6] = plot(k,[h[VFI_policyh[:,20]],LQ_policyh,Vaughan_policyh],
+label = ["VFI","LQ","Vaughan"],legend=:bottomleft,title = title)
 
 
 
@@ -148,7 +171,7 @@ label = ["45","VFI","LQ","Vaughan"],legend=:topleft,title = title))
 ρ = 0.5  #AR coefficient
 σ = 0.5  #AR shock SD
 μ = 0    #AR(1) constant term
-ϕ = 0    #Labor parameter
+ϕ = 0.    #Labor parameter
 γn= 0.05   #Population growth rate
 γz= 0.    #Productivitu growth rate
 β = β*(1+γn)
@@ -169,12 +192,19 @@ kmin = 1/5*kss #minimum value for k
 @time VFI_V, VFI_policyk,VFI_policyh, k,h, z, Π = VFI(δ,θ,β,ρ,σ,μ,γn,γz,ϕ,K,kmax,kmin,Z,Xnneg)
 
 
-LQ_policyk = (A-B*F)[1,1].*k .+ ((A-B*F)[1,2] * (0) .+ (A-B*F)[1,3])
-Vaughan_policyk = (Av-Bv*Fv)[1,1].*k .+ (Av-Bv*Fv)[1,2] * 0 .+ (A-B*F)[1,3]
+LQ_policyk = -F[1,1].*k .+ -F[1,2] * (0) .+ -F[1,3]
+LQ_policyh = collect(-F[2,1].*k .+ -F[2,2] * (0) .+ -F[2,3])
+Vaughan_policyk = -Fv[1,1].*k .+ -Fv[1,2] * (0) .+ -Fv[1,3]
+Vaughan_policyh = collect(-Fv[2,1].*k .+ -Fv[2,2] * (0) .+ -Fv[2,3])
+
 
 title = "Capital Policy Function \\delta =$(δ), \\phi=$(ϕ), \\gamma_{n}=$(γn),\\gamma_{z} =$(γz)"
-figures[4] = (plot(k,[k,k[VFI_policyk[:,20]],LQ_policyk,Vaughan_policyk],
+figures[7] = (plot(k,[k,k[VFI_policyk[:,20]],LQ_policyk,Vaughan_policyk],
 label = ["45","VFI","LQ","Vaughan"],legend=:topleft,title = title))
+
+title = "Labor Policy Function \\delta =$(δ), \\phi=$(ϕ), \\gamma_{n}=$(γn),\\gamma_{z} =$(γz) "
+figures[8] = plot(k,[h[VFI_policyh[:,20]],LQ_policyh,Vaughan_policyh],
+label = ["VFI","LQ","Vaughan"],legend=:bottomleft,title = title)
 
 
 #Saving Figures
@@ -182,7 +212,7 @@ label = ["45","VFI","LQ","Vaughan"],legend=:topleft,title = title))
 
 cd("Figures")
 
-for i=1:4
+for i=1:8
 
     savefig(figures[i],"figure$(i).png")
 end

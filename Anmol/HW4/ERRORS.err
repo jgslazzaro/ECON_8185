@@ -1,0 +1,19 @@
+JULIA_CPU_THREADS set to 15 
+Julia 1.0.1: loaded 
+ERROR: LoadError: LinearAlgebra.SingularException(2)
+Stacktrace:
+ [1] checknonsingular at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.0/LinearAlgebra/src/factorization.jl:12 [inlined]
+ [2] #lu!#97(::Bool, ::Function, ::Array{Float64,2}, ::Val{true}) at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.0/LinearAlgebra/src/lu.jl:41
+ [3] #lu! at ./none:0 [inlined]
+ [4] #lu#101 at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.0/LinearAlgebra/src/lu.jl:142 [inlined]
+ [5] lu at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.0/LinearAlgebra/src/lu.jl:142 [inlined] (repeats 2 times)
+ [6] \(::Array{Float64,2}, ::LinearAlgebra.Adjoint{Float64,Array{Float64,2}}) at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.0/LinearAlgebra/src/generic.jl:870
+ [7] #KrusselSmith#22(::Float64, ::Float64, ::Float64, ::Float64, ::Float64, ::String, ::Int64, ::Int64, ::Int64, ::Int64, ::typeof(R), ::typeof(w), ::Float64, ::Float64, ::Bool, ::typeof(KrusselSmith), ::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrecision{Float64}}, ::Array{Float64,1}, ::Array{Float64,1}, ::Array{Float64,2}, ::NTuple{4,Array{Float64,1}}, ::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrecision{Float64}}, ::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrecision{Float64}}, ::typeof(K1), ::typeof(H1), ::Array{Float64,2}, ::Array{Float64,2}) at /home/santo279/ECON_8185/Anmol/HW4/VFI_KS.jl:200
+ [8] (::getfield(Main, Symbol("#kw##KrusselSmith")))(::NamedTuple{(:iterate, :N, :T, :damp, :damp2, :verbose),Tuple{String,Int64,Int64,Float64,Float64,Bool}}, ::typeof(KrusselSmith), ::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrecision{Float64}}, ::Array{Float64,1}, ::Array{Float64,1}, ::Array{Float64,2}, ::NTuple{4,Array{Float64,1}}, ::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrecision{Float64}}, ::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrecision{Float64}}, ::typeof(K1), ::typeof(H1), ::Array{Float64,2}, ::Array{Float64,2}) at ./none:0
+ [9] top-level scope at util.jl:156
+ [10] include at ./boot.jl:317 [inlined]
+ [11] include_relative(::Module, ::String) at ./loading.jl:1041
+ [12] include(::Module, ::String) at ./sysimg.jl:29
+ [13] exec_options(::Base.JLOptions) at ./client.jl:229
+ [14] _start() at ./client.jl:421
+in expression starting at /home/santo279/ECON_8185/Anmol/HW4/main.jl:74
