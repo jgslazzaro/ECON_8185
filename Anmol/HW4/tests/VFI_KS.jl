@@ -58,7 +58,7 @@ function VFI_KS(A::Array{Float64,1},E::Array{Float64,1},Z::Array{Float64,1},pdf:
          for a = 1:nA
             for z=1:nZ,h=1:nH, k=1:nK, e = 1:nE
                 if (η!=1.0 && E[e]>0.0) #labor is not exogenous and the agent is not unemployed
-                    initial = [min(max(policy[a,e,k,h,z,1],lower[1]+eps()),upper[1]-eps()),min(max(policy[a,e,k,h,z,2],lower[2]+eps()),upper[2]-eps())]
+                    #initial = [min(max(policy[a,e,k,h,z,1],lower[1]+eps()),upper[1]-eps()),min(max(policy[a,e,k,h,z,2],lower[2]+eps()),upper[2]-eps())]
                     maxV = optimize( x::Array{Float64,1}->Vf(x,V;β = β, a = a,
                     e=e,z=z,h=h,k=k,A=A,E=E,K=K,H=H,Z=Z,lbar=lbar),
                     lower,upper,initial,Fminbox(inner_optimizer))
@@ -207,19 +207,20 @@ function KrusselSmith(A::Array{Float64,1},
         asim = ones(N,T).*K[end]
         for t=1:T
             Ksim[t] = max(mean(asim[:,t]),0.01)
-            Hsim[t] = mean(nsim[:,t])
-            Ht = H0(Ksim[t],zsim[t];d=d)
+            #Hsim[t] = mean(nsim[:,t])
+            #Ht = H0(Ksim[t],zsim[t];d=d)
     Threads.@threads for n=1:N
                 if t<=T-1
-                    asim[n,t+1] = policy_a(asim[n,t],esim[n,t],Ksim[t],Ht,zsim[t])
+                    asim[n,t+1] = policy_a(asim[n,t],esim[n,t],Ksim[t],Hsim[t],zsim[t])
+                    #asim[n,t+1] = policy_a(asim[n,t],esim[n,t],Ksim[t],Ht,zsim[t])
                 end
                     nsim[n,t] = policy_n(asim[n,t],esim[n,t],Ksim[t],Hsim[t],zsim[t])
                     #nsim[n,t] = policy_n(asim[n,t],esim[n,t],Ksim[t],Ht,zsim[t])
             end
 
             #Find aggretate labor that clears the market:
-            #Hsim[t] =optimize(Hstar::Float64-> (mean(nsim[:,t])-
-            #(w(Ksim[t],Hstar,zsim[t])/(zsim[t]*(1-α)*Ksim[t]^α))^(1/(-α)))^2,0.0,lbar).minimizer
+            Hsim[t] =optimize(Hstar::Float64-> (mean(nsim[:,t])-
+            (w(Ksim[t],Hstar,zsim[t])/(zsim[t]*(1-α)*Ksim[t]^α))^(1/(-α)))^2,0.0,lbar).minimizer
             next!(loading)
         end
 

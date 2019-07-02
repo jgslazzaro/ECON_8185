@@ -12,9 +12,9 @@ const N = 5000 #number of agents in each economy
 const T = 11000 #number of simulation periods
 const lbar = 1/0.9 #time endowment
 
-nA = 30 #number of assets gridpoints
-nK = 10 #Number of aggregate capital gridpoints
-nH = 10 #Number of aggregate labor gridpoints
+nA = 8 #number of assets gridpoints
+nK = 8 #Number of aggregate capital gridpoints
+nH = 8 #Number of aggregate labor gridpoints
 
 amin = eps()
 amax = 100.0
