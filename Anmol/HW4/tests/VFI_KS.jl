@@ -47,9 +47,9 @@ function VFI_KS(A::Array{Float64,1},E::Array{Float64,1},Z::Array{Float64,1},pdf:
     multiple5::Int64 = 0
 
     #solver stuff:
-    initial = [A[end]/2, 0.8]
-    lower = [A[1], eps(0.)]
-    upper = [A[end],lbar]
+    initial::Array{Float64,1} = [A[end]/2, 0.8]
+    lower::Array{Float64,1} = [A[1], eps(0.)]
+    upper::Array{Float64,1} = [A[end],lbar]
     prog = ProgressUnknown("Iterations:")
     while distance > tol
         Vgridf = copy(Vgrid) #store previous loop values to compare
@@ -58,7 +58,7 @@ function VFI_KS(A::Array{Float64,1},E::Array{Float64,1},Z::Array{Float64,1},pdf:
          for a = 1:nA
             for z=1:nZ,h=1:nH, k=1:nK, e = 1:nE
                 if (η!=1.0 && E[e]>0.0) #labor is not exogenous and the agent is not unemployed
-                    #initial = [min(max(policy[a,e,k,h,z,1],lower[1]+eps()),upper[1]-eps()),min(max(policy[a,e,k,h,z,2],lower[2]+eps()),upper[2]-eps())]
+                    initial = [min(max(policy[a,e,k,h,z,1],lower[1]+eps()),upper[1]-eps()),min(max(policy[a,e,k,h,z,2],lower[2]+eps()),upper[2]-eps())]
                     maxV = optimize( x::Array{Float64,1}->Vf(x,V;β = β, a = a,
                     e=e,z=z,h=h,k=k,A=A,E=E,K=K,H=H,Z=Z,lbar=lbar),
                     lower,upper,initial,Fminbox(inner_optimizer))

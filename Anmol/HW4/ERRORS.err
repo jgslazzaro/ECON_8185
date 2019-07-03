@@ -1,773 +1,32 @@
-JULIA_CPU_THREADS set to 7 
+JULIA_CPU_THREADS set to 10 
 Julia 1.1.0: loaded 
-Iterations: 1 	 Time: 0:01:03[K
-  Distance:  883.787815217078[K[AIterations: 2 	 Time: 0:01:29[K
-  Distance:  1352.4355833355542[K[AIterations: 3 	 Time: 0:01:49[K
-  Distance:  1376.7562078092424[K[AIterations: 4 	 Time: 0:02:07[K
-  Distance:  1362.338102407363[K[AIterations: 5 	 Time: 0:02:22[K
-  Distance:  1378.0740656491155[K[AIterations: 6 	 Time: 0:02:38[K
-  Distance:  1385.326782877211[K[AIterations: 7 	 Time: 0:02:52[K
-  Distance:  1376.6893219128028[K[AIterations: 8 	 Time: 0:03:06[K
-  Distance:  1418.0765937455953[K[AIterations: 9 	 Time: 0:03:19[K
-  Distance:  1399.8600522876923[K[AIterations: 10 	 Time: 0:03:32[K
-  Distance:  1362.2669087492168[K[AIterations: 11 	 Time: 0:03:47[K
-  Distance:  1355.6629053645784[K[AIterations: 12 	 Time: 0:04:06[K
-  Distance:  1280.875487432263[K[AIterations: 13 	 Time: 0:04:20[K
-  Distance:  1378.109203904048[K[AIterations: 14 	 Time: 0:04:36[K
-  Distance:  1390.925906263961[K[AIterations: 15 	 Time: 0:04:50[K
-  Distance:  1400.7419239249907[K[AIterations: 16 	 Time: 0:05:08[K
-  Distance:  1347.0094308194907[K[AIterations: 17 	 Time: 0:05:23[K
-  Distance:  1411.148929048735[K[AIterations: 18 	 Time: 0:05:36[K
-  Distance:  1357.8680102265967[K[AIterations: 19 	 Time: 0:05:50[K
-  Distance:  1394.974335990239[K[AIterations: 20 	 Time: 0:06:06[K
-  Distance:  1388.1523260672834[K[AIterations: 21 	 Time: 0:06:21[K
-  Distance:  1380.4759370797535[K[AIterations: 22 	 Time: 0:06:33[K
-  Distance:  1359.7648433997558[K[AIterations: 23 	 Time: 0:06:46[K
-  Distance:  1384.496552908432[K[AIterations: 24 	 Time: 0:06:59[K
-  Distance:  1393.3222484617636[K[AIterations: 25 	 Time: 0:07:11[K
-  Distance:  1391.3416628340979[K[AIterations: 26 	 Time: 0:07:25[K
-  Distance:  1389.7853497190945[K[AIterations: 27 	 Time: 0:07:39[K
-  Distance:  1378.605974437564[K[AIterations: 28 	 Time: 0:07:52[K
-  Distance:  1365.450151646929[K[AIterations: 29 	 Time: 0:08:05[K
-  Distance:  1392.3538660818385[K[AIterations: 30 	 Time: 0:08:18[K
-  Distance:  1345.468823702971[K[AIterations: 31 	 Time: 0:08:30[K
-  Distance:  1369.0118903492755[K[AIterations: 32 	 Time: 0:08:43[K
-  Distance:  1384.1109753977498[K[AIterations: 33 	 Time: 0:09:00[K
-  Distance:  1404.7293533952807[K[AIterations: 34 	 Time: 0:09:18[K
-  Distance:  1367.2929529841554[K[AIterations: 35 	 Time: 0:09:33[K
-  Distance:  1364.0932169613884[K[AIterations: 36 	 Time: 0:09:46[K
-  Distance:  1290.8640022782536[K[AIterations: 37 	 Time: 0:10:00[K
-  Distance:  1385.3532785105472[K[AIterations: 38 	 Time: 0:10:15[K
-  Distance:  1384.2108702807009[K[AIterations: 39 	 Time: 0:10:32[K
-  Distance:  1378.419669162517[K[AIterations: 40 	 Time: 0:10:47[K
-  Distance:  1392.8767804848135[K[AIterations: 41 	 Time: 0:11:00[K
-  Distance:  1367.867816947371[K[AIterations: 42 	 Time: 0:11:14[K
-  Distance:  1390.723570267651[K[AIterations: 43 	 Time: 0:11:27[K
-  Distance:  1390.5757101902648[K[AIterations: 44 	 Time: 0:11:39[K
-  Distance:  1385.6432541107906[K[AIterations: 45 	 Time: 0:11:50[K
-  Distance:  1378.320832730966[K[AIterations: 46 	 Time: 0:12:06[K
-  Distance:  1361.893596777202[K[AIterations: 47 	 Time: 0:12:23[K
-  Distance:  1392.388777349583[K[AIterations: 48 	 Time: 0:12:39[K
-  Distance:  1365.9721440258243[K[AIterations: 49 	 Time: 0:12:55[K
-  Distance:  1377.775119766926[K[AIterations: 50 	 Time: 0:13:10[K
-  Distance:  1387.0353900885275[K[AIterations: 51 	 Time: 0:13:26[K
-  Distance:  1407.5707553748523[K[AIterations: 52 	 Time: 0:13:42[K
-  Distance:  1382.3032444335843[K[AIterations: 53 	 Time: 0:13:59[K
-  Distance:  1384.8026910584213[K[AIterations: 54 	 Time: 0:14:15[K
-  Distance:  1390.5599521665517[K[AIterations: 55 	 Time: 0:14:30[K
-  Distance:  1392.0715229385266[K[AIterations: 56 	 Time: 0:14:47[K
-  Distance:  1392.8308839959006[K[AIterations: 57 	 Time: 0:15:02[K
-  Distance:  1378.5338484402691[K[AIterations: 58 	 Time: 0:15:14[K
-  Distance:  1391.0387791474268[K[AIterations: 59 	 Time: 0:15:27[K
-  Distance:  1372.7997696001225[K[AIterations: 60 	 Time: 0:15:42[K
-  Distance:  1370.5665862129295[K[AIterations: 61 	 Time: 0:15:55[K
-  Distance:  1364.0605687737354[K[AIterations: 62 	 Time: 0:16:08[K
-  Distance:  1389.1733354655103[K[AIterations: 63 	 Time: 0:16:21[K
-  Distance:  1403.0293394781754[K[AIterations: 64 	 Time: 0:16:39[K
-  Distance:  1386.4414378343765[K[AIterations: 65 	 Time: 0:16:56[K
-  Distance:  1379.0943181385999[K[AIterations: 66 	 Time: 0:17:13[K
-  Distance:  1370.3226443852425[K[AIterations: 67 	 Time: 0:17:30[K
-  Distance:  1401.0840219727042[K[AIterations: 68 	 Time: 0:17:43[K
-  Distance:  1394.6929004092628[K[AIterations: 69 	 Time: 0:17:56[K
-  Distance:  1376.4001843412289[K[AIterations: 70 	 Time: 0:18:09[K
-  Distance:  1329.5165869005477[K[AIterations: 71 	 Time: 0:18:22[K
-  Distance:  1382.1966753265413[K[AIterations: 72 	 Time: 0:18:35[K
-  Distance:  1423.592323566303[K[AIterations: 73 	 Time: 0:18:49[K
-  Distance:  1410.7569305731308[K[AIterations: 74 	 Time: 0:19:02[K
-  Distance:  1370.361511428455[K[AIterations: 75 	 Time: 0:19:17[K
-  Distance:  1377.7008137006114[K[AIterations: 76 	 Time: 0:19:31[K
-  Distance:  1391.9605576200677[K[AIterations: 77 	 Time: 0:19:44[K
-  Distance:  1368.2504321821173[K[AIterations: 78 	 Time: 0:19:58[K
-  Distance:  1397.519025961249[K[AIterations: 79 	 Time: 0:20:15[K
-  Distance:  1409.1347354597815[K[AIterations: 80 	 Time: 0:20:33[K
-  Distance:  1307.3870630371305[K[AIterations: 81 	 Time: 0:20:50[K
-  Distance:  1378.2011564636102[K[AIterations: 82 	 Time: 0:21:03[K
-  Distance:  1294.738737271638[K[AIterations: 83 	 Time: 0:21:19[K
-  Distance:  1419.9828518243194[K[AIterations: 84 	 Time: 0:21:37[K
-  Distance:  1368.573918840672[K[AIterations: 85 	 Time: 0:21:54[K
-  Distance:  1375.4568265077196[K[AIterations: 86 	 Time: 0:22:10[K
-  Distance:  1391.133643579774[K[AIterations: 87 	 Time: 0:22:26[K
-  Distance:  1408.3494744724967[K[AIterations: 88 	 Time: 0:22:43[K
-  Distance:  1409.8124958467752[K[AIterations: 89 	 Time: 0:22:57[K
-  Distance:  1307.2169404779495[K[AIterations: 90 	 Time: 0:23:10[K
-  Distance:  1399.4658672623355[K[AIterations: 91 	 Time: 0:23:24[K
-  Distance:  1394.7455219159374[K[AIterations: 92 	 Time: 0:23:35[K
-  Distance:  1284.6199301402196[K[AIterations: 93 	 Time: 0:23:47[K
-  Distance:  1387.799288569659[K[AIterations: 94 	 Time: 0:24:01[K
-  Distance:  1416.599344688272[K[AIterations: 95 	 Time: 0:24:16[K
-  Distance:  1367.5106958995784[K[AIterations: 96 	 Time: 0:24:29[K
-  Distance:  1307.6752175774404[K[AIterations: 97 	 Time: 0:24:44[K
-  Distance:  1375.1519395845617[K[AIterations: 98 	 Time: 0:24:59[K
-  Distance:  1358.898807600919[K[AIterations: 99 	 Time: 0:25:14[K
-  Distance:  1378.2879628750752[K[AIterations: 100 	 Time: 0:25:29[K
-  Distance:  1388.907404475877[K[AIterations: 101 	 Time: 0:25:44[K
-  Distance:  1304.3468565286903[K[AIterations: 102 	 Time: 0:25:56[K
-  Distance:  1365.5032990663694[K[AIterations: 103 	 Time: 0:26:10[K
-  Distance:  1413.0442766712283[K[AIterations: 104 	 Time: 0:26:23[K
-  Distance:  1280.283572663377[K[AIterations: 105 	 Time: 0:26:35[K
-  Distance:  1386.3015968415089[K[AIterations: 106 	 Time: 0:26:48[K
-  Distance:  1390.9634476972406[K[AIterations: 107 	 Time: 0:26:59[K
-  Distance:  1211.5740887415823[K[AIterations: 108 	 Time: 0:27:10[K
-  Distance:  1392.1244186386507[K[AIterations: 109 	 Time: 0:27:23[K
-  Distance:  1407.3402328339528[K[AIterations: 110 	 Time: 0:27:36[K
-  Distance:  1409.046474516096[K[AIterations: 111 	 Time: 0:27:48[K
-  Distance:  1307.3122654634044[K[AIterations: 112 	 Time: 0:28:02[K
-  Distance:  1331.0061300456953[K[AIterations: 113 	 Time: 0:28:14[K
-  Distance:  1364.0808141554517[K[AIterations: 114 	 Time: 0:28:26[K
-  Distance:  1354.3605778824203[K[AIterations: 115 	 Time: 0:28:37[K
-  Distance:  1387.3619674853194[K[AIterations: 116 	 Time: 0:28:52[K
-  Distance:  1420.476307205142[K[AIterations: 117 	 Time: 0:29:05[K
-  Distance:  1377.9944824884665[K[AIterations: 118 	 Time: 0:29:18[K
-  Distance:  1381.466278643829[K[AIterations: 119 	 Time: 0:29:30[K
-  Distance:  1380.703323272405[K[AIterations: 120 	 Time: 0:29:43[K
-  Distance:  1384.4330704103731[K[AIterations: 121 	 Time: 0:29:55[K
-  Distance:  1368.5336760150867[K[AIterations: 122 	 Time: 0:30:06[K
-  Distance:  1384.0175463721446[K[AIterations: 123 	 Time: 0:30:17[K
-  Distance:  1352.4726065641075[K[AIterations: 124 	 Time: 0:30:28[K
-  Distance:  1418.776946809086[K[AIterations: 125 	 Time: 0:30:40[K
-  Distance:  1378.0894388784495[K[AIterations: 126 	 Time: 0:30:50[K
-  Distance:  1364.350111785594[K[AIterations: 127 	 Time: 0:31:02[K
-  Distance:  1386.3783303541913[K[AIterations: 128 	 Time: 0:31:14[K
-  Distance:  1381.2420921552075[K[AIterations: 129 	 Time: 0:31:26[K
-  Distance:  1368.5355383850429[K[AIterations: 130 	 Time: 0:31:37[K
-  Distance:  1391.7576679640022[K[AIterations: 131 	 Time: 0:31:50[K
-  Distance:  1391.231040103768[K[AIterations: 132 	 Time: 0:32:03[K
-  Distance:  1408.4796721442403[K[AIterations: 133 	 Time: 0:32:15[K
-  Distance:  1311.25549522129[K[AIterations: 134 	 Time: 0:32:28[K
-  Distance:  1371.7918633968711[K[AIterations: 135 	 Time: 0:32:39[K
-  Distance:  1401.960816560713[K[AIterations: 136 	 Time: 0:32:51[K
-  Distance:  1322.5594503707837[K[AIterations: 137 	 Time: 0:33:03[K
-  Distance:  1396.6538189495327[K[AIterations: 138 	 Time: 0:33:18[K
-  Distance:  1417.4950486085925[K[AIterations: 139 	 Time: 0:33:32[K
-  Distance:  1344.8907376504885[K[AIterations: 140 	 Time: 0:33:45[K
-  Distance:  1368.6852426021771[K[AIterations: 141 	 Time: 0:33:58[K
-  Distance:  1372.5339945079013[K[AIterations: 142 	 Time: 0:34:11[K
-  Distance:  1350.5933259549902[K[AIterations: 143 	 Time: 0:34:23[K
-  Distance:  1369.1741597299504[K[AIterations: 144 	 Time: 0:34:35[K
-  Distance:  1399.6782325702236[K[AIterations: 145 	 Time: 0:34:48[K
-  Distance:  1390.2800327904165[K[AIterations: 146 	 Time: 0:35:02[K
-  Distance:  1295.6354831209035[K[AIterations: 147 	 Time: 0:35:16[K
-  Distance:  1369.3905400151757[K[AIterations: 148 	 Time: 0:35:28[K
-  Distance:  1364.1387439534212[K[AIterations: 149 	 Time: 0:35:40[K
-  Distance:  1384.3632317621675[K[AIterations: 150 	 Time: 0:35:53[K
-  Distance:  1382.3494714550752[K[AIterations: 151 	 Time: 0:36:06[K
-  Distance:  1343.0531215433975[K[AIterations: 152 	 Time: 0:36:18[K
-  Distance:  1349.8694729995095[K[AIterations: 153 	 Time: 0:36:32[K
-  Distance:  1390.5762181810194[K[AIterations: 154 	 Time: 0:36:45[K
-  Distance:  1383.9542801547657[K[AIterations: 155 	 Time: 0:36:57[K
-  Distance:  1382.239802014072[K[AIterations: 156 	 Time: 0:37:10[K
-  Distance:  1391.8240274676682[K[AIterations: 157 	 Time: 0:37:23[K
-  Distance:  1382.7638475964468[K[AIterations: 158 	 Time: 0:37:34[K
-  Distance:  1419.6821361777556[K[AIterations: 159 	 Time: 0:37:44[K
-  Distance:  1192.5721094087596[K[AIterations: 160 	 Time: 0:37:56[K
-  Distance:  1284.5102928983279[K[AIterations: 161 	 Time: 0:38:07[K
-  Distance:  1386.1605895169687[K[AIterations: 162 	 Time: 0:38:18[K
-  Distance:  1382.6651651192815[K[AIterations: 163 	 Time: 0:38:29[K
-  Distance:  1212.4425795256197[K[AIterations: 164 	 Time: 0:38:41[K
-  Distance:  1368.1593610324467[K[AIterations: 165 	 Time: 0:38:54[K
-  Distance:  1385.9181473173066[K[AIterations: 166 	 Time: 0:39:08[K
-  Distance:  1405.2281071469574[K[AIterations: 167 	 Time: 0:39:22[K
-  Distance:  1354.483704297051[K[AIterations: 168 	 Time: 0:39:34[K
-  Distance:  1386.903568769003[K[AIterations: 169 	 Time: 0:39:47[K
-  Distance:  1368.5062418284658[K[AIterations: 170 	 Time: 0:40:00[K
-  Distance:  1364.3768958254464[K[AIterations: 171 	 Time: 0:40:14[K
-  Distance:  1248.575583696382[K[AIterations: 172 	 Time: 0:40:27[K
-  Distance:  1370.0375677872405[K[AIterations: 173 	 Time: 0:40:41[K
-  Distance:  1387.2449923272932[K[AIterations: 174 	 Time: 0:40:53[K
-  Distance:  1383.2895625347217[K[AIterations: 175 	 Time: 0:41:06[K
-  Distance:  1360.18945347076[K[AIterations: 176 	 Time: 0:41:18[K
-  Distance:  1411.0163817922335[K[AIterations: 177 	 Time: 0:41:31[K
-  Distance:  1369.5450823271383[K[AIterations: 178 	 Time: 0:41:44[K
-  Distance:  1361.3675940923913[K[AIterations: 179 	 Time: 0:41:58[K
-  Distance:  1395.2167939787332[K[AIterations: 180 	 Time: 0:42:10[K
-  Distance:  1379.1876668892173[K[AIterations: 181 	 Time: 0:42:22[K
-  Distance:  1378.4076370687949[K[AIterations: 182 	 Time: 0:42:33[K
-  Distance:  1383.9073581432772[K[AIterations: 183 	 Time: 0:42:50[K
-  Distance:  1421.6958566040544[K[AIterations: 184 	 Time: 0:43:05[K
-  Distance:  1348.038095350641[K[AIterations: 185 	 Time: 0:43:19[K
-  Distance:  1384.0677311154402[K[AIterations: 186 	 Time: 0:43:33[K
-  Distance:  1386.5177842935486[K[AIterations: 187 	 Time: 0:43:46[K
-  Distance:  1382.6330215458595[K[AIterations: 188 	 Time: 0:43:59[K
-  Distance:  1307.0806292784057[K[AIterations: 189 	 Time: 0:44:10[K
-  Distance:  1371.0292131650704[K[AIterations: 190 	 Time: 0:44:23[K
-  Distance:  1399.4154197770695[K[AIterations: 191 	 Time: 0:44:36[K
-  Distance:  1394.693305093278[K[AIterations: 192 	 Time: 0:44:48[K
-  Distance:  1381.0202346704345[K[AIterations: 193 	 Time: 0:45:00[K
-  Distance:  1402.933410096873[K[AIterations: 194 	 Time: 0:45:14[K
-  Distance:  1385.6470192198599[K[AIterations: 195 	 Time: 0:45:27[K
-  Distance:  1373.557737541207[K[AIterations: 196 	 Time: 0:45:39[K
-  Distance:  1391.4942680837828[K[AIterations: 197 	 Time: 0:45:50[K
-  Distance:  1381.4563890315483[K[AIterations: 198 	 Time: 0:46:03[K
-  Distance:  1412.9893403218196[K[AIterations: 199 	 Time: 0:46:17[K
-  Distance:  1405.921800975594[K[AIterations: 200 	 Time: 0:46:29[K
-  Distance:  1346.1727070865877[K[AIterations: 201 	 Time: 0:46:41[K
-  Distance:  1269.6169810692193[K[AIterations: 202 	 Time: 0:46:53[K
-  Distance:  1286.635363638508[K[AIterations: 203 	 Time: 0:47:05[K
-  Distance:  1369.4115144898726[K[AIterations: 204 	 Time: 0:47:17[K
-  Distance:  1382.9304458776637[K[AIterations: 205 	 Time: 0:47:31[K
-  Distance:  1405.6496752154999[K[AIterations: 206 	 Time: 0:47:43[K
-  Distance:  1339.799202254797[K[AIterations: 207 	 Time: 0:47:55[K
-  Distance:  1378.5990794827262[K[AIterations: 208 	 Time: 0:48:08[K
-  Distance:  1356.5631703672104[K[AIterations: 209 	 Time: 0:48:19[K
-  Distance:  1418.8616870881915[K[AIterations: 210 	 Time: 0:48:31[K
-  Distance:  1410.7609208279227[K[AIterations: 211 	 Time: 0:48:45[K
-  Distance:  1368.521413790508[K[AIterations: 212 	 Time: 0:48:58[K
-  Distance:  1392.564720357192[K[AIterations: 213 	 Time: 0:49:11[K
-  Distance:  1403.8260509000752[K[AIterations: 214 	 Time: 0:49:25[K
-  Distance:  1408.0101798355577[K[AIterations: 215 	 Time: 0:49:38[K
-  Distance:  1314.9373422755798[K[AIterations: 216 	 Time: 0:49:52[K
-  Distance:  1328.335509520759[K[AIterations: 217 	 Time: 0:50:04[K
-  Distance:  1362.993515358669[K[AIterations: 218 	 Time: 0:50:16[K
-  Distance:  1382.4474832235912[K[AIterations: 219 	 Time: 0:50:28[K
-  Distance:  1396.6330979370791[K[AIterations: 220 	 Time: 0:50:43[K
-  Distance:  1417.7456009608618[K[AIterations: 221 	 Time: 0:50:57[K
-  Distance:  1346.0539275847236[K[AIterations: 222 	 Time: 0:51:12[K
-  Distance:  1346.770858501827[K[AIterations: 223 	 Time: 0:51:25[K
-  Distance:  1385.9933602373605[K[AIterations: 224 	 Time: 0:51:38[K
-  Distance:  1383.4627300979446[K[AIterations: 225 	 Time: 0:51:51[K
-  Distance:  1352.1245107373384[K[AIterations: 226 	 Time: 0:52:04[K
-  Distance:  1382.1304099157176[K[AIterations: 227 	 Time: 0:52:17[K
-  Distance:  1397.727537282137[K[AIterations: 228 	 Time: 0:52:34[K
-  Distance:  1399.759415998591[K[AIterations: 229 	 Time: 0:52:50[K
-  Distance:  1398.426050768825[K[AIterations: 230 	 Time: 0:53:04[K
-  Distance:  1378.852334527313[K[AIterations: 231 	 Time: 0:53:18[K
-  Distance:  1354.567333543376[K[AIterations: 232 	 Time: 0:53:35[K
-  Distance:  1362.7956327830182[K[AIterations: 233 	 Time: 0:53:49[K
-  Distance:  1251.796139797483[K[AIterations: 234 	 Time: 0:54:02[K
-  Distance:  1392.5489451889152[K[AIterations: 235 	 Time: 0:54:15[K
-  Distance:  1403.7320269297925[K[AIterations: 236 	 Time: 0:54:30[K
-  Distance:  1403.0687229136518[K[AIterations: 237 	 Time: 0:54:42[K
-  Distance:  1304.7483598459505[K[AIterations: 238 	 Time: 0:54:55[K
-  Distance:  1331.0999255893541[K[AIterations: 239 	 Time: 0:55:08[K
-  Distance:  1364.8649609788936[K[AIterations: 240 	 Time: 0:55:20[K
-  Distance:  1316.7159311321225[K[AIterations: 241 	 Time: 0:55:32[K
-  Distance:  1391.2623463099958[K[AIterations: 242 	 Time: 0:55:45[K
-  Distance:  1413.4849582829431[K[AIterations: 243 	 Time: 0:55:59[K
-  Distance:  1387.7502666540065[K[AIterations: 244 	 Time: 0:56:12[K
-  Distance:  1381.908641779708[K[AIterations: 245 	 Time: 0:56:25[K
-  Distance:  1367.5612816988742[K[AIterations: 246 	 Time: 0:56:38[K
-  Distance:  1348.6621902485635[K[AIterations: 247 	 Time: 0:56:50[K
-  Distance:  1362.4486343843587[K[AIterations: 248 	 Time: 0:57:01[K
-  Distance:  1379.868090305827[K[AIterations: 249 	 Time: 0:57:15[K
-  Distance:  1392.2276238725058[K[AIterations: 250 	 Time: 0:57:30[K
-  Distance:  1390.7121454698822[K[AIterations: 251 	 Time: 0:57:43[K
-  Distance:  1399.5262990842843[K[AIterations: 252 	 Time: 0:57:55[K
-  Distance:  1377.7544413330702[K[AIterations: 253 	 Time: 0:58:08[K
-  Distance:  1381.3797161501366[K[AIterations: 254 	 Time: 0:58:20[K
-  Distance:  1386.693556802063[K[AIterations: 255 	 Time: 0:58:31[K
-  Distance:  1310.8193756529379[K[AIterations: 256 	 Time: 0:58:42[K
-  Distance:  1332.2719695087894[K[AIterations: 257 	 Time: 0:58:53[K
-  Distance:  1356.1950855034925[K[AIterations: 258 	 Time: 0:59:04[K
-  Distance:  1362.413216294054[K[AIterations: 259 	 Time: 0:59:16[K
-  Distance:  1366.036342095987[K[AIterations: 260 	 Time: 0:59:28[K
-  Distance:  1381.5025603095035[K[AIterations: 261 	 Time: 0:59:43[K
-  Distance:  1363.5633996975603[K[AIterations: 262 	 Time: 0:59:56[K
-  Distance:  1353.0519475543758[K[AIterations: 263 	 Time: 1:00:09[K
-  Distance:  1388.6554230867757[K[AIterations: 264 	 Time: 1:00:21[K
-  Distance:  1392.510901404699[K[AIterations: 265 	 Time: 1:00:34[K
-  Distance:  1387.8013033010748[K[AIterations: 266 	 Time: 1:00:46[K
-  Distance:  1383.966655887782[K[AIterations: 267 	 Time: 1:00:59[K
-  Distance:  1381.0802005960848[K[AIterations: 268 	 Time: 1:01:11[K
-  Distance:  1416.4969155518388[K[AIterations: 269 	 Time: 1:01:24[K
-  Distance:  1421.1413772782983[K[AIterations: 270 	 Time: 1:01:37[K
-  Distance:  1368.2032828110937[K[AIterations: 271 	 Time: 1:01:51[K
-  Distance:  1364.135741590617[K[AIterations: 272 	 Time: 1:02:04[K
-  Distance:  1381.5605307643743[K[AIterations: 273 	 Time: 1:02:16[K
-  Distance:  1301.517839742691[K[AIterations: 274 	 Time: 1:02:27[K
-  Distance:  1373.4389301730926[K[AIterations: 275 	 Time: 1:02:39[K
-  Distance:  1412.8443892887826[K[AIterations: 276 	 Time: 1:02:50[K
-  Distance:  1286.6056957102383[K[AIterations: 277 	 Time: 1:03:02[K
-  Distance:  1387.7801202335559[K[AIterations: 278 	 Time: 1:03:15[K
-  Distance:  1392.9936416752093[K[AIterations: 279 	 Time: 1:03:28[K
-  Distance:  1375.3711355308633[K[AIterations: 280 	 Time: 1:03:40[K
-  Distance:  1392.7738773566384[K[AIterations: 281 	 Time: 1:03:51[K
-  Distance:  1403.724268109268[K[AIterations: 282 	 Time: 1:04:03[K
-  Distance:  1408.6197778662174[K[AIterations: 283 	 Time: 1:04:15[K
-  Distance:  1379.6804138271016[K[AIterations: 284 	 Time: 1:04:27[K
-  Distance:  1361.895653785903[K[AIterations: 285 	 Time: 1:04:39[K
-  Distance:  1355.4996872334973[K[AIterations: 286 	 Time: 1:04:50[K
-  Distance:  1390.6801367372807[K[AIterations: 287 	 Time: 1:05:01[K
-  Distance:  1387.0039788273725[K[AIterations: 288 	 Time: 1:05:12[K
-  Distance:  1407.0741842047805[K[AIterations: 289 	 Time: 1:05:24[K
-  Distance:  1363.5708520779197[K[AIterations: 290 	 Time: 1:05:36[K
-  Distance:  1286.6330060441996[K[AIterations: 291 	 Time: 1:05:47[K
-  Distance:  1384.7240021785572[K[AIterations: 292 	 Time: 1:05:58[K
-  Distance:  1419.3028756322256[K[AIterations: 293 	 Time: 1:06:10[K
-  Distance:  1372.1286224852627[K[AIterations: 294 	 Time: 1:06:21[K
-  Distance:  1325.295487699446[K[AIterations: 295 	 Time: 1:06:32[K
-  Distance:  1381.0822546180154[K[AIterations: 296 	 Time: 1:06:43[K
-  Distance:  1389.7785860367694[K[AIterations: 297 	 Time: 1:06:53[K
-  Distance:  1364.9744369924642[K[AIterations: 298 	 Time: 1:07:04[K
-  Distance:  1392.0046864863702[K[AIterations: 299 	 Time: 1:07:15[K
-  Distance:  1368.19427230623[K[AIterations: 300 	 Time: 1:07:26[K
-  Distance:  1364.343806596864[K[AIterations: 301 	 Time: 1:07:37[K
-  Distance:  1367.7030293716653[K[AIterations: 302 	 Time: 1:07:49[K
-  Distance:  1392.4761268429877[K[AIterations: 303 	 Time: 1:07:59[K
-  Distance:  1404.0425748478042[K[AIterations: 304 	 Time: 1:08:10[K
-  Distance:  1372.6607875274424[K[AIterations: 305 	 Time: 1:08:21[K
-  Distance:  1381.517327928479[K[AIterations: 306 	 Time: 1:08:32[K
-  Distance:  1306.5040868269639[K[AIterations: 307 	 Time: 1:08:43[K
-  Distance:  1389.5170552884665[K[AIterations: 308 	 Time: 1:08:54[K
-  Distance:  1408.938892888377[K[AIterations: 309 	 Time: 1:09:04[K
-  Distance:  1371.0137161815646[K[AIterations: 310 	 Time: 1:09:16[K
-  Distance:  1375.7864745687648[K[AIterations: 311 	 Time: 1:09:27[K
-  Distance:  1395.157057501122[K[AIterations: 312 	 Time: 1:09:38[K
-  Distance:  1346.6658736632926[K[AIterations: 313 	 Time: 1:09:49[K
-  Distance:  1370.1944274094396[K[AIterations: 314 	 Time: 1:10:01[K
-  Distance:  1380.8344605657858[K[AIterations: 315 	 Time: 1:10:12[K
-  Distance:  1304.8506261910838[K[AIterations: 316 	 Time: 1:10:24[K
-  Distance:  1285.3257058605745[K[AIterations: 317 	 Time: 1:10:35[K
-  Distance:  1399.3463752661264[K[AIterations: 318 	 Time: 1:10:46[K
-  Distance:  1378.4423492317642[K[AIterations: 319 	 Time: 1:10:57[K
-  Distance:  1397.5117067789697[K[AIterations: 320 	 Time: 1:11:08[K
-  Distance:  1384.0762024720723[K[AIterations: 321 	 Time: 1:11:20[K
-  Distance:  1369.9620314830865[K[AIterations: 322 	 Time: 1:11:31[K
-  Distance:  1307.4305170057708[K[AIterations: 323 	 Time: 1:11:42[K
-  Distance:  1306.549959575171[K[AIterations: 324 	 Time: 1:11:54[K
-  Distance:  1416.484543355323[K[AIterations: 325 	 Time: 1:12:05[K
-  Distance:  1369.5331347582035[K[AIterations: 326 	 Time: 1:12:16[K
-  Distance:  1377.7789222950005[K[AIterations: 327 	 Time: 1:12:27[K
-  Distance:  1397.5210216387788[K[AIterations: 328 	 Time: 1:12:39[K
-  Distance:  1370.9228401635787[K[AIterations: 329 	 Time: 1:12:50[K
-  Distance:  1380.6363036516555[K[AIterations: 330 	 Time: 1:13:02[K
-  Distance:  1401.4865118311254[K[AIterations: 331 	 Time: 1:13:15[K
-  Distance:  1349.1599958693328[K[AIterations: 332 	 Time: 1:13:27[K
-  Distance:  1390.4495220505032[K[AIterations: 333 	 Time: 1:13:40[K
-  Distance:  1367.7886778866134[K[AIterations: 334 	 Time: 1:13:52[K
-  Distance:  1370.7824899004306[K[AIterations: 335 	 Time: 1:14:04[K
-  Distance:  1411.0788937199673[K[AIterations: 336 	 Time: 1:14:16[K
-  Distance:  1294.9690703220463[K[AIterations: 337 	 Time: 1:14:29[K
-  Distance:  1390.3189496351947[K[AIterations: 338 	 Time: 1:14:44[K
-  Distance:  1379.6088528047253[K[AIterations: 339 	 Time: 1:14:58[K
-  Distance:  1375.4920887156188[K[AIterations: 340 	 Time: 1:15:12[K
-  Distance:  1377.543146400955[K[AIterations: 341 	 Time: 1:15:24[K
-  Distance:  1352.92984668515[K[AIterations: 342 	 Time: 1:15:36[K
-  Distance:  1379.1789602215547[K[AIterations: 343 	 Time: 1:15:48[K
-  Distance:  1393.0025081644044[K[AIterations: 344 	 Time: 1:16:01[K
-  Distance:  1384.2541352090398[K[AIterations: 345 	 Time: 1:16:13[K
-  Distance:  1370.27309616856[K[AIterations: 346 	 Time: 1:16:25[K
-  Distance:  1366.762091777503[K[AIterations: 347 	 Time: 1:16:37[K
-  Distance:  1394.9937037195327[K[AIterations: 348 	 Time: 1:16:50[K
-  Distance:  1370.463126844411[K[AIterations: 349 	 Time: 1:17:02[K
-  Distance:  1369.4306880252966[K[AIterations: 350 	 Time: 1:17:14[K
-  Distance:  1377.9185350270452[K[AIterations: 351 	 Time: 1:17:27[K
-  Distance:  1397.6749086841926[K[AIterations: 352 	 Time: 1:17:40[K
-  Distance:  1383.1479522644458[K[AIterations: 353 	 Time: 1:17:52[K
-  Distance:  1370.81539102746[K[AIterations: 354 	 Time: 1:18:05[K
-  Distance:  1360.34641760604[K[AIterations: 355 	 Time: 1:18:16[K
-  Distance:  1347.5147987114594[K[AIterations: 356 	 Time: 1:18:30[K
-  Distance:  1384.5873500378552[K[AIterations: 357 	 Time: 1:18:41[K
-  Distance:  1405.2916284355501[K[AIterations: 358 	 Time: 1:18:52[K
-  Distance:  1343.0575225273656[K[AIterations: 359 	 Time: 1:19:04[K
-  Distance:  1397.7295092817278[K[AIterations: 360 	 Time: 1:19:16[K
-  Distance:  1296.1652951111635[K[AIterations: 361 	 Time: 1:19:28[K
-  Distance:  1376.7482486560177[K[AIterations: 362 	 Time: 1:19:40[K
-  Distance:  1393.9372846424017[K[AIterations: 363 	 Time: 1:19:53[K
-  Distance:  1404.6820103556897[K[AIterations: 364 	 Time: 1:20:05[K
-  Distance:  1342.9859478290896[K[AIterations: 365 	 Time: 1:20:16[K
-  Distance:  1343.144729979873[K[AIterations: 366 	 Time: 1:20:27[K
-  Distance:  1343.1159586494034[K[AIterations: 367 	 Time: 1:20:39[K
-  Distance:  1421.7825711149453[K[AIterations: 368 	 Time: 1:20:51[K
-  Distance:  1384.264008345629[K[AIterations: 369 	 Time: 1:21:03[K
-  Distance:  1369.7418641981212[K[AIterations: 370 	 Time: 1:21:15[K
-  Distance:  1360.3284231796192[K[AIterations: 371 	 Time: 1:21:27[K
-  Distance:  1249.9247729301705[K[AIterations: 372 	 Time: 1:21:39[K
-  Distance:  1366.260025751835[K[AIterations: 373 	 Time: 1:21:52[K
-  Distance:  1391.7057124035857[K[AIterations: 374 	 Time: 1:22:04[K
-  Distance:  1378.099974319821[K[AIterations: 375 	 Time: 1:22:16[K
-  Distance:  1396.3361630266763[K[AIterations: 376 	 Time: 1:22:31[K
-  Distance:  1345.3523031088653[K[AIterations: 377 	 Time: 1:22:42[K
-  Distance:  1399.4564620255715[K[AIterations: 378 	 Time: 1:22:54[K
-  Distance:  1378.1941770920419[K[AIterations: 379 	 Time: 1:23:05[K
-  Distance:  1357.0297464387995[K[AIterations: 380 	 Time: 1:23:18[K
-  Distance:  1399.7327621164548[K[AIterations: 381 	 Time: 1:23:29[K
-  Distance:  1395.0320272052886[K[AIterations: 382 	 Time: 1:23:41[K
-  Distance:  1295.7307627947835[K[AIterations: 383 	 Time: 1:23:53[K
-  Distance:  1332.1488080500017[K[AIterations: 384 	 Time: 1:24:06[K
-  Distance:  1349.857942101044[K[AIterations: 385 	 Time: 1:24:17[K
-  Distance:  1358.4514823108111[K[AIterations: 386 	 Time: 1:24:29[K
-  Distance:  1378.9270349205995[K[AIterations: 387 	 Time: 1:24:40[K
-  Distance:  1326.0226459094636[K[AIterations: 388 	 Time: 1:24:53[K
-  Distance:  1364.9322893422045[K[AIterations: 389 	 Time: 1:25:04[K
-  Distance:  1380.8710582876156[K[AIterations: 390 	 Time: 1:25:17[K
-  Distance:  1401.4785230458194[K[AIterations: 391 	 Time: 1:25:28[K
-  Distance:  1351.16437286113[K[AIterations: 392 	 Time: 1:25:41[K
-  Distance:  1383.75710544265[K[AIterations: 393 	 Time: 1:25:53[K
-  Distance:  1346.3430765611345[K[AIterations: 394 	 Time: 1:26:04[K
-  Distance:  1320.8209163889744[K[AIterations: 395 	 Time: 1:26:15[K
-  Distance:  1318.2766226391573[K[AIterations: 396 	 Time: 1:26:27[K
-  Distance:  1424.9893619113054[K[AIterations: 397 	 Time: 1:26:40[K
-  Distance:  1377.555594125638[K[AIterations: 398 	 Time: 1:26:55[K
-  Distance:  1313.5844046055752[K[AIterations: 399 	 Time: 1:27:07[K
-  Distance:  1351.0897085947186[K[AIterations: 400 	 Time: 1:27:21[K
-  Distance:  1383.7447280968436[K[AIterations: 401 	 Time: 1:27:33[K
-  Distance:  1387.9718757298642[K[AIterations: 402 	 Time: 1:27:44[K
-  Distance:  1303.5950484037844[K[AIterations: 403 	 Time: 1:27:56[K
-  Distance:  1373.3380405424368[K[AIterations: 404 	 Time: 1:28:09[K
-  Distance:  1370.5644290229798[K[AIterations: 405 	 Time: 1:28:20[K
-  Distance:  1379.173548120361[K[AIterations: 406 	 Time: 1:28:33[K
-  Distance:  1401.0508801158192[K[AIterations: 407 	 Time: 1:28:44[K
-  Distance:  1351.0903266676132[K[AIterations: 408 	 Time: 1:28:56[K
-  Distance:  1383.7444281733813[K[AIterations: 409 	 Time: 1:29:08[K
-  Distance:  1346.3539299061943[K[AIterations: 410 	 Time: 1:29:19[K
-  Distance:  1296.4999090478436[K[AIterations: 411 	 Time: 1:29:31[K
-  Distance:  1287.2563508631085[K[AIterations: 412 	 Time: 1:29:43[K
-  Distance:  1424.9892459000343[K[AIterations: 413 	 Time: 1:29:55[K
-  Distance:  1378.08349796272[K[AIterations: 414 	 Time: 1:30:07[K
-  Distance:  1294.4528411815377[K[AIterations: 415 	 Time: 1:30:18[K
-  Distance:  1351.0906017006653[K[AIterations: 416 	 Time: 1:30:31[K
-  Distance:  1383.7425653763016[K[AIterations: 417 	 Time: 1:30:42[K
-  Distance:  1387.9716467097105[K[AIterations: 418 	 Time: 1:30:54[K
-  Distance:  1303.5847814669428[K[AIterations: 419 	 Time: 1:31:04[K
-  Distance:  1291.4478024349235[K[AIterations: 420 	 Time: 1:31:16[K
-  Distance:  1401.267285399682[K[AIterations: 421 	 Time: 1:31:27[K
-  Distance:  1379.174213096265[K[AIterations: 422 	 Time: 1:31:39[K
-  Distance:  1401.051778245472[K[AIterations: 423 	 Time: 1:31:50[K
-  Distance:  1351.0905163098946[K[AIterations: 424 	 Time: 1:32:02[K
-  Distance:  1383.7448324617555[K[AIterations: 425 	 Time: 1:32:13[K
-  Distance:  1346.35240163412[K[AIterations: 426 	 Time: 1:32:24[K
-  Distance:  1301.951449358029[K[AIterations: 427 	 Time: 1:32:34[K
-  Distance:  1282.1527849605438[K[AIterations: 428 	 Time: 1:32:47[K
-  Distance:  1424.989228446199[K[AIterations: 429 	 Time: 1:32:58[K
-  Distance:  1378.095886938628[K[AIterations: 430 	 Time: 1:33:10[K
-  Distance:  1338.5470820610992[K[AIterations: 431 	 Time: 1:33:21[K
-  Distance:  1351.0906662296848[K[AIterations: 432 	 Time: 1:33:33[K
-  Distance:  1383.7449090324212[K[AIterations: 433 	 Time: 1:33:44[K
-  Distance:  1387.9719353983583[K[AIterations: 434 	 Time: 1:33:56[K
-  Distance:  1303.588015165054[K[AIterations: 435 	 Time: 1:34:06[K
-  Distance:  1282.1527796856292[K[AIterations: 436 	 Time: 1:34:19[K
-  Distance:  1370.565226778141[K[AIterations: 437 	 Time: 1:34:30[K
-  Distance:  1379.1739988227876[K[AIterations: 438 	 Time: 1:34:42[K
-  Distance:  1401.0514748950895[K[AIterations: 439 	 Time: 1:34:52[K
-  Distance:  1351.0906639929397[K[AIterations: 440 	 Time: 1:35:05[K
-  Distance:  1383.742678478733[K[AIterations: 441 	 Time: 1:35:16[K
-  Distance:  1346.3533495101951[K[AIterations: 442 	 Time: 1:35:28[K
-  Distance:  1296.5056113709397[K[AIterations: 443 	 Time: 1:35:39[K
-  Distance:  1286.6684318677997[K[AIterations: 444 	 Time: 1:35:52[K
-  Distance:  1424.9893021723867[K[AIterations: 445 	 Time: 1:36:04[K
-  Distance:  1378.018009845564[K[AIterations: 446 	 Time: 1:36:16[K
-  Distance:  1294.4510096407785[K[AIterations: 447 	 Time: 1:36:28[K
-  Distance:  1351.0903685551102[K[AIterations: 448 	 Time: 1:36:40[K
-  Distance:  1383.7426645832804[K[AIterations: 449 	 Time: 1:36:51[K
-  Distance:  1387.97252952893[K[AIterations: 450 	 Time: 1:37:02[K
-  Distance:  1303.5868803018222[K[AIterations: 451 	 Time: 1:37:15[K
-  Distance:  1282.1528310487831[K[AIterations: 452 	 Time: 1:37:28[K
-  Distance:  1373.204053089262[K[AIterations: 453 	 Time: 1:37:41[K
-  Distance:  1379.174122841449[K[AIterations: 454 	 Time: 1:37:55[K
-  Distance:  1401.0516632154772[K[AIterations: 455 	 Time: 1:38:06[K
-  Distance:  1351.0909163524466[K[AIterations: 456 	 Time: 1:38:20[K
-  Distance:  1383.7431235464514[K[AIterations: 457 	 Time: 1:38:32[K
-  Distance:  1346.348878706113[K[AIterations: 458 	 Time: 1:38:45[K
-  Distance:  1296.5080185908303[K[AIterations: 459 	 Time: 1:38:58[K
-  Distance:  1297.4316005244889[K[AIterations: 460 	 Time: 1:39:10[K
-  Distance:  1424.9892612451242[K[AIterations: 461 	 Time: 1:39:22[K
-  Distance:  1378.015425503676[K[AIterations: 462 	 Time: 1:39:34[K
-  Distance:  1294.4595247037817[K[AIterations: 463 	 Time: 1:39:45[K
-  Distance:  1351.0908218448171[K[AIterations: 464 	 Time: 1:39:56[K
-  Distance:  1383.743369094153[K[AIterations: 465 	 Time: 1:40:07[K
-  Distance:  1387.972011622131[K[AIterations: 466 	 Time: 1:40:18[K
-  Distance:  1303.5904119230624[K[AIterations: 467 	 Time: 1:40:27[K
-  Distance:  1379.6780004192617[K[AIterations: 468 	 Time: 1:40:39[K
-  Distance:  1404.416420389668[K[AIterations: 469 	 Time: 1:40:48[K
-  Distance:  1379.1739052111875[K[AIterations: 470 	 Time: 1:40:59[K
-  Distance:  1401.0513566557045[K[AIterations: 471 	 Time: 1:41:08[K
-  Distance:  1351.090734110158[K[AIterations: 472 	 Time: 1:41:19[K
-  Distance:  1383.7432186545996[K[AIterations: 473 	 Time: 1:41:29[K
-  Distance:  1346.3488366429767[K[AIterations: 474 	 Time: 1:41:39[K
-  Distance:  1304.3315669367553[K[AIterations: 475 	 Time: 1:41:48[K
-  Distance:  1282.1527853488396[K[AIterations: 476 	 Time: 1:42:00[K
-  Distance:  1424.9892933582723[K[AIterations: 477 	 Time: 1:42:10[K
-  Distance:  1378.0221749663074[K[AIterations: 478 	 Time: 1:42:21[K
-  Distance:  1340.0964634295833[K[AIterations: 479 	 Time: 1:42:31[K
-  Distance:  1351.090668907266[K[AIterations: 480 	 Time: 1:42:42[K
-  Distance:  1383.7428595343777[K[AIterations: 481 	 Time: 1:42:52[K
-  Distance:  1387.9717070296902[K[AIterations: 482 	 Time: 1:43:02[K
-  Distance:  1303.587796560874[K[AIterations: 483 	 Time: 1:43:12[K
-  Distance:  1282.1525964285515[K[AIterations: 484 	 Time: 1:43:23[K
-  Distance:  1370.5651037436883[K[AIterations: 485 	 Time: 1:43:33[K
-  Distance:  1379.1740019418987[K[AIterations: 486 	 Time: 1:43:44[K
-  Distance:  1401.0514988451669[K[AIterations: 487 	 Time: 1:43:53[K
-  Distance:  1351.090554401653[K[AIterations: 488 	 Time: 1:44:04[K
-  Distance:  1383.742589434591[K[AIterations: 489 	 Time: 1:44:14[K
-  Distance:  1346.3516607079687[K[AIterations: 490 	 Time: 1:44:25[K
-  Distance:  1296.5047302204057[K[AIterations: 491 	 Time: 1:44:35[K
-  Distance:  1288.3876418128973[K[AIterations: 492 	 Time: 1:44:47[K
-  Distance:  1424.989211926314[K[AIterations: 493 	 Time: 1:44:58[K
-  Distance:  1377.9968195024026[K[AIterations: 494 	 Time: 1:45:09[K
-  Distance:  1294.45600073117[K[AIterations: 495 	 Time: 1:45:20[K
-  Distance:  1351.0907020394286[K[AIterations: 496 	 Time: 1:45:31[K
-  Distance:  1383.7431251208639[K[AIterations: 497 	 Time: 1:45:41[K
-  Distance:  1387.9714426447276[K[AIterations: 498 	 Time: 1:45:51[K
-  Distance:  1303.588084334176[K[AIterations: 499 	 Time: 1:46:00[K
-  Distance:  1282.1525852330751[K[AIterations: 500 	 Time: 1:46:12[K
-  Distance:  1376.4886239998154[K[AIterations: 501 	 Time: 1:46:22[K
-  Distance:  1379.1740231288018[K[AIterations: 502 	 Time: 1:46:32[K
-  Distance:  1401.0515455878672[K[AIterations: 503 	 Time: 1:46:42[K
-  Distance:  1351.0908204106104[K[AIterations: 504 	 Time: 1:46:53[K
-  Distance:  1383.7438126079455[K[AIterations: 505 	 Time: 1:47:03[K
-  Distance:  1346.347655262794[K[AIterations: 506 	 Time: 1:47:13[K
-  Distance:  1296.5033825475402[K[AIterations: 507 	 Time: 1:47:23[K
-  Distance:  1300.6643398701112[K[AIterations: 508 	 Time: 1:47:34[K
-  Distance:  1424.9892481336612[K[AIterations: 509 	 Time: 1:47:45[K
-  Distance:  1378.0935322570672[K[AIterations: 510 	 Time: 1:47:56[K
-  Distance:  1294.4465797003134[K[AIterations: 511 	 Time: 1:48:06[K
-  Distance:  1351.0903061533702[K[AIterations: 512 	 Time: 1:48:17[K
-  Distance:  1383.7448632716853[K[AIterations: 513 	 Time: 1:48:28[K
-  Distance:  1387.971041022837[K[AIterations: 514 	 Time: 1:48:38[K
-  Distance:  1303.5877013698766[K[AIterations: 515 	 Time: 1:48:48[K
-  Distance:  1293.9869522037175[K[AIterations: 516 	 Time: 1:48:59[K
-  Distance:  1404.4271360415764[K[AIterations: 517 	 Time: 1:49:09[K
-  Distance:  1379.1740203557258[K[AIterations: 518 	 Time: 1:49:19[K
-  Distance:  1401.051506962987[K[AIterations: 519 	 Time: 1:49:29[K
-  Distance:  1351.0906250046755[K[AIterations: 520 	 Time: 1:49:40[K
-  Distance:  1383.7448958551718[K[AIterations: 521 	 Time: 1:49:50[K
-  Distance:  1346.351112702741[K[AIterations: 522 	 Time: 1:50:01[K
-  Distance:  1304.3057687545515[K[AIterations: 523 	 Time: 1:50:10[K
-  Distance:  1282.1526594165746[K[AIterations: 524 	 Time: 1:50:21[K
-  Distance:  1424.9892134365778[K[AIterations: 525 	 Time: 1:50:32[K
-  Distance:  1378.0197375531716[K[AIterations: 526 	 Time: 1:50:42[K
-  Distance:  1340.0624963664995[K[AIterations: 527 	 Time: 1:50:53[K
-  Distance:  1351.0909028868637[K[AIterations: 528 	 Time: 1:51:04[K
-  Distance:  1383.7434793689297[K[AIterations: 529 	 Time: 1:51:14[K
-  Distance:  1387.971393019384[K[AIterations: 530 	 Time: 1:51:24[K
-  Distance:  1303.5874332179778[K[AIterations: 531 	 Time: 1:51:33[K
-  Distance:  1282.1528308189702[K[AIterations: 532 	 Time: 1:51:44[K
-  Distance:  1370.565581824806[K[AIterations: 533 	 Time: 1:51:54[K
-  Distance:  1379.1740582237535[K[AIterations: 534 	 Time: 1:52:05[K
-  Distance:  1401.051609502102[K[AIterations: 535 	 Time: 1:52:14[K
-  Distance:  1351.0907551169767[K[AIterations: 536 	 Time: 1:52:25[K
-  Distance:  1383.743656226985[K[AIterations: 537 	 Time: 1:52:35[K
-  Distance:  1346.3500572340781[K[AIterations: 538 	 Time: 1:52:46[K
-  Distance:  1296.5121641658166[K[AIterations: 539 	 Time: 1:52:56[K
-  Distance:  1288.376405926369[K[AIterations: 540 	 Time: 1:53:07[K
-  Distance:  1424.9892136037636[K[AIterations: 541 	 Time: 1:53:18[K
-  Distance:  1377.9843338037574[K[AIterations: 542 	 Time: 1:53:29[K
-  Distance:  1294.4548806194286[K[AIterations: 543 	 Time: 1:53:39[K
-  Distance:  1351.0906232236662[K[AIterations: 544 	 Time: 1:53:50[K
-  Distance:  1383.7429341044026[K[AIterations: 545 	 Time: 1:54:00[K
-  Distance:  1387.9718267800713[K[AIterations: 546 	 Time: 1:54:10[K
-  Distance:  1303.587825534095[K[AIterations: 547 	 Time: 1:54:20[K
-  Distance:  1282.1526098251938[K[AIterations: 548 	 Time: 1:54:31[K
-  Distance:  1376.4678907604716[K[AIterations: 549 	 Time: 1:54:41[K
-  Distance:  1379.1740150872536[K[AIterations: 550 	 Time: 1:54:51[K
-  Distance:  1401.051491475314[K[AIterations: 551 	 Time: 1:55:01[K
-  Distance:  1351.0904113658514[K[AIterations: 552 	 Time: 1:55:12[K
-  Distance:  1383.7448906877055[K[AIterations: 553 	 Time: 1:55:22[K
-  Distance:  1346.3523645222626[K[AIterations: 554 	 Time: 1:55:32[K
-  Distance:  1296.502448798258[K[AIterations: 555 	 Time: 1:55:42[K
-  Distance:  1300.6479240337233[K[AIterations: 556 	 Time: 1:55:53[K
-  Distance:  1424.9892434825624[K[AIterations: 557 	 Time: 1:56:04[K
-  Distance:  1377.9869388105967[K[AIterations: 558 	 Time: 1:56:15[K
-  Distance:  1294.435552606322[K[AIterations: 559 	 Time: 1:56:25[K
-  Distance:  1351.0901878636487[K[AIterations: 560 	 Time: 1:56:37[K
-  Distance:  1383.7443654652798[K[AIterations: 561 	 Time: 1:56:47[K
-  Distance:  1387.9712669973337[K[AIterations: 562 	 Time: 1:56:57[K
-  Distance:  1303.587927573175[K[AIterations: 563 	 Time: 1:57:07[K
-  Distance:  1293.9550293967873[K[AIterations: 564 	 Time: 1:57:18[K
-  Distance:  1404.422600114085[K[AIterations: 565 	 Time: 1:57:28[K
-  Distance:  1379.1739569213757[K[AIterations: 566 	 Time: 1:57:39[K
-  Distance:  1401.0514114962764[K[AIterations: 567 	 Time: 1:57:49[K
-  Distance:  1351.0903379273834[K[AIterations: 568 	 Time: 1:58:00[K
-  Distance:  1383.7446714346347[K[AIterations: 569 	 Time: 1:58:10[K
-  Distance:  1346.3532494816884[K[AIterations: 570 	 Time: 1:58:20[K
-  Distance:  1304.2854626973244[K[AIterations: 571 	 Time: 1:58:30[K
-  Distance:  1282.15269498719[K[AIterations: 572 	 Time: 1:58:41[K
-  Distance:  1424.9892396078415[K[AIterations: 573 	 Time: 1:58:52[K
-  Distance:  1377.9833702950523[K[AIterations: 574 	 Time: 1:59:03[K
-  Distance:  1340.0715009943629[K[AIterations: 575 	 Time: 1:59:13[K
-  Distance:  1351.0902612286227[K[AIterations: 576 	 Time: 1:59:24[K
-  Distance:  1383.744410290029[K[AIterations: 577 	 Time: 1:59:34[K
-  Distance:  1387.9720241497198[K[AIterations: 578 	 Time: 1:59:45[K
-  Distance:  1303.5907485867715[K[AIterations: 579 	 Time: 1:59:54[K
-  Distance:  1282.1524086192983[K[AIterations: 580 	 Time: 2:00:05[K
-  Distance:  1370.5651472827483[K[AIterations: 581 	 Time: 2:00:15[K
-  Distance:  1379.1738397619445[K[AIterations: 582 	 Time: 2:00:26[K
-  Distance:  1401.051310048654[K[AIterations: 583 	 Time: 2:00:36[K
-  Distance:  1351.0906587464297[K[AIterations: 584 	 Time: 2:00:47[K
-  Distance:  1383.7425889324948[K[AIterations: 585 	 Time: 2:00:57[K
-  Distance:  1346.3502602463684[K[AIterations: 586 	 Time: 2:01:08[K
-  Distance:  1296.5027648703779[K[AIterations: 587 	 Time: 2:01:18[K
-  Distance:  1288.4198307267084[K[AIterations: 588 	 Time: 2:01:29[K
-  Distance:  1424.9892410627078[K[AIterations: 589 	 Time: 2:01:40[K
-  Distance:  1378.0930899832015[K[AIterations: 590 	 Time: 2:01:51[K
-  Distance:  1294.4557867329836[K[AIterations: 591 	 Time: 2:02:01[K
-  Distance:  1351.0906764623894[K[AIterations: 592 	 Time: 2:02:12[K
-  Distance:  1383.7432718892667[K[AIterations: 593 	 Time: 2:02:22[K
-  Distance:  1387.9720722443062[K[AIterations: 594 	 Time: 2:02:33[K
-  Distance:  1303.5880492086658[K[AIterations: 595 	 Time: 2:02:43[K
-  Distance:  1282.1528182718127[K[AIterations: 596 	 Time: 2:02:54[K
-  Distance:  1376.4725830649643[K[AIterations: 597 	 Time: 2:03:05[K
-  Distance:  1379.1740272884447[K[AIterations: 598 	 Time: 2:03:15[K
-  Distance:  1401.051530444673[K[AIterations: 599 	 Time: 2:03:26[K
-  Distance:  1351.0904680854228[K[AIterations: 600 	 Time: 2:03:37[K
-  Distance:  1383.7427029477112[K[AIterations: 601 	 Time: 2:03:48[K
-  Distance:  1346.3528719595058[K[AIterations: 602 	 Time: 2:03:58[K
-  Distance:  1296.5081532762933[K[AIterations: 603 	 Time: 2:04:08[K
-  Distance:  1300.647788942863[K[AIterations: 604 	 Time: 2:04:20[K
-  Distance:  1424.9893823590085[K[AIterations: 605 	 Time: 2:04:31[K
-  Distance:  1377.9788070797968[K[AIterations: 606 	 Time: 2:04:43[K
-  Distance:  1294.4492196271328[K[AIterations: 607 	 Time: 2:04:54[K
-  Distance:  1351.0905058594549[K[AIterations: 608 	 Time: 2:05:06[K
-  Distance:  1383.7429943194634[K[AIterations: 609 	 Time: 2:05:16[K
-  Distance:  1387.9724184136628[K[AIterations: 610 	 Time: 2:05:27[K
-  Distance:  1303.5883193305754[K[AIterations: 611 	 Time: 2:05:37[K
-  Distance:  1293.6829862719223[K[AIterations: 612 	 Time: 2:05:49[K
-  Distance:  1404.415327320457[K[AIterations: 613 	 Time: 2:06:00[K
-  Distance:  1379.1740313363082[K[AIterations: 614 	 Time: 2:06:11[K
-  Distance:  1401.051543776301[K[AIterations: 615 	 Time: 2:06:21[K
-  Distance:  1351.0907248149624[K[AIterations: 616 	 Time: 2:06:33[K
-  Distance:  1383.7433491492957[K[AIterations: 617 	 Time: 2:06:44[K
-  Distance:  1346.3487477051688[K[AIterations: 618 	 Time: 2:06:55[K
-  Distance:  1304.2219892612088[K[AIterations: 619 	 Time: 2:07:05[K
-  Distance:  1282.1527886009924[K[AIterations: 620 	 Time: 2:07:17[K
-  Distance:  1424.989275869589[K[AIterations: 621 	 Time: 2:07:28[K
-  Distance:  1377.9811672881715[K[AIterations: 622 	 Time: 2:07:40[K
-  Distance:  1340.0909651828465[K[AIterations: 623 	 Time: 2:07:51[K
-  Distance:  1351.090792726452[K[AIterations: 624 	 Time: 2:08:03[K
-  Distance:  1383.7431774161755[K[AIterations: 625 	 Time: 2:08:14[K
-  Distance:  1387.9720309781776[K[AIterations: 626 	 Time: 2:08:25[K
-  Distance:  1303.5864582676206[K[AIterations: 627 	 Time: 2:08:35[K
-  Distance:  1282.1527928724895[K[AIterations: 628 	 Time: 2:08:47[K
-  Distance:  1370.5647099800603[K[AIterations: 629 	 Time: 2:08:58[K
-  Distance:  1379.174077582864[K[AIterations: 630 	 Time: 2:09:10[K
-  Distance:  1401.051613410596[K[AIterations: 631 	 Time: 2:09:20[K
-  Distance:  1351.0903899786176[K[AIterations: 632 	 Time: 2:09:32[K
-  Distance:  1383.7446910884146[K[AIterations: 633 	 Time: 2:09:42[K
-  Distance:  1346.3537699904264[K[AIterations: 634 	 Time: 2:09:52[K
-  Distance:  1296.5034772665472[K[AIterations: 635 	 Time: 2:10:03[K
-  Distance:  1288.3566965016164[K[AIterations: 636 	 Time: 2:10:15[K
-  Distance:  1424.9892552466836[K[AIterations: 637 	 Time: 2:10:26[K
-  Distance:  1377.978687129607[K[AIterations: 638 	 Time: 2:10:38[K
-  Distance:  1294.4400938419487[K[AIterations: 639 	 Time: 2:10:48[K
-  Distance:  1351.0903121742513[K[AIterations: 640 	 Time: 2:10:59[K
-  Distance:  1383.7447210130495[K[AIterations: 641 	 Time: 2:11:09[K
-  Distance:  1387.9719769936482[K[AIterations: 642 	 Time: 2:11:20[K
-  Distance:  1303.5867553596909[K[AIterations: 643 	 Time: 2:11:30[K
-  Distance:  1282.1527209053015
-signal (15): Terminated
+Iterations: 1 	 Time: 0:01:32[K
+  Distance:  816.5064394493816[K[AIterations: 2 	 Time: 0:02:49[K
+  Distance:  1268.0442128560912[K[AIterations: 3 	 Time: 0:03:59[K
+  Distance:  1480.5422328959062[K[AIterations: 4 	 Time: 0:05:09[K
+  Distance:  1518.412058037409[K[AIterations: 5 	 Time: 0:06:07[K
+  Distance:  1514.8995735575224[K[AIterations: 6 	 Time: 0:07:14[K
+  Distance:  1477.4271802519656[K[AIterations: 7 	 Time: 0:08:27[K
+  Distance:  1489.9562692652726[K[AIterations: 8 	 Time: 0:09:35[K
+  Distance:  1477.4082567671312[K[AIterations: 9 	 Time: 0:10:41[K
+  Distance:  1485.4273724732145[K[AIterations: 10 	 Time: 0:11:48[K
+  Distance:  1364.8643906308876[K[AIterations: 11 	 Time: 0:12:54[K
+  Distance:  1410.9990709294582[K[AIterations: 12 	 Time: 0:13:59[K
+  Distance:  1492.442218490968[K[AIterations: 13 	 Time: 0:14:39[K
+  Distance:  NaN[K[AIterations: 13 	 Time: 0:14:39[K
+Simulating the economy.  0%|                              |  ETA: 0:12:16[KSimulating the economy.  1%|▍                             |  ETA: 0:03:31[KSimulating the economy.  2%|▊                             |  ETA: 0:02:19[KSimulating the economy.  3%|▉                             |  ETA: 0:02:31[KSimulating the economy.  4%|█▎                            |  ETA: 0:02:07[KSimulating the economy.  5%|█▋                            |  ETA: 0:01:54[KSimulating the economy.  6%|█▊                            |  ETA: 0:01:54[KSimulating the economy.  7%|██▎                           |  ETA: 0:01:43[KSimulating the economy.  9%|██▋                           |  ETA: 0:01:38[KSimulating the economy. 10%|███                           |  ETA: 0:01:34[KSimulating the economy. 11%|███▎                          |  ETA: 0:01:31[KSimulating the economy. 12%|███▋                          |  ETA: 0:01:29[KSimulating the economy. 13%|████                          |  ETA: 0:01:27[KSimulating the economy. 14%|████▏                         |  ETA: 0:01:33[KSimulating the economy. 15%|████▌                         |  ETA: 0:01:31[KSimulating the economy. 16%|████▉                         |  ETA: 0:01:28[KSimulating the economy. 17%|█████▎                        |  ETA: 0:01:26[KSimulating the economy. 19%|█████▋                        |  ETA: 0:01:23[KSimulating the economy. 20%|█████▉                        |  ETA: 0:01:21[KSimulating the economy. 21%|██████▎                       |  ETA: 0:01:19[KSimulating the economy. 22%|██████▋                       |  ETA: 0:01:17[KSimulating the economy. 23%|███████                       |  ETA: 0:01:15[KSimulating the economy. 25%|███████▍                      |  ETA: 0:01:13[KSimulating the economy. 26%|███████▊                      |  ETA: 0:01:12[KSimulating the economy. 27%|████████▏                     |  ETA: 0:01:11[KSimulating the economy. 28%|████████▌                     |  ETA: 0:01:09[KSimulating the economy. 29%|████████▊                     |  ETA: 0:01:08[KSimulating the economy. 30%|█████████▏                    |  ETA: 0:01:07[KSimulating the economy. 32%|█████████▌                    |  ETA: 0:01:05[KSimulating the economy. 33%|█████████▉                    |  ETA: 0:01:04[KSimulating the economy. 34%|██████████▎                   |  ETA: 0:01:02[KSimulating the economy. 35%|██████████▍                   |  ETA: 0:01:04[KSimulating the economy. 36%|██████████▉                   |  ETA: 0:01:02[KSimulating the economy. 38%|███████████▎                  |  ETA: 0:01:00[KSimulating the economy. 39%|███████████▋                  |  ETA: 0:00:59[KSimulating the economy. 40%|████████████                  |  ETA: 0:00:58[KSimulating the economy. 41%|████████████▎                 |  ETA: 0:00:56[KSimulating the economy. 42%|████████████▋                 |  ETA: 0:00:55[KSimulating the economy. 43%|█████████████                 |  ETA: 0:00:54[KSimulating the economy. 44%|█████████████▍                |  ETA: 0:00:53[KSimulating the economy. 46%|█████████████▋                |  ETA: 0:00:52[KSimulating the economy. 47%|██████████████                |  ETA: 0:00:50[KSimulating the economy. 48%|██████████████▍               |  ETA: 0:00:49[KSimulating the economy. 49%|██████████████▊               |  ETA: 0:00:48[KSimulating the economy. 50%|███████████████▏              |  ETA: 0:00:47[KSimulating the economy. 51%|███████████████▍              |  ETA: 0:00:45[KSimulating the economy. 53%|███████████████▊              |  ETA: 0:00:44[KSimulating the economy. 54%|████████████████▏             |  ETA: 0:00:43[KSimulating the economy. 55%|████████████████▌             |  ETA: 0:00:42[KSimulating the economy. 56%|████████████████▊             |  ETA: 0:00:41[KSimulating the economy. 57%|█████████████████▏            |  ETA: 0:00:40[KSimulating the economy. 58%|█████████████████▌            |  ETA: 0:00:39[KSimulating the economy. 59%|█████████████████▊            |  ETA: 0:00:38[KSimulating the economy. 61%|██████████████████▏           |  ETA: 0:00:37[KSimulating the economy. 62%|██████████████████▌           |  ETA: 0:00:36[KSimulating the economy. 63%|██████████████████▊           |  ETA: 0:00:35[KSimulating the economy. 64%|███████████████████▏          |  ETA: 0:00:33[KSimulating the economy. 65%|███████████████████▌          |  ETA: 0:00:32[KSimulating the economy. 66%|███████████████████▉          |  ETA: 0:00:31[KSimulating the economy. 68%|████████████████████▎         |  ETA: 0:00:30[KSimulating the economy. 69%|████████████████████▋         |  ETA: 0:00:28[KSimulating the economy. 70%|█████████████████████▏        |  ETA: 0:00:27[KSimulating the economy. 71%|█████████████████████▌        |  ETA: 0:00:26[KSimulating the economy. 73%|█████████████████████▊        |  ETA: 0:00:25[KSimulating the economy. 74%|██████████████████████▏       |  ETA: 0:00:24[KSimulating the economy. 75%|██████████████████████▌       |  ETA: 0:00:23[KSimulating the economy. 76%|██████████████████████▉       |  ETA: 0:00:21[KSimulating the economy. 78%|███████████████████████▎      |  ETA: 0:00:20[KSimulating the economy. 79%|███████████████████████▋      |  ETA: 0:00:19[KSimulating the economy. 80%|████████████████████████      |  ETA: 0:00:18[KSimulating the economy. 81%|████████████████████████▌     |  ETA: 0:00:17[KSimulating the economy. 83%|████████████████████████▉     |  ETA: 0:00:16[KSimulating the economy. 84%|█████████████████████████▎    |  ETA: 0:00:14[KSimulating the economy. 86%|█████████████████████████▋    |  ETA: 0:00:13[KSimulating the economy. 87%|██████████████████████████▏   |  ETA: 0:00:12[KSimulating the economy. 88%|██████████████████████████▍   |  ETA: 0:00:11[KSimulating the economy. 89%|██████████████████████████▊   |  ETA: 0:00:10[KSimulating the economy. 91%|███████████████████████████▎  |  ETA: 0:00:08[KSimulating the economy. 92%|███████████████████████████▋  |  ETA: 0:00:07[KSimulating the economy. 94%|████████████████████████████▏ |  ETA: 0:00:06[KSimulating the economy. 95%|████████████████████████████▌ |  ETA: 0:00:04[KSimulating the economy. 97%|█████████████████████████████ |  ETA: 0:00:03[KSimulating the economy. 98%|█████████████████████████████▍|  ETA: 0:00:02[KSimulating the economy.100%|█████████████████████████████▉|  ETA: 0:00:00[KSimulating the economy.100%|██████████████████████████████| Time: 0:01:28[K
+ERROR: LoadError: ArgumentError: start and stop must be finite, got NaN and NaN
+Stacktrace:
+ [1] _linspace(::Float64, ::Float64, ::Int64) at ./twiceprecision.jl:599
+ [2] _range(::Float64, ::Nothing, ::Float64, ::Int64) at ./twiceprecision.jl:595
+ [3] #range#31 at ./range.jl:87 [inlined]
+ [4] #range at ./none:0 [inlined]
+ [5] #KrusselSmith#20(::Float64, ::Float64, ::Float64, ::Float64, ::Float64, ::String, ::Int64, ::Int64, ::Int64, ::Int64, ::LBFGS{Nothing,InitialStatic{Float64},BackTracking{Float64,Int64},getfield(Optim, Symbol("##23#25"))}, ::Float64, ::typeof(KrusselSmith), ::Array{Float64,1}, ::Array{Float64,1}, ::Array{Float64,1}, ::Array{Float64,2}, ::NTuple{4,Array{Float64,1}}, ::Array{Float64,1}, ::Array{Float64,1}, ::Array{Float64,2}, ::Array{Float64,2}) at /home/santo279/ECON_8185/Anmol/HW4/VFI_KS.jl:270
+ [6] (::getfield(Main, Symbol("#kw##KrusselSmith")))(::NamedTuple{(:iterate, :N, :T, :discard, :inner_optimizer),Tuple{String,Int64,Int64,Int64,LBFGS{Nothing,InitialStatic{Float64},BackTracking{Float64,Int64},getfield(Optim, Symbol("##23#25"))}}}, ::typeof(KrusselSmith), ::Array{Float64,1}, ::Array{Float64,1}, ::Array{Float64,1}, ::Array{Float64,2}, ::NTuple{4,Array{Float64,1}}, ::Array{Float64,1}, ::Array{Float64,1}, ::Array{Float64,2}, ::Array{Float64,2}) at ./none:0
+ [7] top-level scope at util.jl:156
+ [8] include at ./boot.jl:326 [inlined]
+ [9] include_relative(::Module, ::String) at ./loading.jl:1038
+ [10] include(::Module, ::String) at ./sysimg.jl:29
+ [11] exec_options(::Base.JLOptions) at ./client.jl:267
+ [12] _start() at ./client.jl:436
 in expression starting at /home/santo279/ECON_8185/Anmol/HW4/main.jl:62
-pthread_cond_wait at /lib64/libpthread.so.0 (unknown line)
-uv_cond_wait at /buildworker/worker/package_linux64/build/deps/srccache/libuv-2348256acf5759a544e5ca7935f638d2bc091d60/src/unix/thread.c:802
-ti_threadgroup_fork at /buildworker/worker/package_linux64/build/src/threadgroup.c:153
-ti_threadfun at /buildworker/worker/package_linux64/build/src/threading.c:399
-start_thread at /lib64/libpthread.so.0 (unknown line)
-clone at /lib64/libc.so.6 (unknown line)
-unknown function (ip: 0xffffffffffffffff)
-pthread_cond_wait at /lib64/libpthread.so.0 (unknown line)
-uv_cond_wait at /buildworker/worker/package_linux64/build/deps/srccache/libuv-2348256acf5759a544e5ca7935f638d2bc091d60/src/unix/thread.c:802
-ti_threadgroup_fork at /buildworker/worker/package_linux64/build/src/threadgroup.c:153
-ti_threadfun at /buildworker/worker/package_linux64/build/src/threading.c:399
-start_thread at /lib64/libpthread.so.0 (unknown line)
-clone at /lib64/libc.so.6 (unknown line)
-unknown function (ip: 0xffffffffffffffff)
-pthread_cond_wait at /lib64/libpthread.so.0 (unknown line)
-uv_cond_wait at /buildworker/worker/package_linux64/build/deps/srccache/libuv-2348256acf5759a544e5ca7935f638d2bc091d60/src/unix/thread.c:802
-ti_threadgroup_fork at /buildworker/worker/package_linux64/build/src/threadgroup.c:153
-ti_threadfun at /buildworker/worker/package_linux64/build/src/threading.c:399
-start_thread at /lib64/libpthread.so.0 (unknown line)
-clone at /lib64/libc.so.6 (unknown line)
-unknown function (ip: 0xffffffffffffffff)
-pthread_cond_wait at /lib64/libpthread.so.0 (unknown line)
-uv_cond_wait at /buildworker/worker/package_linux64/build/deps/srccache/libuv-2348256acf5759a544e5ca7935f638d2bc091d60/src/unix/thread.c:802
-ti_threadgroup_fork at /buildworker/worker/package_linux64/build/src/threadgroup.c:153
-ti_threadfun at /buildworker/worker/package_linux64/build/src/threading.c:399
-start_thread at /lib64/libpthread.so.0 (unknown line)
-clone at /lib64/libc.so.6 (unknown line)
-unknown function (ip: 0xffffffffffffffff)
-pthread_cond_wait at /lib64/libpthread.so.0 (unknown line)
-uv_cond_wait at /buildworker/worker/package_linux64/build/deps/srccache/libuv-2348256acf5759a544e5ca7935f638d2bc091d60/src/unix/thread.c:802
-ti_threadgroup_fork at /buildworker/worker/package_linux64/build/src/threadgroup.c:153
-ti_threadfun at /buildworker/worker/package_linux64/build/src/threading.c:399
-start_thread at /lib64/libpthread.so.0 (unknown line)
-clone at /lib64/libc.so.6 (unknown line)
-unknown function (ip: 0xffffffffffffffff)
-pthread_cond_wait at /lib64/libpthread.so.0 (unknown line)
-uv_cond_wait at /buildworker/worker/package_linux64/build/deps/srccache/libuv-2348256acf5759a544e5ca7935f638d2bc091d60/src/unix/thread.c:802
-ti_threadgroup_fork at /buildworker/worker/package_linux64/build/src/threadgroup.c:153
-ti_threadfun at /buildworker/worker/package_linux64/build/src/threading.c:399
-start_thread at /lib64/libpthread.so.0 (unknown line)
-clone at /lib64/libc.so.6 (unknown line)
-unknown function (ip: 0xffffffffffffffff)
-jl_alloc_array_1d at /buildworker/worker/package_linux64/build/src/array.c:421
-Type at ./boot.jl:402 [inlined]
-Type at ./boot.jl:411 [inlined]
-Type at ./boot.jl:419 [inlined]
-similar at ./abstractarray.jl:618 [inlined]
-similar at ./abstractarray.jl:617 [inlined]
-vect at ./array.jl:130 [inlined]
-#EV#18 at /home/santo279/ECON_8185/Anmol/HW4/VFI_KS.jl:101
-unknown function (ip: 0x7fb0c80fa23f)
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
-EV at /home/santo279/ECON_8185/Anmol/HW4/VFI_KS.jl:96
-#Vf#19 at /home/santo279/ECON_8185/Anmol/HW4/VFI_KS.jl:117
-unknown function (ip: 0x7fb0c810ed42)
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
-#Vf at ./none:0
-unknown function (ip: 0x7fb0c810e93f)
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
-#11 at /home/santo279/ECON_8185/Anmol/HW4/VFI_KS.jl:62
-#finite_difference_gradient!#10 at /home/santo279/.julia/packages/DiffEqDiffTools/QtK9X/src/gradients.jl:308
-unknown function (ip: 0x7fb0c810e360)
-finite_difference_gradient! at /home/santo279/.julia/packages/DiffEqDiffTools/QtK9X/src/gradients.jl:258 [inlined]
-g! at /home/santo279/.julia/packages/NLSolversBase/KG9Ie/src/objective_types/oncedifferentiable.jl:56
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
-fg! at /home/santo279/.julia/packages/NLSolversBase/KG9Ie/src/objective_types/oncedifferentiable.jl:60
-function_barrier at /home/santo279/.julia/packages/Optim/Agd3B/src/multivariate/solvers/constrained/fminbox.jl:56
-unknown function (ip: 0x7fb0c810fadb)
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
-#55 at /home/santo279/.julia/packages/Optim/Agd3B/src/multivariate/solvers/constrained/fminbox.jl:181
-barrier_combined at /home/santo279/.julia/packages/Optim/Agd3B/src/multivariate/solvers/constrained/fminbox.jl:61
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
-#57 at /home/santo279/.julia/packages/Optim/Agd3B/src/multivariate/solvers/constrained/fminbox.jl:239
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
-#58 at /home/santo279/.julia/packages/Optim/Agd3B/src/multivariate/solvers/constrained/fminbox.jl:240
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
-value!! at /home/santo279/.julia/packages/NLSolversBase/KG9Ie/src/interface.jl:9
-value! at /home/santo279/.julia/packages/NLSolversBase/KG9Ie/src/interface.jl:28
-unknown function (ip: 0x7fb0c8110938)
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
-value! at /home/santo279/.julia/packages/Optim/Agd3B/src/Manifolds.jl:31
-ϕ at /home/santo279/.julia/packages/LineSearches/WrsMD/src/LineSearches.jl:25
-BackTracking at /home/santo279/.julia/packages/LineSearches/WrsMD/src/backtracking.jl:114
-BackTracking at /home/santo279/.julia/packages/LineSearches/WrsMD/src/backtracking.jl:33 [inlined]
-BackTracking at /home/santo279/.julia/packages/LineSearches/WrsMD/src/backtracking.jl:23 [inlined]
-perform_linesearch! at /home/santo279/.julia/packages/Optim/Agd3B/src/utilities/perform_linesearch.jl:40
-update_state! at /home/santo279/.julia/packages/Optim/Agd3B/src/multivariate/solvers/first_order/bfgs.jl:97
-optimize at /home/santo279/.julia/packages/Optim/Agd3B/src/multivariate/optimize/optimize.jl:57
-optimize at /home/santo279/.julia/packages/Optim/Agd3B/src/multivariate/optimize/optimize.jl:33 [inlined]
-optimize at /home/santo279/.julia/packages/Optim/Agd3B/src/multivariate/solvers/constrained/fminbox.jl:266
-#optimize#53 at /home/santo279/.julia/packages/Optim/Agd3B/src/multivariate/solvers/constrained/fminbox.jl:164 [inlined]
-optimize at /home/santo279/.julia/packages/Optim/Agd3B/src/multivariate/solvers/constrained/fminbox.jl:163 [inlined]
-optimize at /home/santo279/.julia/packages/Optim/Agd3B/src/multivariate/solvers/constrained/fminbox.jl:163
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
-#VFI_KS#10 at /home/santo279/ECON_8185/Anmol/HW4/VFI_KS.jl:62
-#VFI_KS at ./none:0
-#KrusselSmith#21 at /home/santo279/ECON_8185/Anmol/HW4/VFI_KS.jl:203
-#KrusselSmith at ./none:0
-jl_fptr_trampoline at /buildworker/worker/package_linux64/build/src/gf.c:1864
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
-do_call at /buildworker/worker/package_linux64/build/src/interpreter.c:323
-eval_value at /buildworker/worker/package_linux64/build/src/interpreter.c:411
-eval_stmt_value at /buildworker/worker/package_linux64/build/src/interpreter.c:362 [inlined]
-eval_body at /buildworker/worker/package_linux64/build/src/interpreter.c:773
-jl_interpret_toplevel_thunk_callback at /buildworker/worker/package_linux64/build/src/interpreter.c:885
-unknown function (ip: 0xfffffffffffffffe)
-unknown function (ip: 0x7fb08f34375f)
-unknown function (ip: 0x12)
-jl_interpret_toplevel_thunk at /buildworker/worker/package_linux64/build/src/interpreter.c:894
-jl_toplevel_eval_flex at /buildworker/worker/package_linux64/build/src/toplevel.c:764
-jl_parse_eval_all at /buildworker/worker/package_linux64/build/src/ast.c:883
-jl_load at /buildworker/worker/package_linux64/build/src/toplevel.c:826
-include at ./boot.jl:326 [inlined]
-include_relative at ./loading.jl:1038
-include at ./sysimg.jl:29
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
-exec_options at ./client.jl:267
-_start at ./client.jl:436
-jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2219
-unknown function (ip: 0x40191d)
-unknown function (ip: 0x401523)
-__libc_start_main at /lib64/libc.so.6 (unknown line)
-unknown function (ip: 0x4015c4)
-unknown function (ip: 0xffffffffffffffff)
-Allocations: 43303408486 (Pool: 40421306198; Big: 2882102288); GC: 605176
