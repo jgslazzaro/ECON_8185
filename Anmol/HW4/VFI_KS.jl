@@ -18,15 +18,15 @@ H0(K::Float64,z::Float64;d=d::Array{Float64,2},Z = Z::Array{Float64,1}) = exp(d[
 c(a::Float64,e::Float64, n::Float64 ,a1::Float64,k::Float64,h::Float64,z::Float64) =  R(k,h,z)*a+e*w(k,h,z)*n-a1
 
 
-function VFI_KS(A::Array{Float64,1},E::Array{Float64,1},Z::Array{Float64,1},pdf::Array{Float64,2},states::NTuple,
+function VFI_KS(A::Array{Float64,1},E::Array{Float64,1},Z::Array{Float64,1},transmat::Array{Float64,2},states::NTuple,
     K::Array{Float64,1}, H::Array{Float64,1} ,b::Array{Float64,2},d::Array{Float64,2};α=α::Float64,β = β::Float64, η=η::Float64, μ=μ::Float64,
-     tol = 1e-6,  inner_optimizer=BFGS(),lbar=lbar::Float64 ,Vgrid::Array{Float64,5} = zeros(nA,nE,nK,nH,nZ),
+     tol = 1e-6,  inner_optimizer=BFGS(),lbar=lbar::Float64 ,Vgrid::Array{Float64,5} = zeros(nA,nE,nK,nH,nZ),solver = "burro"::String,
      policy= ones(nA,nE,nK,nH,nZ,2)::Array{Float64,6},gridsearchAsize = nA::Int64,gridsearchNsize = 5::Int64)
     #A: Individual Asset grid
     #E: Individual productivity grid
-    #pdfE: pdf of E
+    #transmatE: transmat of E
     #Z: Aggregate shocks grid
-    #pdfZ: pdf of Z
+    #transmatZ: transmat of Z
     #K: Aggregate capital grid
     #H: Aggregate labor grid
     #Vinitial: Guess for the Value function
@@ -38,30 +38,13 @@ function VFI_KS(A::Array{Float64,1},E::Array{Float64,1},Z::Array{Float64,1},pdf:
     #predefining variables and loop stuff
      #last dimension indicates if it is the policy for n or a
     distance::Float64 = 1.0
+    Vgridf::Array{Float64,5} = copy(Vgrid) #To store V values
 
-    Vgridf::Array{Float64,5} = copy(Vgrid)
     #Guess for Value function
     V::Interpolations.Extrapolation{Float64,5,Interpolations.GriddedInterpolation{Float64,
     5,Float64,Gridded{Linear},NTuple{5,Array{Float64,1}}},Gridded{Linear},Line{Nothing}} =
     LinearInterpolation((A,E,K,H,Z),Vgrid,extrapolation_bc=Line()) #linear interpolation of the Value function
     iteration::Int64 = 1
-    multiple5::Int64 = 0
-
-    if gridsearchAsize==nA
-        gridsearchA = A# range(A[1],stop = A[end], length = gridsearchAsize )
-    else
-        gridsearchA = range(A[1],stop = A[end], length = gridsearchAsize )
-    end
-
-    gridsearchn = range(0.0,stop = lbar, length = gridsearchNsize )
-    gridsearch::Array{Array{Float64,1},1} = fill([1.0,1.0],gridsearchNsize*gridsearchAsize)
-    i::Int64 = 1
-    for n=1:gridsearchNsize, a=1:gridsearchAsize
-        gridsearch[i] = [gridsearchA[a],gridsearchn[n]]
-        i+=1
-    end
-    griddedV::Array{Float64,1} = ones(length(gridsearch))
-    indmax::Int64 = 1
 
     #solver stuff:
     initial::Array{Float64,1} = [A[end]/2, lbar/2]
@@ -70,44 +53,27 @@ function VFI_KS(A::Array{Float64,1},E::Array{Float64,1},Z::Array{Float64,1},pdf:
     prog = ProgressUnknown("Iterations:")
     while distance > tol
         Vgridf = copy(Vgrid) #store previous loop values to compare
-
          #Threads.@threads not working since BFGS() is not threadsafe apparently
          for a = 1:nA #I think it works now...
             for z=1:nZ,h=1:nH, k=1:nK, e = 1:nE
                 if (η!=1.0 && E[e]>0.0) #labor is not exogenous and the agent is not unemployed
-                    #Rough gridsearch for initial guess
-                #    Vf!(griddedV,gridsearch,V;β = β, a = a,e=e,z=z,h=h,k=k,A=A,E=E,K=K,H=H,Z=Z,lbar=lbar)
-                #    vsearch, indmax = findmax(griddedV)
-                #    initial = gridsearch[indmax]
                     #solver
-                    maxV = optimize(x::Array{Float64,1}->Vf(x,V;β = β, a = a,e=e,z=z,h=h,k=k,A=A,E=E,K=K,H=H,Z=Z,lbar=lbar),initial,inner_optimizer)
-
-                    #if (maxV.minimizer[1]!= NaN && maxV.minimizer[2]!= NaN && maxV.minimum != NaN)
-                        Vgrid[a,e,k,h,z] = maxV.minimum
+                        initial = [A[a],lbar/2]
+                        maxV = optimize(x::Array{Float64,1}->Vf(x,V;a = a,e=e,z=z,h=h,k=k,K=K,lbar=lbar),initial,inner_optimizer)
                         policy[a,e,k,h,z,:] = maxV.minimizer
-                #    else
-                    #    policy[a,e,k,h,z,:] = initial
-                    #    Vgrid[a,e,k,h,z] = vsearch
-                #    end
-
+                        Vgrid[a,e,k,h,z] = -maxV.minimum
 
                 elseif (η==1.0 && E[e]>0.0)   #labor is exogenous and agent is employed
-                    maxV = optimize( x::Float64->Vf(x,V;β = β, a = a,e=e,z=z,h=h,k=k,A=A,E=E,K=K,H=H,Z=Z,lbar=lbar),lower[1],A[end])
+                    maxV = optimize( x::Float64->Vf(x,V;a = a,e=e,z=z,h=h,k=k,K=K,lbar=lbar),0.0,A[end])
                     policy[a,e,k,h,z,:] = [maxV.minimizer,lbar]
-                    Vgrid[a,e,k,h,z] = maxV.minimum
-
+                    Vgrid[a,e,k,h,z] = -maxV.minimum
                 else  #agent is unemployed
-                   maxV = optimize( x::Float64->Vf(x,V;β = β, a = a,e=e,z=z,h=h,k=k,A=A,E=E,K=K,H=H,Z=Z,lbar=lbar),lower[1],A[end])
-                    policy[a,e,k,h,z,:] = [maxV.minimizer,0]
-                    Vgrid[a,e,k,h,z] = maxV.minimum
-
+                    maxV = optimize( x::Float64->Vf(x,V;a = a,e=e,z=z,h=h,k=k,K=K,lbar=lbar),0.0,A[end])
+                    policy[a,e,k,h,z,:] = [maxV.minimizer,0.0]
+                    Vgrid[a,e,k,h,z] = -maxV.minimum
                 end
-
-
-
             end
         end
-
         #check convergence
         distance = maximum(abs.(Vgrid-Vgridf))
         V = LinearInterpolation((A,E,K,H,Z),Vgrid,extrapolation_bc=Line())
@@ -116,18 +82,18 @@ function VFI_KS(A::Array{Float64,1},E::Array{Float64,1},Z::Array{Float64,1},pdf:
         end
         ProgressMeter.next!(prog; showvalues = [(:Distance, distance)])
         iteration +=1
+
     end
     ProgressMeter.finish!(prog)
     println("VFI converged with a distance of $(distance)")
     return  policy,Vgrid
 end
-
 #Expected value function given states and a value function V
 function EV(a::Float64,e::Float64,z::Float64,k::Float64,
     V::Interpolations.Extrapolation{Float64,5,Interpolations.GriddedInterpolation{Float64,
 5,Float64,Gridded{Linear},NTuple{5,Array{Float64,1}}},Gridded{Linear},Line{Nothing}};
     b=b::Array{Float64,2},d=d::Array{Float64,2}, E=E::Array{Float64,1},
-    Z=Z::Array{Float64,1},pdf::Array{Float64,2}=pdf,states=states::NTuple{4,Array{Float64,1}},
+    Z=Z::Array{Float64,1},transmat::Array{Float64,2}=transmat,states=states::NTuple{4,Array{Float64,1}},
     nE=nE::Int64, nZ=nZ::Int64)
 
     i::Int64 = findfirstn(states,[z,e])
@@ -136,7 +102,7 @@ function EV(a::Float64,e::Float64,z::Float64,k::Float64,
     expected::Float64 = 0.0
     for e1=1:nE, z1 = 1:nZ
         j::Int64 = findfirstn(states,[Z[z1],E[e1]])
-        expected += pdf[i,j]*V(a,E[e1],k1,h1,Z[z1])
+        expected += transmat[i,j]*V(a,E[e1],k1,h1,Z[z1])
         #Tommorrow the value is the capital stock following the law of motion and the expected value for the shocks
     end
     return expected
@@ -153,8 +119,10 @@ function Vf(x::Array{Float64,1},V::Interpolations.Extrapolation{Float64,5,Interp
     H=H::Array{Float64,1},
     Z=Z::Array{Float64,1},lbar = lbar::Float64)
 
-    if x[1]<0.0 || x[2]<0.0 || x[2]>lbar
-        return 1e12
+    if x[1]<0.0 || x[2]<0.0 || c(A[a],E[e],x[2],x[1],K[k],H[h],Z[z])<0
+        return -1e20*minimum([x[1],x[2],c(A[a],E[e],x[2],x[1],K[k],H[h],Z[z])])
+    elseif x[2] > lbar
+        return 1e20 * lbar
     else
         return -(u(c(A[a],E[e],x[2],x[1],K[k],H[h],Z[z]),lbar-x[2]) + β * EV(x[1],E[e],Z[z],K[k],V))
     end
@@ -191,13 +159,16 @@ end
 function Vf(x::Float64,V::Interpolations.Extrapolation{Float64,5,Interpolations.GriddedInterpolation{Float64,
 5,Float64,Gridded{Linear},NTuple{5,Array{Float64,1}}},Gridded{Linear},Line{Nothing}};β = β::Float64, a= a::Int64,e = e::Int64,z=z::Int64,h=h::Int64,k::Int64=k,
     A=A::Array{Float64,1},E=E::Array{Float64,1},K=K::Array{Float64,1},H=H::Array{Float64,1},
-    Z=Z::Array{Float64,1},lbar=lbar::Float64 )
+    Z=Z::Array{Float64,1},lbar=lbar::Float64)
 
     ret::Float64 = 0.0
-    if E[e]<=0
+    if E[e]<=0 #Unemployed agent
         ret = -(u(c(A[a],E[e],0.0,x,K[k],H[h],Z[z]),lbar) + β * EV(x,E[e],Z[z],K[k],V))
-    else
+    elseif η == 1.0
         ret = -(u(c(A[a],E[e],lbar,x,K[k],H[h],Z[z]),0.0) + β * EV(x,E[e],Z[z],K[k],V))
+    else
+        ret = optimize(n::Array{Float64,1}->-(u(c(A[a],E[e],n[1],x,K[k],H[h],Z[z]),lbar-n[1]) +
+        β * EV(x,E[e],Z[z],K[k],V)),0.0,lbar).minimum
     end
     return ret
 end
@@ -206,13 +177,13 @@ end
 
 
 function KrusselSmith(A::Array{Float64,1},
-    E::Array{Float64,1},Z::Array{Float64,1},pdf::Array{Float64,2},states::NTuple{4,Array{Float64,1}},
+    E::Array{Float64,1},Z::Array{Float64,1},tmat::TransitionMatrix,states::NTuple{4,Array{Float64,1}},
     K::Array{Float64,1},
     H::Array{Float64,1},
     b::Array{Float64,2},d::Array{Float64,2};α = α::Float64,
     β = β::Float64, η = η::Float64, μ=μ::Float64, tol= 1e-6,
-    iterate = "Policy",N::Int64=5000,T::Int64=11000,discard::Int64=1000,seed::Int64= 2803,
-    inner_optimizer = BFGS(),lbar=lbar::Float64 )
+    N::Int64=5000,T::Int64=11000,discard::Int64=1000,seed::Int64= 2803,solver="burro"::String,
+    inner_optimizer = BFGS(),lbar=lbar::Float64,ug = ug::Float64,ub = ub::Float64,updateb= 0.3::Float64 )
 
 
     nA::Int64 = length(A)
@@ -228,6 +199,7 @@ function KrusselSmith(A::Array{Float64,1},
     dist::Float64 = 1.0
     iteration::Int64 = 0
 
+    transmat::Array{Float64,2} = tmat.P
 
 
 
@@ -235,23 +207,20 @@ function KrusselSmith(A::Array{Float64,1},
     d=d::Array{Float64,2}
     #getting the shocks
     Random.seed!(seed)
-    Ssim::Array{Array{Float64,1},1} = simMC(states,pdf,T,states[1])
-    zsim::Array{Float64,1} =ones(T)
-    esim::Array{Float64,2} = ones(N,T)
-    for n=1:N
-        Random.seed!(seed+n)
-        Ssim = simMC(states,pdf,T,states[1])
-        for t=1:T
-            zsim[t] = Ssim[t][1]
-            esim[n,t] = Ssim[t][2]
-        end
+    if rand()>0.5
+        Random.seed!(seed)
+        zsim = simMC(Z,tmat.Pz,T,Z[1])
+    else
+        Random.seed!(seed)
+        zsim = simMC(Z,tmat.Pz,T,Z[2])
     end
-
+    Random.seed!(seed)
+    esim = idioshocks(zsim,tmat)
     zsimd::Array{Float64,1} = zsim[discard+1:end] #Discarded simulated values for z
 
 
     #predefining variables
-    asim::Array{Float64,2} = ones(N,T).*K[end]
+    asim::Array{Float64,2} = rand(A,N,T)
     Ksim::Array{Float64,1} = ones(T)
     Hsim::Array{Float64,1} = ones(T)
     nsim::Array{Float64,2} = ones(N,T)
@@ -264,24 +233,27 @@ function KrusselSmith(A::Array{Float64,1},
         Vgrid[a,e,k,h,z] = u(c(A[a],E[e],0.0,0.0,K[k],H[h],Z[z]),lbar)
     end
 
+    V::Interpolations.Extrapolation{Float64,5,Interpolations.GriddedInterpolation{Float64,
+    5,Float64,Gridded{Linear},NTuple{5,Array{Float64,1}}},Gridded{Linear},Line{Nothing}} = LinearInterpolation((A,E,K,H,Z),Vgrid,
+    extrapolation_bc=Line()) #linear interpolation of the Value function
     policy_n::Interpolations.Extrapolation{Float64,5,Interpolations.GriddedInterpolation{Float64,
     5,Float64,Gridded{Linear},NTuple{5,Array{Float64,1}}},Gridded{Linear},Line{Nothing}} = LinearInterpolation((A,E,K,H,Z),policygrid[:,:,:,:,:,2],
     extrapolation_bc=Line())
     policy_a::Interpolations.Extrapolation{Float64,5,Interpolations.GriddedInterpolation{Float64,
     5,Float64,Gridded{Linear},NTuple{5,Array{Float64,1}}},Gridded{Linear},Line{Nothing}} = LinearInterpolation((A,E,K,H,Z),policygrid[:,:,:,:,:,1],
     extrapolation_bc=Line())
-    V::Interpolations.Extrapolation{Float64,5,Interpolations.GriddedInterpolation{Float64,
-    5,Float64,Gridded{Linear},NTuple{5,Array{Float64,1}}},Gridded{Linear},Line{Nothing}} = LinearInterpolation((A,E,K,H,Z),Vgrid,
-    extrapolation_bc=Line()) #linear interpolation of the Value function
     multiple100::Int64 = 0
 
     sdev::Array{Float64,2} = dist .- ones(2,4)
     Ht::Float64 = 1.0
 
-    while (dist>1e-5)
+    b1::Array{Float64,2} = copy(b)
+    d1::Array{Float64,2} = copy(d)
+
+    while (dist>tol)
 
         println("Solving the agent problem")
-        policygrid,Vgrid =  VFI_KS(A,E,Z,pdf,states,K,H,b,d;
+        policygrid,Vgrid =  VFI_KS(A,E,Z,transmat,states,K,H,b,d;solver=solver,
         α = α,β = β, η = η, μ =μ,tol = tol,  inner_optimizer = inner_optimizer,lbar = lbar,Vgrid=Vgrid)
 
         policy_n = LinearInterpolation((A,E,K,H,Z),policygrid[:,:,:,:,:,2],
@@ -291,17 +263,13 @@ function KrusselSmith(A::Array{Float64,1},
 
         println("Agent Problem solved!")
         loading = Progress(T, 1,"Simulating the economy.", 30)   # minimum update interval: 1 second
-        asim = ones(N,T).*K[end]
         for t=1:T
             Ksim[t] = max(mean(asim[:,t]),0.01)
-            #Hsim[t] = mean(nsim[:,t])
             Ht = H0(Ksim[t],zsim[t];d=d)
     Threads.@threads for n=1:N
                 if t<=T-1
-                    #asim[n,t+1] = policy_a(asim[n,t],esim[n,t],Ksim[t],Hsim[t],zsim[t])
                     asim[n,t+1] = policy_a(asim[n,t],esim[n,t],Ksim[t],Ht,zsim[t])
                 end
-                    #nsim[n,t] = policy_n(asim[n,t],esim[n,t],Ksim[t],Hsim[t],zsim[t])
                     nsim[n,t] = policy_n(asim[n,t],esim[n,t],Ksim[t],Ht,zsim[t])
             end
 
@@ -312,21 +280,20 @@ function KrusselSmith(A::Array{Float64,1},
         end
 
         println("Economy simulated, let's run the regression")
-        bold::Array{Float64,2} = copy(b)
-        dold::Array{Float64,2} = copy(d)
+
 
         for i=1:nZ
             datad = DataFrame(Xd = log.(Ksim[discard+1:end][zsimd.==Z[i]]),
             Yd = log.(Hsim[discard+1:end][zsimd.==Z[i]]))
             olsd = lm(@formula(Yd ~ Xd), datad)
-            d[i,:] = coef(olsd)
+            d1[i,:] = coef(olsd)
             R2d[i] = r2(olsd)
             sdev[i,1:2] = stderror(olsd)
 
             datab = DataFrame(Xb = log.(Ksim[discard+1:end-1][zsimd[1:end-1].==Z[i]]),
             Yb = log.(Ksim[discard+2:end][zsimd[1:end-1].==Z[i]]))
             olsb = lm(@formula(Yb ~ Xb), datab)
-            b[i,:] = coef(olsb)
+            b1[i,:] = coef(olsb)
             R2b[i] = r2(olsb)
 
             sdev[i,3:4] = stderror(olsd)
@@ -335,13 +302,14 @@ function KrusselSmith(A::Array{Float64,1},
         end
 
 
-        kmin::Float64 =  max(mean(Ksim)-10.0,eps())
-        kmax::Float64 =  mean(Ksim)+10.0
-        K::Array{Float64,1} = range(kmin,stop = kmax, length = nK).^1
+    #    kmin::Float64 =  max(mean(Ksim)-10.0,eps())
+    #    kmax::Float64 =  mean(Ksim)+10.0
+#        K::Array{Float64,1} = range(kmin,stop = kmax, length = nK).^1
 
-        dist = maximum(vcat(abs.(b.-bold),abs.(d.-dold)))
-        iteration +=1
-
+        dist = maximum(vcat(abs.(b.-b1),abs.(d.-d1)))
+        iteration += 1
+        b = updateb.*b1 .+ (1-updateb).*b
+        d = updateb.*b1 .+ (1-updateb).*d
 
         println("In iteration $(iteration), law distance is $(dist), Standard Error is $(minimum(sdev))")
         println("b = $(b) and")
@@ -350,13 +318,13 @@ function KrusselSmith(A::Array{Float64,1},
             break
         end
 
-
     end
 
     Hsim = Hsim[discard+1:end]
     Ksim = Ksim[discard+1:end]
     nsim = nsim[:,discard+1:end]
     asim = asim[:,discard+1:end]
+    esim = asim[:,discard+1:end]
     println("Krussell Smith done!")
-    return b, d,  nsim, asim, Ksim, Hsim,policygrid,Vgrid,K,R2b,R2d,zsim,esim
+    return b, d,  nsim, asim, Ksim, Hsim,policygrid,Vgrid,K,R2b,R2d,zsimd,esim
 end
