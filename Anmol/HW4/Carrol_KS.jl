@@ -17,7 +17,7 @@ H0(K::Float64,z::Float64;d=d::Array{Float64,2},Z = Z::Array{Float64,1}) = exp(d[
 #Defining consumption function:
 c(a,e, n ,a1,k,h,z) =  R(k,h,z)*a+e*w(k,h,z)*n-a1
 
-#defining optimal labor choice for Log utility case.
+#defining optimal labor choice for Log utility case. This comes from labor FOC:
 nstar(a,a1,k,h,z;η = η,lbar = lbar) = min(max((1-η)*(a1-R(k,h,z)*a)/w(k,h,z) + lbar*η,0.0),lbar)
 
 #@time nstar(2.0,2.0,K[1],H[1],Z[1])
@@ -25,21 +25,29 @@ nstar(a,a1,k,h,z;η = η,lbar = lbar) = min(max((1-η)*(a1-R(k,h,z)*a)/w(k,h,z) 
 
 function ENDOGENOUSGRID_KS(A::Array{Float64,1},A1::Array{Float64,1},E::Array{Float64,1},Z::Array{Float64,1},transmat::Array{Float64,2},states::NTuple,
     K::Array{Float64,1}, H::Array{Float64,1} ,b::Array{Float64,2},d::Array{Float64,2};α=α::Float64,β = β::Float64, η=η::Float64, μ=μ::Float64,
-     tol = 1e-6, lbar=lbar::Float64 ,
-     policy= zeros(nA,nE,nK,nH,nZ,2)::Array{Float64,6},update_policy=0.5::Float64,inner_optimizer = LBFGS())
-     #This function solves the agent problem using the endogenous grid method.
-    #A: Individual Asset grid in t+1!
+     tol = 1e-6, lbar=lbar::Float64 ,  policy= zeros(nA,nE,nK,nH,nZ,2)::Array{Float64,6},update_policy=0.5::Float64)
+    #This function solves the agent problem using the endogenous grid method.
+    #A: Individual Asset grid in t!
+    #A: Individual Asset grid in t+1
     #E: Individual productivity grid
-    #transmatE: transmat of E
     #Z: Aggregate shocks grid
-    #transmatZ: transmat of Z
+    #transmat: transmat object with all the transition matrices
+    #states: A tuple which each element is a pair of possible states
     #K: Aggregate capital grid
     #H: Aggregate labor grid
-    #Vinitial: Guess for the Value function
+    #b: capital law of motion coefficients
+    #d: labor law of motion coefficients
+
+    #OPTIONAL ARGUMENTS
+    #update_policy: Damping parameter
+    #policy: Initial grid guess for the policy function
+    #the othere parameters are self explanatory.
     nA::Int64 = length(A)
     nZ::Int64 = length(Z)
     nE::Int64 = length(E)
     nH::Int64 = length(H)
+
+    #RETURN the grid for the agents policy functions.
 
     #Guess for policy functions
     itpn = LinearInterpolation((A,E,K,H,Z),policy[:,:,:,:,:,2],
@@ -47,21 +55,18 @@ function ENDOGENOUSGRID_KS(A::Array{Float64,1},A1::Array{Float64,1},E::Array{Flo
     itpa = LinearInterpolation((A,E,K,H,Z),policy[:,:,:,:,:,1],
     extrapolation_bc=Line())
     policy_a(a,e,k,h,z) = itpa(a,e,k,h,z)
-
     policy_n(a,e,k,h,z;μ=μ) = (e>0)*((μ==1.0)*nstar(a,policy_a(a,e,k,h,z),k,h,z) + (μ!=1.0)*itpn(a,e,k,h,z))
 
 
     #Loop st uff:
     policy1= copy(policy) #To store updated values
-    #policy1 = zeros(nA,nE,nK,nH,nZ,2)
-    prog = ProgressUnknown("Iterations:")
+    prog = ProgressUnknown("Iterations:") #timing and iteration counter, cool stuff
     iteration ::Int64 = 0
     distance::Float64 = 1.0
+    dist1 = policy1.-policy #
 
-    dist1 = policy1.-policy
     while distance > tol
         #the function below returns the new policygrid
-        dist = copy(dist1)
     @inbounds @fastmath     innerforloop!(policy1,policy_a,policy_n,b,d;
             A=A,E=E,Z=Z,K=K,H = H,lbar = lbar,A1=A1)
 
@@ -71,30 +76,20 @@ function ENDOGENOUSGRID_KS(A::Array{Float64,1},A1::Array{Float64,1},E::Array{Flo
         else
             distance = maximum(abs.(policy1[:,:,:,:,:,1]-policy[:,:,:,:,:,1]))
         end
-        dist1 = policy1.-policy
-        if iteration >1
-            φ = dist1./dist
-            φ[dist1.<tol] .= 0.0
-            φ[φ.>1.0] .=0.5
-            φ[0.9.<φ.<=1.0] .= 0.9
+
+        #error if no convergence
+        if distance == NaN || distance == Inf
+            error("Agent Problem did not converge")
         end
 
-        if iteration > 4
-            policy = (policy1.- φ.*policy)./(1.0.-φ)
-        else
-            policy = update_policy .* policy1 .+ (1-update_policy) .* policy
-        end
-
-        #Update policy grid with a damping parameter
+        #update policy function with a damping parameter:
         policy = update_policy .* policy1 .+ (1-update_policy) .* policy
 
+        #update the policy functions:
         itpn = LinearInterpolation((A,E,K,H,Z),policy[:,:,:,:,:,2],
         extrapolation_bc=Line())
         itpa = LinearInterpolation((A,E,K,H,Z),policy[:,:,:,:,:,1],
         extrapolation_bc=Line())
-        if distance == NaN || distance == Inf
-        #    error("Agent Problem did not converge")
-        end
         ProgressMeter.next!(prog; showvalues = [(:Distance, distance)])
         iteration +=1
         if iteration >1000
@@ -109,37 +104,6 @@ end
 
 
 
-function EE(a1;e=E[e]::Float64,
-    z=Z[z]::Float64,K=K[k]::Float64,H=H[h]::Float64,states=states::NTuple{4,Array{Float64,1}},
-    b=b::Array{Float64,2},d=d::Array{Float64,2},η=η::Float64,Z = Z,E = E,
-    policy_a = policy_a::Function,policy_n = policy_n::Function)
-    #a1 is the asset level tommorow
-    #Finds assets today as a function of assets tomorrow using the Euler equations
-    i::Int64 = findfirstn(states,[z,e])
-    k1::Float64 = K1(K,states[i][1];b=b) #Aggregate states tommorow given today
-    h1::Float64 = H0(k1,states[i][1];d=d)
-    RHS1 = 0.0
-        for e1=1:nE, z1 = 1:nZ
-            j::Int64 = findfirstn(states,[Z[z1],E[e1]])
-            a2 = policy_a(a1,E[e1],k1,h1,Z[z1])
-            n1 = policy_n(a1,E[e1],k1,h1,Z[z1])
-            c1 = c(a1,E[e1],n1,a2,k1,h1,Z[z1])
-            l1 = lbar - n1
-            RHS1 += β * transmat[i,j]*R(k1,h1,Z[z1])*uc(c1,l1)
-        end
-    RHS1 = (RHS1/η)^(-1/μ)
-        #Find the level of assets today that generates a1 given the policy functions
-    if η != 1.0
-        a = (RHS1 + a1 - e*w(K,H,z)*(η - (a1*(η - 1))/w(K,H,z)))/(R(K,H,z) + R(K,H,z)*e*(η - 1))
-        n = nstar(a,a1,K,H,z,η = η)
-    else
-        a = (RHS1 + a1 - e*w(K,H,z)*lbar)/R(K,H,z)
-        n = e * lbar
-    end
-
-
-    return a,n
-end
 
 function innerforloop!(policy1::Array{Float64,6},policy_a::Function,policy_n::Function,b,d;
     A1=A1,E=E,Z=Z,K=K,H = H,lbar = lbar,A=A)
@@ -173,6 +137,35 @@ function innerforloop!(policy1::Array{Float64,6},policy_a::Function,policy_n::Fu
     return policy1
 end
 
+function EE(a1;e=E[e]::Float64,
+    z=Z[z]::Float64,K=K[k]::Float64,H=H[h]::Float64,states=states::NTuple{4,Array{Float64,1}},
+    b=b::Array{Float64,2},d=d::Array{Float64,2},η=η::Float64,Z = Z,E = E,
+    policy_a = policy_a::Function,policy_n = policy_n::Function)
+    #a1 is the asset level tommorow
+    #Finds assets today as a function of assets tomorrow using the Euler equations
+    i::Int64 = findfirstn(states,[z,e]) #find the current state index
+    k1::Float64 = K1(K,states[i][1];b=b) #Aggregate states tommorow given today
+    h1::Float64 = H0(k1,states[i][1];d=d)
+    RHS1 = 0.0 #Find the RHS of the consumption FOC uct'= βE[R uct1 ']
+    for e1=1:nE, z1 = 1:nZ #for all possible states tommorow
+        j::Int64 = findfirstn(states,[Z[z1],E[e1]]) #find the tommorow state index
+        a2 = policy_a(a1,E[e1],k1,h1,Z[z1]) #find assets in t+2 given policy function
+        n1 = policy_n(a1,E[e1],k1,h1,Z[z1]) #find labor in t+1 given policy function
+        c1 = c(a1,E[e1],n1,a2,k1,h1,Z[z1]) #find consumption in t+1 given policy function
+        l1 = lbar - n1 #leisure
+        RHS1 += β * transmat[i,j]*R(k1,h1,Z[z1])*uc(c1,l1) #The RHS for the state j given i
+    end
+    RHS1 = (RHS1/η)^(-1/μ)
+    #Find the level of assets today that generates a1 given the policy functions
+    if η != 1.0
+        a = (RHS1 + a1 - e*w(K,H,z)*(η - (a1*(η - 1))/w(K,H,z)))/(R(K,H,z) + R(K,H,z)*e*(η - 1))
+        n = nstar(a,a1,K,H,z,η = η)
+    else
+        a = (RHS1 + a1 - e*w(K,H,z)*lbar)/R(K,H,z)
+        n = e * lbar
+    end
+    return a,n
+end
 
 
 function KrusselSmithENDOGENOUS(A::Array{Float64,1},A1::Array{Float64,1},
@@ -180,9 +173,44 @@ function KrusselSmithENDOGENOUS(A::Array{Float64,1},A1::Array{Float64,1},
     K::Array{Float64,1},H::Array{Float64,1},  b::Array{Float64,2},d::Array{Float64,2};
     α = α::Float64,β = β::Float64, η = η::Float64, μ=μ::Float64, tol= 1e-6::Float64,
     update_policy=0.5::Float64,updateb= 0.3::Float64,N::Int64=5000,T::Int64=11000,
-    discard::Int64=1000,seed::Int64= 2803,lbar=lbar::Float64,inner_optimizer = LBFGS())
+    discard::Int64=1000,seed::Int64= 2803,lbar=lbar::Float64)
+    #This performs KS algorithm
+    #A: Individual Asset grid in t!
+    #A1: Individual Asset grid in t+1
+    #E: Individual productivity grid
+    #Z: Aggregate shocks grid
+    #tmat: transmat object with all the transition matrices
+    #states: A tuple which each element is a pair of possible states
+    #K: Aggregate capital grid
+    #H: Aggregate labor grid
+    #b: capital law of motion coefficients
+    #d: labor law of motion coefficients
+
+    #OPTIONAL ARGUMENTS
+    #update_policy: Damping parameter for the agent Problem
+    #update_b: Damping parameter for the law of motion updates
+    #N: Number of agents in the simulation
+    #T: Length of the simulated time series
+    #discard: number of time periods discarded for ergodicity
+    #seed: set the random seed for comparable results
+    #policy: Initial grid guess for the policy function
+    #the othere parameters are self explanatory.
 
 
+    #RETURN
+    #b: Updated parameter for aggregate capital law of motions
+    #d: Updated parameter for aggregate labor law of motions
+    #nsim: NxT matrix with simulated labor path for each agent n
+    #asim: NxT matrix with simulated assets path for each agent n
+    #Ksim: T vector with simulated aggregate  capital
+    #Hsim: T vector with simulated aggregate  Labor ,
+    #policygrid: Grid with agents policy functions
+    #K: new updated grid for aggregate capita (not used for now),
+    #R2b,R2d: R-squared of b and d regressions
+    #zsimd: T vector with simulated aggregate shocks
+    #esim: NxT matrix with idyosincratic employment shock for each agent
+
+    #Getting lengths
     nA::Int64 = length(A)
     nZ::Int64 = length(Z)
     nE::Int64 = length(E)
@@ -192,11 +220,7 @@ function KrusselSmithENDOGENOUS(A::Array{Float64,1},A1::Array{Float64,1},
     println("Starting Krusell Smith. We are using $(nA) gridpoints for assets and")
     println("a sample of N=$(N), T=$(T). Go somewhere else, this will take a while.")
 
-
-    dist::Float64 = 1.0
-    iteration::Int64 = 0
-
-    transmat::Array{Float64,2} = tmat.P
+    transmat::Array{Float64,2} = tmat.P #Getting the transition matrix for the agent
 
     b=b::Array{Float64,2}
     d=d::Array{Float64,2}
@@ -213,22 +237,19 @@ function KrusselSmithENDOGENOUS(A::Array{Float64,1},A1::Array{Float64,1},
     esim = idioshocks(zsim,tmat)
     zsimd::Array{Float64,1} = zsim[discard+1:end] #Discarded simulated values for z
 
-
     #predefining variables
-    asim::Array{Float64,2} = rand(A[1]:11.6*2,N,T)
+    asim::Array{Float64,2} = rand(A[1]:11.6*2,N,T) #the initial assets is between 0 and 2*the mean found by KS
     Ksim::Array{Float64,1} = ones(T)
     Hsim::Array{Float64,1} = ones(T)
     nsim::Array{Float64,2} = ones(N,T)
-
     R2d::Array{Float64,1} = ones(2)
     R2b::Array{Float64,1} = ones(2)
+
     #First guessess for Policy
     policygrid::Array{Float64,6} =  ones(nA,nE,nK,nH,nZ,2)
     for (zi,z) = enumerate(Z),(hi,h) = enumerate(H),(ki,k) = enumerate(K),(ei,e)=enumerate(E),(ai,a1)=enumerate(A)
         policygrid[ai,ei,ki,hi,zi,:] = [0.9*a1,e*lbar]
     end
-
-
     itpn::Interpolations.Extrapolation{Float64,5,Interpolations.GriddedInterpolation{Float64,
     5,Float64,Gridded{Linear},NTuple{5,Array{Float64,1}}},Gridded{Linear},Line{Nothing}} = LinearInterpolation((A,E,K,H,Z),policygrid[:,:,:,:,:,1],
     extrapolation_bc=Line())
@@ -240,81 +261,80 @@ function KrusselSmithENDOGENOUS(A::Array{Float64,1},A1::Array{Float64,1},
     policy_a(a,e,k,h,z) = itpa(a,e,k,h,z)
     policy_n(a,e,k,h,z;μ=μ) = (e>0)*((μ==1.0)*nstar(a,policy_a(a,e,k,h,z),k,h,z) + (μ!=1.0)*itpn(a,e,k,h,z))
 
-    sdev::Array{Float64,2} = dist .- ones(2,4)
-    Ht::Float64 = 1.0
-
+    #loop stuff
+    dist::Float64 = 1.0
+    iteration::Int64 = 0
     b1::Array{Float64,2} = copy(b)
-    d1::Array{Float64,2} = copy(d)
+    d1::Array{Float64,2} = copy(d) #to store updated values for b and d
 
-    tolin::Float64 = 5e-5
+    Ht::Float64 = 1.0
 
     while (dist>tol)
 
         println("Solving the agent problem")
+        #Solve the agent problem:
         policygrid = ENDOGENOUSGRID_KS(A,A1,E,Z,transmat,states,K, H,b,d;policy= policygrid,update_policy=update_policy,tol = tol)
-
         itpn = LinearInterpolation((A,E,K,H,Z),policygrid[:,:,:,:,:,2],
         extrapolation_bc=Line())
         itpa = LinearInterpolation((A,E,K,H,Z),policygrid[:,:,:,:,:,1],
         extrapolation_bc=Line())
-
         println("Agent Problem solved!")
-        loading = Progress(T, 1,"Simulating the economy.", 30)   # minimum update interval: 1 second
+
+
+        loading = Progress(T, 1,"Simulating the economy.", 30)   #For loop loading bar minimum update interval: 1 second
+        #Simulating the economy
         for t=1:T
-            Ksim[t] = max(mean(asim[:,t]),eps())
-            Ht = H0(Ksim[t],zsim[t];d=d)
+            Ksim[t] = mean(asim[:,t]) #Aggregate capital is the mean of the capital decided yesterday
+            Ht = H0(Ksim[t],zsim[t];d=d) #Agents believe aggregate labor follows this rule
     Threads.@threads for n=1:N
                 if t<=T-1
-                    asim[n,t+1] = policy_a(asim[n,t],esim[n,t],Ksim[t],Ht,zsim[t])
+                    asim[n,t+1] = policy_a(asim[n,t],esim[n,t],Ksim[t],Ht,zsim[t]) #Store each agent asset decision
                 end
-                    nsim[n,t] = policy_n(asim[n,t],esim[n,t],Ksim[t],Ht,zsim[t])
+                    nsim[n,t] = policy_n(asim[n,t],esim[n,t],Ksim[t],Ht,zsim[t]) #Store each agent labor decision
             end
 
-            #Find aggretate labor that clears the market:
+            #Find aggregate labor that clears the market:
             Hsim[t] = mean(nsim[:,t])
 
-            next!(loading)
+            next!(loading) #loading bar stuff
         end
 
         println("Economy simulated, let's run the regression")
-
-
-        for i=1:nZ
+        #Running the regressions
+        for i=1:nZ #for each state
             datad = DataFrame(Xd = log.(Ksim[discard+1:end][zsimd.==Z[i]]),
-            Yd = log.(Hsim[discard+1:end][zsimd.==Z[i]]))
-            olsd = lm(@formula(Yd ~ Xd), datad)
-            d1[i,:] = coef(olsd)
-            R2d[i] = r2(olsd)
-            sdev[i,1:2] = stderror(olsd)
+            Yd = log.(Hsim[discard+1:end][zsimd.==Z[i]])) #take log of capital and labor and dataframe it, note that I discard observations
+            olsd = lm(@formula(Yd ~ Xd), datad) #regress
+            d1[i,:] = coef(olsd) #get coefficients
+            R2d[i] = r2(olsd) #and R2
 
             datab = DataFrame(Xb = log.(Ksim[discard+1:end-1][zsimd[1:end-1].==Z[i]]),
-            Yb = log.(Ksim[discard+2:end][zsimd[1:end-1].==Z[i]]))
-            olsb = lm(@formula(Yb ~ Xb), datab)
-            b1[i,:] = coef(olsb)
-            R2b[i] = r2(olsb)
+            Yb = log.(Ksim[discard+2:end][zsimd[1:end-1].==Z[i]]))#take log of capital and capital tomorrow and dataframe it, note that I discard observations
+            olsb = lm(@formula(Yb ~ Xb), datab) #regress
+            b1[i,:] = coef(olsb)#get coefficients
+            R2b[i] = r2(olsb) #and R2
 
-            sdev[i,3:4] = stderror(olsd)
         end
-
 
         #kmin::Float64 =  max(mean(Ksim)-20.0,eps())
         #kmax::Float64 =  mean(Ksim)+20.0
         #K::Array{Float64,1} = range(kmin,stop = kmax, length = nK).^1
 
+        #check convergence
         dist = maximum(vcat(abs.(b.-b1),abs.(d.-d1)))
-        iteration += 1
+
+        #update law of motions with a damping parameter
         b = updateb.*b1 .+ (1-updateb).*b
         d = updateb.*d1 .+ (1-updateb).*d
 
+        iteration += 1
         println("In iteration $(iteration), law distance is $(dist), Standard Error is $(minimum(sdev))")
         println("b = $(b) and")
         println("d = $(d)")
         println("Aggregate labor mean is $(mean(Hsim))")
         println("Aggregate Capital mean is $(mean(Ksim))")
-
-
     end
-
+    #Drop first discard observations:
     Hsim = Hsim[discard+1:end]
     Ksim = Ksim[discard+1:end]
     nsim = nsim[:,discard+1:end]

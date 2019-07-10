@@ -15,4 +15,6 @@ itpa = LinearInterpolation((A,E,K,H,Z),policy[:,:,:,:,:,1],
 extrapolation_bc=Line())
 policy_a(a,e,k,h,z) = itpa(a,e,k,h,z)
 policy_n(a,e,k,h,z;μ=μ) = (e>0)*((μ==1.0)*nstar(a,policy_a(a,e,k,h,z),k,h,z) + (μ!=1.0)*itpn(a,e,k,h,z))
-policygrid = ENDOGENOUSGRID_KS(A,E,Z,transmat,states,K, H,b,d;policy= policy,update_policy=update_policy,tol = tol)
+policygrid = ENDOGENOUSGRID_KS(A,A1,E,Z,transmat,states,K, H,b,d;policy= policy,update_policy=0.5,tol = 1e-6)
+
+policygrid[:,:,:,:,:,2]

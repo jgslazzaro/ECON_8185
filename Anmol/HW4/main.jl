@@ -1,20 +1,20 @@
 include("functions.jl")
 include("Carrol_KS.jl")
 #Defining parameters they were taken frmom KS
-const α = 0.36
-const β = 0.99
-const δ = 0.025
+const α = 0.36 #capital share in output
+const β = 0.99 #Impatience
+const δ = 0.025 #Depreciation rate
 
-const η = 1.0/2.9
-const μ = 1.0
+const η = 1.0/2.9 #labor /consumption elasticity
+const μ = 1.0 #Intratemporal elasticity
 
 const N = 5000 #number of agents in each economy
-const T = 11000 #number of simulation periods
+const T = 8000 #number of simulation periods
 const lbar = 1.0#/0.9 #time endowment
 
-const nA = 150 #number of assets gridpoints
-const nK = 10 #Number of aggregate capital gridpoints
-const nH = 10    #Number of aggregate labor gridpoints
+const nA = 100 #number of assets gridpoints
+const nK = 8 #Number of aggregate capital gridpoints
+const nH = 8    #Number of aggregate labor gridpoints
 
 amin = 1e-5
 amax = 500.0
@@ -25,8 +25,8 @@ zg_ave_dur=8 #average duration of good period
 zb_ave_dur=8 #average duration of bad period
 ug_ave_dur=1.5 #average duration of unemployment period in good times
 ub_ave_dur=2.5 #average duration of unemployment period in bad times
-puu_rel_gb2bb=1.25 #imposed conditions
-puu_rel_bg2gg=0.75
+puu_rel_gb2bb=1.25 #imposed conditions following KS
+puu_rel_bg2gg=0.75 #imposed conditions
 
 #productivity shocks
 const Z = [0.99,1.01]
@@ -47,10 +47,10 @@ b = [0.114 0.953;0.123 0.951]#[0.0 1.0;0.0 1.0]#
 d = [-0.592 -0.255;-0.544 -0.252]#[-0.4 -0.24;-0.5 -0.238]#
 #Asset grid:
 factor = 3.5
-const A =(range(0, stop=nA-1, length=nA)/(nA-1)).^factor * amax
-const A1 = A# range(0., stop=amax, length=nA).^1
-const H =range(0.15,stop = lbar, length = nH).^1
-K = range(5,stop = 20.0, length = nK).^1
+const A =(range(0, stop=nA-1, length=nA)/(nA-1)).^factor * amax #Capital grid for today
+const A1 = A# range(0., stop=amax, length=nA).^1 #Capital grid for tomorrow
+const H =range(0.15,stop = lbar, length = nH).^1 #Aggregate labor grid
+K = range(5,stop = 20.0, length = nK).^1 #Aggregate capital grid
 
 
 
