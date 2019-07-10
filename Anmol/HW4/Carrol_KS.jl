@@ -1,8 +1,8 @@
 #Author: João Lazzaro
 #This codes solves the agent problem for the Krussell-Smith case
 #IT ONLY WORKS FOR EXOGENOUS LABOR OR ENDOGENOUS WITH LOG UTILITY
-using Optim, Interpolations, ProgressMeter, LineSearches
-using Distributions, Random, DataFrames, GLM, NLsolve
+using Interpolations, ProgressMeter
+using Distributions, Random, DataFrames, GLM
 #using Distributed, SharedArrays
 include("CRRA_utility.jl")
 
@@ -328,7 +328,7 @@ function KrusselSmithENDOGENOUS(A::Array{Float64,1},A1::Array{Float64,1},
         d = updateb.*d1 .+ (1-updateb).*d
 
         iteration += 1
-        println("In iteration $(iteration), law distance is $(dist), Standard Error is $(minimum(sdev))")
+        println("In iteration $(iteration), law distance is $(dist)")
         println("b = $(b) and")
         println("d = $(d)")
         println("Aggregate labor mean is $(mean(Hsim))")
