@@ -25,7 +25,7 @@ nstar(a,a1,k,h,z;η = η,lbar = lbar) = min(max((1-η)*(a1-R(k,h,z)*a)/w(k,h,z) 
 
 function ENDOGENOUSGRID_KS(A::Array{Float64,1},A1::Array{Float64,1},E::Array{Float64,1},Z::Array{Float64,1},transmat::Array{Float64,2},states::NTuple,
     K::Array{Float64,1}, H::Array{Float64,1} ,b::Array{Float64,2},d::Array{Float64,2};α=α::Float64,β = β::Float64, η=η::Float64, μ=μ::Float64,
-     tol = 1e-6, lbar=lbar::Float64 ,  policy= zeros(nA,nE,nK,nH,nZ,2)::Array{Float64,6},update_policy=0.5::Float64)
+     tol = 1e-6, lbar=lbar::Float64 ,  policy= zeros(nA,nE,nK,nH,nZ,2)::Array{Float64,6},update_policy=0.5::Float64,updaterule = false)
     #This function solves the agent problem using the endogenous grid method.
     #A: Individual Asset grid in t!
     #A: Individual Asset grid in t+1
@@ -41,6 +41,7 @@ function ENDOGENOUSGRID_KS(A::Array{Float64,1},A1::Array{Float64,1},E::Array{Flo
     #OPTIONAL ARGUMENTS
     #update_policy: Damping parameter
     #policy: Initial grid guess for the policy function
+    #udpdaterule: false for regular update rule, true for extrapolation (see below)
     #the othere parameters are self explanatory.
     nA::Int64 = length(A)
     nZ::Int64 = length(Z)
@@ -82,8 +83,23 @@ function ENDOGENOUSGRID_KS(A::Array{Float64,1},A1::Array{Float64,1},E::Array{Flo
             error("Agent Problem did not converge")
         end
 
-        #update policy function with a damping parameter:
-        policy = update_policy .* policy1 .+ (1-update_policy) .* policy
+
+        #see http://www.econ2.jhu.edu/People/CCarroll/SolvingMacroDSOPs.pdf (also
+        #in references directory) section 4.2 for an explanation of the parameter φ
+        #it is a clever update rule.
+        dist = copy(dist1)
+        dist1 = policy1.-policy
+        if iteration >1
+            φ = dist1./dist
+            φ[dist1.<tol] .= 0.0
+            φ[φ.>1.0] .=0.5
+            φ[0.9.<φ.<=1.0] .= 0.9
+        end
+        if iteration > 4 && updaterule
+            policy = (policy1.- φ.*policy)./(1.0.-φ)
+        else
+            policy = update_policy*policy1 + (1.0-update_policy)*policy1
+        end
 
         #update the policy functions:
         itpn = LinearInterpolation((A,E,K,H,Z),policy[:,:,:,:,:,2],
@@ -173,7 +189,7 @@ function KrusselSmithENDOGENOUS(A::Array{Float64,1},A1::Array{Float64,1},
     K::Array{Float64,1},H::Array{Float64,1},  b::Array{Float64,2},d::Array{Float64,2};
     α = α::Float64,β = β::Float64, η = η::Float64, μ=μ::Float64, tol= 1e-6::Float64,
     update_policy=0.5::Float64,updateb= 0.3::Float64,N::Int64=5000,T::Int64=11000,
-    discard::Int64=1000,seed::Int64= 2803,lbar=lbar::Float64)
+    discard::Int64=1000,seed::Int64= 2803,lbar=lbar::Float64,updaterule = false)
     #This performs KS algorithm
     #A: Individual Asset grid in t!
     #A1: Individual Asset grid in t+1
@@ -222,7 +238,6 @@ function KrusselSmithENDOGENOUS(A::Array{Float64,1},A1::Array{Float64,1},
 
     transmat::Array{Float64,2} = tmat.P #Getting the transition matrix for the agent
 
-    b=b::Array{Float64,2}
     d=d::Array{Float64,2}
     #getting the shocks
     Random.seed!(seed)
@@ -273,7 +288,7 @@ function KrusselSmithENDOGENOUS(A::Array{Float64,1},A1::Array{Float64,1},
 
         println("Solving the agent problem")
         #Solve the agent problem:
-        policygrid = ENDOGENOUSGRID_KS(A,A1,E,Z,transmat,states,K, H,b,d;policy= policygrid,update_policy=update_policy,tol = tol)
+        policygrid = ENDOGENOUSGRID_KS(A,A1,E,Z,transmat,states,K, H,b,d;policy= policygrid,update_policy=update_policy,tol = tol,updaterule = updaterule)
         itpn = LinearInterpolation((A,E,K,H,Z),policygrid[:,:,:,:,:,2],
         extrapolation_bc=Line())
         itpa = LinearInterpolation((A,E,K,H,Z),policygrid[:,:,:,:,:,1],

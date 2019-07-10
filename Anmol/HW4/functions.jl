@@ -162,7 +162,7 @@ end
 
 function idioshocks(zsim::Array{Float64,1},transmat::TransitionMatrix;N=N::Int64,
     Z=Z::Array{Float64,1},E=E::Array{Float64,1}, e0 = E[1]::Float64,ug=ug::Float64,ub=ub::Float64)
-
+    #This function finds idiosincratic shocks consistent with aggregate shocks distribution
     T::Int64 = length(zsim)
     nE::Int64 = length(E)
     nZ::Int64 =length(E)

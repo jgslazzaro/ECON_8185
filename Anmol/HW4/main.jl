@@ -52,18 +52,12 @@ const A1 = A# range(0., stop=amax, length=nA).^1 #Capital grid for tomorrow
 const H =range(0.15,stop = lbar, length = nH).^1 #Aggregate labor grid
 K = range(5,stop = 20.0, length = nK).^1 #Aggregate capital grid
 
-
-
-
 b, d,  nsim, asim, Ksim, Hsim,policygrid,K,R2b,R2d,zsim,esim = KrusselSmithENDOGENOUS(A,A1,E,Z,tmat,states,K,H,b,d;
-N=N,T=T,discard = 1000, update_policy=0.4,updateb= 0.6)
+N=N,T=T,discard = 1000, update_policy=0.9,updateb= 0.6, updaterule = true)
 
 #@time b, d,  nsim, asim, Ksim, Hsim,policygrid,Vgrid,K,R2b,R2d,zsimd,esim =KrusselSmith(A,
 #E,Z,tmat,states,K,H,b,d;tol= 1e-6,inner_optimizer = BFGS(linesearch =BackTracking()),
 #discard = 1000,updateV = 0.7,updateb= 0.3,N=N,T=T)
-
-
-
 
 using JLD2, FileIO
 @save "variables_nA$(nA).jld2" b d  nsim asim Ksim Hsim policygrid K R2b R2d zsim esim
