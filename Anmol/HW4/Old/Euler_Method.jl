@@ -21,7 +21,7 @@ function uc(c,l;η = η,μ = μ)
     if η!=1 && l <= 0
         return 0.0
     elseif c<=0
-        return 1e10*(-c) +1e5
+        return 1e10*(-c) +(η*eps()^(η-1))*(eps()^η )^(-μ)
     else
         return (η * c^(η-1) * l^(1-η)) * (c^η * l^(1-η))^(-μ)
     end

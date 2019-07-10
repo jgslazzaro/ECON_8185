@@ -1,6 +1,6 @@
 #PBS -S /bin/bash
 #PBS -q batch
-#PBS -l nodes=1:ppn=10
+#PBS -l nodes=1:ppn=15
 #PBS -l mem=128gb
 #PBS -l walltime=95:00:00
 #PBS -N HW4
@@ -13,5 +13,5 @@ cd $PBS_O_WORKDIR/
 
 
 module load julia
-export JULIA_NUM_THREADS=10
+export JULIA_NUM_THREADS=15
 julia main.jl
