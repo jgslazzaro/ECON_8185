@@ -60,7 +60,7 @@ N=N,T=T,discard = 1000, update_policy=0.9,updateb= 0.6, updaterule = true)
 #discard = 1000,updateV = 0.7,updateb= 0.3,N=N,T=T)
 
 using JLD2, FileIO
-@save "variables_nA$(nA).jld2" b d  nsim asim Ksim Hsim policygrid K R2b R2d zsim esim
+@save "save_variables/variables_nA$(nA).jld2" b d  nsim asim Ksim Hsim policygrid K R2b R2d zsim esim
 
 
 #@load "variables.jld2"
