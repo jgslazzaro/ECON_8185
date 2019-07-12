@@ -1,4 +1,4 @@
-include("functions.jl")
+include("QEfunctions.jl")
 
 function log_utility(;β = 0.9,
                     ψ = 0.69,
