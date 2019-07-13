@@ -54,7 +54,7 @@ log_bellman = RecursiveAllocation(log_example, μgrid)    # Solve recursive prob
 
 T = 20
 sHist = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1]
-
+G = [0.1,0.2]
 #simulate
 #sim_seq = simulate(log_sequential, 0.5, 1, T, sHist)
 sim_bel = simulate(log_bellman, 0.5, 1, T, sHist)
@@ -78,4 +78,4 @@ for i = vcat(collect(1:4), 6)
           legend=:bottomright)
 end
 plot!()
-#plot!(p[5], sim_seq_plot[:, 5], marker=:circle, color=:blue, lab="")
+plot!(p[5], G[sHist], marker=:circle, color=:blue, lab="")
