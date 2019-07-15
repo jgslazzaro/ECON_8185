@@ -1,8 +1,9 @@
 
 
-
+#Consumption function comes from feasibility constraint:
 consumption(n,g) = n - g
 
+#The non dynamic part of the SP problem
 function V(n,γ,b,g,μ)
     c = consumption(n,g)
     UC = Uc(c,n)
@@ -11,12 +12,12 @@ function V(n,γ,b,g,μ)
     return V
 end
 
-
+#The optimal labor choice:
 nstar(γ,b,g,μ) = optimize(n-> -V(n,γ,b,g,μ) ,g,1.0).minimizer
 Vstar(γ,b,g,μ) = V(nstar(γ,b,g,μ),γ,b,g,μ)
 
 
-
+#The expected Value function:
 function EW(b1,μ1,g,Wgrid;Π=Π)
 
 

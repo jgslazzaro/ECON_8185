@@ -8,14 +8,14 @@ const δ = 0.025 #Depreciation rate
 const η = 1.0/2.9 #labor /consumption elasticity
 const μ = 1.0 #Intratemporal elasticity
 
-const N = 5000 #number of agents in each economy
-const T = 11000 #number of simulation periods
-const discard = 1000 #number of discarded periods
+const N = 10000 #number of agents in each economy
+const T = 1100 #number of simulation periods
+const discard = 100 #number of discarded periods
 const lbar = 1.0#/0.9 #time endowment
 
 const nA = 100 #number of assets gridpoints
-const nK = 6 #Number of aggregate capital gridpoints
-const nH = 6   #Number of aggregate labor gridpoints
+const nK = 15 #Number of aggregate capital gridpoints
+const nH = 25   #Number of aggregate labor gridpoints
 
 amin = 0.0
 amax = 350.0
@@ -62,7 +62,7 @@ end
 H = range(0.001,stop = lbar,length = nH).^1.0
 
 b, d,  nsim, asim, Ksim, Hsim,policygrid,K,R2b,R2d,zsim,esim = KrusselSmithENDOGENOUS(A,A1,E,Z,tmat,states,K,H,b,d;
-N=N,T=T,discard = discard, update_policy=.75,updateb= .4, updaterule = true,seed =rand(0:100))
+N=N,T=T,discard = discard, update_policy=0.5,updateb= .4, updaterule = false)
 
 
 #@time b, d,  nsim, asim, Ksim, Hsim,policygrid,Vgrid,K,R2b,R2d,zsimd,esim =KrusselSmith(A,
