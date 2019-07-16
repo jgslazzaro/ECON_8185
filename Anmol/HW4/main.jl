@@ -65,19 +65,40 @@ b, d,  nsim, asim, Ksim, Hsim,policygrid,K,R2b,R2d,zsim,esim = KrusselSmithENDOG
 N=N,T=T,discard = discard, update_policy=.75,updateb= .4, updaterule = true,seed =rand(0:100))
 
 
-#@time b, d,  nsim, asim, Ksim, Hsim,policygrid,Vgrid,K,R2b,R2d,zsimd,esim =KrusselSmith(A,
-#E,Z,tmat,states,K,H,b,d;tol= 1e-6,inner_optimizer = BFGS(linesearch =BackTracking()),
-#discard = 1000,updateV = 0.7,updateb= 0.3,N=N,T=T)
 
 using JLD2, FileIO
-@save "save_variables/variables_nA$(nA).jld2" b d  nsim asim Ksim Hsim policygrid K R2b R2d zsim esim
+@save "save_variables/variables_nA$(nA).jld2" b d  nsim asim Ksim Hsim policygrid K R2b R2d zsim esim discard Z T
 
 
 #@load "variables.jld2"
 
-#using Plots
-#plot1 = plot(Ksim, label = ["Aggregate Capital" ], legend = :bottomright)
-#savefig(plot1, "AggK.png")
+using Plots
+#Aggregate Capital vs capital:
+plot((Ksim[discard+1:end-1][zsim[1:end-1].==Z[1]]) ,(Ksim[discard+2:end][zsim[1:end-1].==Z[1]]),
+xlabel = "\$K_t\$",ylabel = "\$K_{t+1}\$",linestyle = :dot, label = "Bad State",legend = :bottomright)
+plot!((Ksim[discard+1:end-1][zsim[1:end-1].==Z[2]]) ,(Ksim[discard+2:end][zsim[1:end-1].==Z[2]]),
+linestyle = :dot, label = "Good State")
+plot!(11.7:0.1:12.7 ,11.7:0.1:12.7, label = "45 degrees")
+#Aggregate labor vs capital:
+plot((Ksim[discard+1:end][zsim.==Z[1]]) ,(Hsim[discard+1:end][zsim.==Z[1]]),
+xlabel = "\$K_t\$",ylabel = "\$H_t\$",linestyle = :dot, label = "Bad State")
+plot!((Ksim[discard+1:end][zsim.==Z[2]]) ,(Hsim[discard+1:end][zsim.==Z[2]]),
+linestyle = :dot,label = "Good State")
+
+
+plot(Ksim[discard+1:end])
+
+Ksimimplied = fill(log(Ksim[discard+1]),T-discard)
+Hsimimplied = fill(log(Hsim[discard+1]),T-discard)
+for t = 1:T-discard
+    if t<T-discard
+        Ksimimplied[t+1] = K1(Ksimimplied[t],zsim[t])
+    end
+    Ksimimplied[t] = H0(Ksimimplied[t],zsim[t])
+end
+
+plot(Ksimimplied)
+plot!(Ksim[discard+1:end])
 
 #plot2 = plot(Hsim, label = ["Aggregate Labor"], legend = :bottomright)
 #savefig(plot2, "AggH.png") #
