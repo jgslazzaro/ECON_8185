@@ -1,6 +1,5 @@
 #Author: João Lazzaro
 #This codes solves the agent problem for the Krussell-Smith case
-#IT ONLY WORKS FOR EXOGENOUS LABOR OR ENDOGENOUS WITH LOG UTILITY
 using Interpolations, ProgressMeter
 using Distributions, Random, DataFrames, GLM
 #using Distributed, SharedArrays
@@ -257,7 +256,7 @@ function KrusselSmithENDOGENOUS(A::Array{Float64,1},A1::Array{Float64,1},
     zsim = fill(1.01,T)
     zsim[zi_shock.==2].=0.99
     zsimd::Array{Float64,1} = zsim[discard+1:end] #Discarded simulated values for z
-    
+
 
     esim = fill(1.0,N,T)
     esim[epsi_shock' .== 2] .= 0.0
