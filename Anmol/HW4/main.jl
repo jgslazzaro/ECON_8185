@@ -13,7 +13,7 @@ const T = 11000 #number of simulation periods
 const discard = 1000 #number of discarded periods
 const lbar = 1.0#/0.9 #time endowment
 
-const nA = 100 #number of assets gridpoints
+const nA = 30 #number of assets gridpoints
 const nK = 6 #Number of aggregate capital gridpoints
 const nH = 6   #Number of aggregate labor gridpoints
 
@@ -62,7 +62,7 @@ end
 H = range(0.001,stop = lbar,length = nH).^1.0
 
 b, d,  nsim, asim, Ksim, Hsim,policygrid,K,R2b,R2d,zsim,esim = KrusselSmithENDOGENOUS(A,A1,E,Z,tmat,states,K,H,b,d;
-N=N,T=T,discard = discard, update_policy=.75,updateb= .4, updaterule = true,seed =rand(0:100))
+N=N,T=T,discard = discard, update_policy=.75,updateb= .4, updaterule = true,seed =1234)
 
 
 
@@ -84,21 +84,3 @@ plot((Ksim[discard+1:end][zsim.==Z[1]]) ,(Hsim[discard+1:end][zsim.==Z[1]]),
 xlabel = "\$K_t\$",ylabel = "\$H_t\$",linestyle = :dot, label = "Bad State")
 plot!((Ksim[discard+1:end][zsim.==Z[2]]) ,(Hsim[discard+1:end][zsim.==Z[2]]),
 linestyle = :dot,label = "Good State")
-
-
-plot(Ksim[discard+1:end])
-
-Ksimimplied = fill(log(Ksim[discard+1]),T-discard)
-Hsimimplied = fill(log(Hsim[discard+1]),T-discard)
-for t = 1:T-discard
-    if t<T-discard
-        Ksimimplied[t+1] = K1(Ksimimplied[t],zsim[t])
-    end
-    Ksimimplied[t] = H0(Ksimimplied[t],zsim[t])
-end
-
-plot(Ksimimplied)
-plot!(Ksim[discard+1:end])
-
-#plot2 = plot(Hsim, label = ["Aggregate Labor"], legend = :bottomright)
-#savefig(plot2, "AggH.png") #

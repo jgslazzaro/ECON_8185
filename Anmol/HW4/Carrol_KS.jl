@@ -313,9 +313,7 @@ function KrusselSmithENDOGENOUS(A::Array{Float64,1},A1::Array{Float64,1},
             internaldist = 10.0
             its = 0
                 while internaldist>1e-6 && its < 500
-                    Threads.@threads for n=1:N
-                        nsim[n,t] = policy_n(asim[n,t],esim[n,t],Ksim[t],Ht,zsim[t]) #Store each agent labor decision
-                    end
+                    nsim[:,t] .= policy_n.(asim[:,t],esim[:,t],Ksim[t],Ht,zsim[t]) #Store each agent labor decision
                     Hsim[t] = mean(nsim[:,t])
                     internaldist = abs(Hsim[t] - Ht)
                     Ht = Hsim[t]
