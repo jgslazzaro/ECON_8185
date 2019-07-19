@@ -58,3 +58,19 @@ function simMC(S,pdf,T,s0)
     end
     return ssim
 end
+
+
+
+function findfirstn(A,b)
+    #this function finds the first index in which an element of A equals b
+    #this is better than findfirst in some sense because it always return an integer
+    s::Int64=0
+    nA=length(A)
+    for i=1:nA
+        if A[i] == b
+            s = i
+            break
+        end
+    end
+        return s
+end

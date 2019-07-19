@@ -141,7 +141,7 @@ function innerforloop!(policy1::Array{Float64,5}, policy_c::Function,policy_n,b,
                 #    cmax =  R(K[ki],H[hi],Z[zi])*A0[ai]- A1[1] +w(K[ki],H[hi],Z[zi])*e*lbar
                 #    c01 = optim(c0 -> (R(K[ki],H[hi],Z[zi])*A0[ai]- A1[1] +w(K[ki],H[hi],Z[zi])*e*nstar(c0,e,k,h,z) - c0)^2, 0.0, cmax).minimizer
 
-                    policy1[ai,ei,ki,hi,zi] = η*(R(k,h,z)*A0[ai]- A1[1] + w(k,h,z)*e*lbar)
+                    policy1[ai,ei,ki,hi,zi] = η*(R(k,h,z)*A1[ai]- A1[1] + w(k,h,z)*e*lbar)
                 end
             end
         end
@@ -174,7 +174,7 @@ function EE(a1;e=E[e]::Float64,
         c = (RHS1/η *lbar^(-(1-μ)*(1-η)))^(1/(η*(1-μ)-1))
     end
     #Find the consitent asset level for today (endogenous grid)
-    a = c+a1-e*w(K,H,z)*nstar(c,e,K,H,z)
+    a = (c+a1-e*w(K,H,z)*nstar(c,e,K,H,z))/R(K,H,z)
 
     return c,a
 end
