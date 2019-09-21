@@ -42,6 +42,7 @@ function EGM(A::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrec
                 ctil[a1,y0] = B[a1,y0].^(-1/μ)
                 astar[a1,y0] = (ctil[a1,y0]+A[a1] -y[y0])/R
             end
+
             itpc0 = LinearInterpolation(astar[:,y0],ctil[:,y0], extrapolation_bc=Line())
             for a1 =1:nA
                 if A[a1] >= astar[1,y0]
@@ -67,8 +68,9 @@ a1(a,y; R = R) = R*a - c(a,y) +y
 
 using Plots
 plot(A,[c.(A,y[2]), c.(A,y[end-1])],label=["Low y", "High y"])
+savefig("EGM_cons.jl")
 plot(A,[A, a1.(A,y[2]), a1.(A,y[end-1])],label=["45","low y", "high y"],legend=:bottomright)
-
+savefig("EGM_capital.jl")
 
 #=
 w = 1.0
