@@ -7,8 +7,8 @@ function Tauchen(ρ,σ,Y,μ = 0,m = 3)
     #Y is the number of y states
 if Y>1
     ybar = μ/(1-ρ)
-    ymax= ybar + m*(σ^2/(1-ρ^2))^(1\2) #maximum y
-    ymin= ybar - m*(σ^2/(1-ρ^2))^(1\2) #minimum y
+    ymax= ybar + m*(σ^2/(1-ρ^2))^(1/2) #maximum y
+    ymin= ybar - m*(σ^2/(1-ρ^2))^(1/2) #minimum y
 
     Δ = (ymax-ymin)/(Y-1)# #distance between each y
     y=ymin:Δ:ymax #vector of possible states of p

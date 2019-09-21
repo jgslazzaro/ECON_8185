@@ -2,24 +2,22 @@ include("CRRA_utility.jl")
 include("functions.jl")
 using  Interpolations,NLsolve
 η = 1.0
-β = 0.9
+β = 0.95
 μ = 1.0
-ρ = 0.1
+ρ = 0.8
 σ = 0.1
 
 #R=1/β
-
-
 #defining grids for A and y
 nA = 25
-A = range(-10,stop =10, length =nA)
+A = range(-5,stop =1, length =nA)
 
-nY = 8
+nY = 20
 pdfY, y = Tauchen(ρ,σ,nY)
 y = exp.(y)
 
 
-R = 1/β+0.2
+R = 1/β-0.025
 
 #No labor choice
 function EGM(A::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrecision{Float64}},
@@ -37,11 +35,10 @@ function EGM(A::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrec
     distance = 1.0
 
     while distance >1e-6
-        #global ctil,cgrid1,B,Astar,distance
         cgrid = copy(cgrid1)
-        Threads.@threads for y0=1:nY
+        for y0=1:nY
             for a1 =1:nA
-                B[a1,y0] = β*   sum(pdfY[y0,:] .* R .* uc.(cgrid[a1,:],1.0))
+                B[a1,y0] = β*   sum(pdfY[y0,:] .* R .* uc.(cgrid[a1,:],.0))
                 ctil[a1,y0] = B[a1,y0].^(-1/μ)
                 astar[a1,y0] = (ctil[a1,y0]+A[a1] -y[y0])/R
             end
@@ -64,7 +61,16 @@ function EGM(A::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrec
     return c,cgrid1
 end
 
+c,cgrid1 = EGM(A,y,pdfY;R=R,damp=0.5)
 
+a1(a,y; R = R) = R*a - c(a,y) +y
+
+using Plots
+plot(A,[c.(A,y[2]), c.(A,y[end-1])],label=["Low y", "High y"])
+plot(A,[A, a1.(A,y[2]), a1.(A,y[end-1])],label=["45","low y", "high y"],legend=:bottomright)
+
+
+#=
 w = 1.0
 
 function euler!(eq::Array{Float64,1},x,y0::Int64,a1::Int64,cgrid::Matrix{Float64})
@@ -140,3 +146,5 @@ using Plots
 plot(A,[A,R*A.+y[div(nY,2)].-c.(A,y[div(nY,2)])],label=["45","asset"])
 
 plot(A,[c.(A,y[div(nY,2)])],label=["45","asset"])
+
+=#
