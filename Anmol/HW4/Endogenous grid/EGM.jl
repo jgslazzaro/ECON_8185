@@ -67,12 +67,12 @@ c,cgrid1 = EGM(A,y,pdfY;R=R,damp=0.5)
 a1(a,y; R = R) = R*a - c(a,y) +y
 
 using Plots
-plot(A,[c.(A,y[2]), c.(A,y[end-1])],label=["Low y", "High y"])
+plot(A,[c.(A,y[2]), c.(A,y[end-1])],label=["Low y", "High y"],title = "Consumption policy")
 savefig("EGM_cons.jl")
-plot(A,[A, a1.(A,y[2]), a1.(A,y[end-1])],label=["45","low y", "high y"],legend=:bottomright)
+plot(A,[A, a1.(A,y[2]), a1.(A,y[end-1])],label=["45","low y", "high y"],legend=:bottomright,title = "Asset Policy")
 savefig("EGM_capital.jl")
 
-#=
+#= weird crap down here
 w = 1.0
 
 function euler!(eq::Array{Float64,1},x,y0::Int64,a1::Int64,cgrid::Matrix{Float64})
